@@ -26,7 +26,7 @@ Inventory Management System with Laravel 10 and MySql.
 1. Clone Repository
 
 ```bash
-git clone https://github.com/fajarghifar/inventory-management-system
+git clone https://github.com/akhelij/inventory-management-system
 ```
 
 2. Go into the repository 
@@ -105,16 +105,3 @@ password
 
     Open file `./config/cart.php`. You can set a tax, format number, etc.
     > For More details, visit this link [hardevine/shoppingcart](https://packagist.org/packages/hardevine/shoppingcart).
-
-## 📝 Contributing
-
-If you have any ideas to make it more interesting, please send a PR or create an issue for a feature request.
-
-### if you wana contribute to this project and add some features into it, here are some possable features you can add into this project..;)
-[https://chat.openai.com/share/48776dd2-3b91-4b93-b7b5-8a728d39df4f](https://chat.openai.com/share/48776dd2-3b91-4b93-b7b5-8a728d39df4f)
-# 🤝 License
-
-### [MIT](LICENSE)
-
-> Github [@fajarghifar](https://github.com/fajarghifar) &nbsp;&middot;&nbsp;
-> Instagram [@fajarghifar](https://instagram.com/fajarghifar)
