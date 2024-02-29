@@ -172,7 +172,8 @@ return [
         /*
         * Third Party Service Providers...
         */
-        Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class
+        Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
+        Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class
     ])->toArray(),
 
     /*
