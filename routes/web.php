@@ -19,6 +19,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\App;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,7 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard');
 
     // User Management
-    // Route::resource('/users', UserController::class); //->except(['show']);
+    Route::resource('/users', UserController::class); //->except(['show']);
     Route::put('/user/change-password/{username}', [UserController::class, 'updatePassword'])->name('users.updatePassword');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -115,6 +116,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::put('/purchases/update/{purchase}', [PurchaseController::class, 'update'])->name('purchases.update');
     Route::delete('/purchases/delete/{purchase}', [PurchaseController::class, 'destroy'])->name('purchases.delete');
+
+
+    Route::get('/lang/{lang}', function ($lang) {
+        // Validate the language
+        $supportedLocales = ['en', 'fr'];
+        if (!in_array($lang, $supportedLocales)) {
+            abort(400, 'Unsupported language');
+        }
+    
+        // Set the locale
+        App::setLocale($lang);
+        
+        // Store the locale in the session
+        session(['locale' => $lang]);
+        
+        return redirect()->back();
+    })->name('lang.switch');
 });
 
 require __DIR__.'/auth.php';

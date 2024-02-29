@@ -6,7 +6,7 @@
         <div class="row g-2 align-items-center mb-3">
             <div class="col">
                 <h2 class="page-title">
-                    {{ __('Create User') }}
+                    {{ __('user.create') }}
                 </h2>
             </div>
         </div>
@@ -26,7 +26,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title">
-                                    {{ __('User Image') }}
+                                    {{ __('user.user_image') }}
                                 </h3>
 
                                 <div class="card-body text-center">
@@ -36,7 +36,7 @@
                                          id="image-preview"
                                     >
                                     <div class="small font-italic text-muted mb-2">
-                                        {{ __('JPG or PNG no larger than 1 MB') }}
+                                        {{ __('user.jpg_or_png') }}
                                     </div>
 
                                     <input type="file"
@@ -61,14 +61,14 @@
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title">
-                                    {{ __('User Details') }}
+                                    {{ __('user.user_details') }}
                                 </h3>
 
                                 <div class="row row-cards">
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="name" class="form-label">
-                                                {{ __('Name') }}
+                                                {{ __('user.name') }}
                                                 <span class="text-danger">*</span>
                                             </label>
 
@@ -89,7 +89,7 @@
 
                                         <div class="mb-3">
                                             <label for="email" class="form-label">
-                                                {{ __('Email address') }}
+                                                {{ __('user.email_address') }}
                                                 <span class="text-danger">*</span>
                                             </label>
 
@@ -107,33 +107,12 @@
                                             @enderror
                                         </div>
 
-                                        {{---
-                                        <div class="mb-3">
-                                            <label for="username" class="form-label">
-                                                {{ __('Username') }}
-                                                <span class="text-danger">*</span>
-                                            </label>
-
-                                            <input type="text"
-                                                   id="username"
-                                                   name="username"
-                                                   class="form-control @error('username') is-invalid @enderror"
-                                                   value="{{ old('username') }}"
-                                            >
-
-                                            @error('username')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
-                                        </div>
-                                        ---}}
                                     </div>
 
 
                                     <div class="col-sm-6 col-md-6">
                                         <label for="password" class="form-label">
-                                            {{ __('Password') }}
+                                            {{ __('user.password') }}
                                             <span class="text-danger">*</span>
                                         </label>
 
@@ -153,7 +132,7 @@
 
                                     <div class="col-sm-6 col-md-6">
                                         <label for="password_confirmation" class="form-label">
-                                            {{ __('Password confirmation') }}
+                                            {{ __('user.password_confirmation') }}
                                             <span class="text-danger">*</span>
                                         </label>
 
@@ -174,11 +153,11 @@
 
                             <div class="card-footer text-end">
                                 <button class="btn btn-primary" type="submit">
-                                    {{ __('Create') }}
+                                    {{ __('user.create') }}
                                 </button>
 
                                 <a class="btn btn-outline-warning" href="{{ route('users.index') }}">
-                                    {{ __('Cancel') }}
+                                    {{ __('user.cancel') }}
                                 </a>
                             </div>
                         </div>
