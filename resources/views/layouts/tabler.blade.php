@@ -77,13 +77,13 @@
                             </a>
                             <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                                 @if(app()->getLocale() == 'en')
-                                <a class="dropdown-item"  href="{{ route('lang.switch', 'fr') }}">
-                                    Francais
-                                </a>
+                                    <a class="dropdown-item"  href="{{ route('lang.switch', 'fr') }}">
+                                        Francais
+                                    </a>
                                 @else
-                                <a class="dropdown-item"  href="{{ route('lang.switch', 'en') }}">
-                                    English
-                                </a>
+                                    <a class="dropdown-item"  href="{{ route('lang.switch', 'en') }}">
+                                        English
+                                    </a>
                                 @endif
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                                 </a>
                             </li>
 
-
+<!--
                             <li class="nav-item dropdown {{ request()->is('orders*') ? 'active' : null }}">
                                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                                     data-bs-auto-close="outside" role="button" aria-expanded="false">
@@ -280,7 +280,7 @@
                             <li class="nav-item {{ request()->is('quotations') ? 'active' : null }}">
                                 <a class="nav-link" href="{{ route('quotations.index') }}">
                                     <span
-                                        class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                        class="nav-link-icon d-md-none d-lg-inline-block">
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                             class="icon icon-tabler icon-tabler-file" width="24" height="24"
                                             viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -332,7 +332,7 @@
                                     </div>
                                 </div>
                             </li>
-
+!-->
 
                             <li
                                 class="nav-item dropdown {{ request()->is('users*', 'categories*', 'units*') ? 'active' : null }}">
@@ -387,7 +387,7 @@
                                         </svg>
                                     </span>
                                     <input type="text" name="search" id="search" value=""
-                                        class="form-control" placeholder="Search…" aria-label="Search in website">
+                                        class="form-control" placeholder="{{ __('Search') }}..." aria-label="{{ __('Search in website') }}">
                                 </div>
                             </form>
                         </div>

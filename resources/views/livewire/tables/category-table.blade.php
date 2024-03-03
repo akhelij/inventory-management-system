@@ -14,22 +14,21 @@
     <div class="card-body border-bottom py-3">
         <div class="d-flex">
             <div class="text-secondary">
-                Show
+                {{ __('Show') }}
                 <div class="mx-2 d-inline-block">
-                    <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
+                    <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="{{ __('result per page') }}">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
                         <option value="25">25</option>
                     </select>
                 </div>
-                entries
+                {{ __('entries') }}
             </div>
             <div class="ms-auto text-secondary">
-                Search:
+                {{ __('Search') }}:
                 <div class="ms-2 d-inline-block">
-                    <input type="text" wire:model.live="search" class="form-control form-control-sm"
-                        aria-label="Search invoice">
+                    <input type="text" wire:model.live="search" class="form-control form-control-sm" aria-label="{{ __('Search invoice') }}">
                 </div>
             </div>
         </div>
@@ -101,7 +100,7 @@
                 @empty
                     <tr>
                         <td class="align-middle text-center" colspan="8">
-                            No results found
+                            {{ __('No results found') }}
                         </td>
                     </tr>
                 @endforelse
@@ -111,7 +110,7 @@
 
     <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-secondary">
-            Showing <span>{{ $categories->firstItem() }}</span> to <span>{{ $categories->lastItem() }}</span> of
+            {{ __('Showing') }} <span>{{ $categories->firstItem() }}</span> to <span>{{ $categories->lastItem() }}</span> of
             <span>{{ $categories->total() }}</span> entries
         </p>
 

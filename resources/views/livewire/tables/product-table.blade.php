@@ -2,7 +2,7 @@
     <div class="card-header">
         <div>
             <h3 class="card-title">
-                {{ __('Products') }}
+                {{ __('products.products') }}
             </h3>
         </div>
 
@@ -15,15 +15,15 @@
                 <div class="dropdown-menu dropdown-menu-end" style="">
                     <a href="{{ route('products.create') }}" class="dropdown-item">
                         <x-icon.plus />
-                        {{ __('Create Product') }}
+                        {{ __('products.create_product') }}
                     </a>
                     <a href="{{ route('products.import.view') }}" class="dropdown-item">
                         <x-icon.plus />
-                        {{ __('Import Products') }}
+                        {{ __('products.import_products') }}
                     </a>
                     <a href="{{ route('products.export.store') }}" class="dropdown-item">
                         <x-icon.plus />
-                        {{ __('Export Products') }}
+                        {{ __('products.export_products') }}
                     </a>
                 </div>
             </div>
@@ -33,7 +33,7 @@
     <div class="card-body border-bottom py-3">
         <div class="d-flex">
             <div class="text-secondary">
-                Show
+                {{ __('products.showing') }}
                 <div class="mx-2 d-inline-block">
                     <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
                         <option value="5">5</option>
@@ -42,13 +42,13 @@
                         <option value="25">25</option>
                     </select>
                 </div>
-                entries
+                {{ __('products.entries') }}
             </div>
             <div class="ms-auto text-secondary">
-                Search:
+                {{ __('products.search') }}
                 <div class="ms-2 d-inline-block">
                     <input type="text" wire:model.live="search" class="form-control form-control-sm"
-                        aria-label="Search invoice">
+                        aria-label="{{ __('products.search') }}">
                 </div>
             </div>
         </div>
@@ -61,37 +61,37 @@
             <thead class="thead-light">
                 <tr>
                     <th class="align-middle text-center w-1">
-                        {{ __('No.') }}
+                        {{ __('products.no') }}
                     </th>
                     <th scope="col" class="align-middle text-center">
-                        {{ __('Image') }}
+                        {{ __('products.image') }}
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('name')" href="#" role="button">
-                            {{ __('Name') }}
+                            {{ __('products.name') }}
                             @include('inclues._sort-icon', ['field' => 'name'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('code')" href="#" role="button">
-                            {{ __('Code') }}
+                            {{ __('products.code') }}
                             @include('inclues._sort-icon', ['field' => 'code'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('category_id')" href="#" role="button">
-                            {{ __('Category') }}
+                            {{ __('products.category') }}
                             @include('inclues._sort-icon', ['field' => 'category_id'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('quantity')" href="#" role="button">
-                            {{ __('Quantity') }}
+                            {{ __('products.quantity') }}
                             @include('inclues._sort-icon', ['field' => 'quantity'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
-                        {{ __('Action') }}
+                        {{ __('products.action') }}
                     </th>
                 </tr>
             </thead>
@@ -122,13 +122,13 @@
                             <x-button.show class="btn-icon" route="{{ route('products.show', $product->uuid) }}" />
                             <x-button.edit class="btn-icon" route="{{ route('products.edit', $product->uuid) }}" />
                             <x-button.delete class="btn-icon" route="{{ route('products.destroy', $product->uuid) }}"
-                                onclick="return confirm('are you sure!')" />
+                                onclick="return confirm('{{ __('Are you sure!') }}')" />
                         </td>
                     </tr>
                 @empty
                     <tr>
                         <td class="align-middle text-center" colspan="7">
-                            No results found
+                            {{ __('products.no_results_found') }}
                         </td>
                     </tr>
                 @endforelse
@@ -138,8 +138,9 @@
 
     <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-secondary">
-            Showing <span>{{ $products->firstItem() }}</span>
-            to <span>{{ $products->lastItem() }}</span> of <span>{{ $products->total() }}</span> entries
+            {{ __('products.showing') }} <span>{{ $products->firstItem() }}</span>
+            {{ __('products.to') }} <span>{{ $products->lastItem() }}</span> {{ __('products.of') }}
+            <span>{{ $products->total() }}</span> {{ __('products.entries') }}
         </p>
 
         <ul class="pagination m-0 ms-auto">

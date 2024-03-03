@@ -3,7 +3,7 @@
         <div class="card-header">
             <div>
                 <h3 class="card-title">
-                    Category: {{ $category->name }}
+                    {{ __('Category') }}: {{ $category->name }}
                 </h3>
             </div>
 
@@ -29,21 +29,21 @@
         <div class="card-body border-bottom py-3">
             <div class="d-flex">
                 <div class="text-secondary">
-                    Show
+                    {{ __('Show') }}
                     <div class="mx-2 d-inline-block">
-                        <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
+                        <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="{{ __('result per page') }}">
                             <option value="5">5</option>
                             <option value="10">10</option>
                             <option value="15">15</option>
                             <option value="25">25</option>
                         </select>
                     </div>
-                    entries
+                    {{ __('entries') }}
                 </div>
                 <div class="ms-auto text-secondary">
-                    Search:
+                    {{ __('Search') }}:
                     <div class="ms-2 d-inline-block">
-                        <input type="text" wire:model.live="search" class="form-control form-control-sm" aria-label="Search invoice">
+                        <input type="text" wire:model.live="search" class="form-control form-control-sm" aria-label="{{ __('Search invoice') }}">
                     </div>
                 </div>
             </div>
@@ -97,15 +97,15 @@
                             {{ $product->quantity }}
                         </td>
                         <td class="align-middle text-center" style="width: 15%">
-                            <x-button.show class="btn-icon" route="{{ route('products.show', $product) }}"/>
-                            <x-button.edit class="btn-icon" route="{{ route('products.edit', $product) }}"/>
-                            <x-button.delete class="btn-icon" route="{{ route('products.destroy', $product) }}"/>
+                            <x-button.show class="btn-icon" route="{{ route('products.show', $product->uuid) }}"/>
+                            <x-button.edit class="btn-icon" route="{{ route('products.edit', $product->uuid) }}"/>
+                            <x-button.delete class="btn-icon" route="{{ route('products.destroy', $product->uuid) }}"/>
                         </td>
                     </tr>
                 @empty
                     <tr>
                         <td class="align-middle text-center" colspan="8">
-                            No results found
+                            {{ __('No results found') }}
                         </td>
                     </tr>
                 @endforelse
@@ -114,7 +114,7 @@
         </div>
         <div class="card-footer d-flex align-items-center">
             <p class="m-0 text-secondary">
-                Showing <span>{{ $products->firstItem() }}</span> to <span>{{ $products->lastItem() }}</span> of <span>{{ $products->total() }}</span> entries
+                {{ __('Showing') }} <span>{{ $products->firstItem() }}</span> to <span>{{ $products->lastItem() }}</span> of <span>{{ $products->total() }}</span> entries
             </p>
 
             <ul class="pagination m-0 ms-auto">

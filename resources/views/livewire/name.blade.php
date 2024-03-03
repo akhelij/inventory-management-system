@@ -8,7 +8,7 @@
            name="name"
            wire:model.blur="name"
            wire:keyup="selectedName"
-           placeholder="Enter name"
+           placeholder="{{ __('Enter name') }}"
            class="form-control @error('name') is-invalid @enderror"
     />
 

@@ -36,7 +36,7 @@
                                         alt="" id="image-preview">
 
                                     <div class="small font-italic text-muted mb-2">
-                                        JPG or PNG no larger than 2 MB
+                                        {{ __('JPG or PNG no larger than 2 MB') }}
                                     </div>
 
                                     <input type="file" accept="image/*" id="image" name="product_image"
@@ -70,7 +70,7 @@
 
                                                 <input type="text" id="name" name="name"
                                                     class="form-control @error('name') is-invalid @enderror"
-                                                    placeholder="Product name" value="{{ old('name', $product->name) }}">
+                                                    placeholder="{{ __('Product name') }}" value="{{ old('name', $product->name) }}">
 
                                                 @error('name')
                                                     <div class="invalid-feedback">
@@ -83,13 +83,13 @@
                                         <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
                                                 <label for="category_id" class="form-label">
-                                                    Product category
+                                                    {{ __('Product category') }}
                                                     <span class="text-danger">*</span>
                                                 </label>
 
                                                 <select name="category_id" id="category_id"
                                                     class="form-select @error('category_id') is-invalid @enderror">
-                                                    <option selected="" disabled="">Select a category:</option>
+                                                    <option selected="" disabled="">{{ __('Select a category:') }}</option>
                                                     @foreach ($categories as $category)
                                                         <option value="{{ $category->id }}"
                                                             @if (old('category_id', $product->category_id) == $category->id) selected="selected" @endif>
@@ -116,7 +116,7 @@
                                                 <select name="unit_id" id="unit_id"
                                                     class="form-select @error('unit_id') is-invalid @enderror">
                                                     <option selected="" disabled="">
-                                                        Select a unit:
+                                                        {{ __('Select a unit:') }}
                                                     </option>
 
                                                     @foreach ($units as $unit)
@@ -137,7 +137,7 @@
                                         <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label" for="buying_price">
-                                                    Buying price
+                                                    {{ __('Buying price') }}
                                                     <span class="text-danger">*</span>
                                                 </label>
 
@@ -157,7 +157,7 @@
                                         <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
                                                 <label for="selling_price" class="form-label">
-                                                    Selling price
+                                                    {{ __('Selling price') }}
                                                     <span class="text-danger">*</span>
                                                 </label>
 
@@ -264,7 +264,7 @@
                                                 </label>
 
                                                 <textarea name="notes" id="notes" rows="5" class="form-control @error('notes') is-invalid @enderror"
-                                                    placeholder="Product notes">{{ old('notes', $product->notes) }}</textarea>
+                                                    placeholder="{{ __('Product notes') }}">{{ old('notes', $product->notes) }}</textarea>
 
                                                 @error('notes')
                                                     <div class="invalid-feedback">
@@ -272,7 +272,7 @@
                                                     </div>
                                                 @enderror
                                             </div>
-                                        </div>`
+                                        </div>
                                     </div>
                                 </div>
 

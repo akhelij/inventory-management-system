@@ -1,33 +1,34 @@
 @extends('layouts.tabler')
 
 @section('content')
-    <div class="page-header d-print-none">
-        <div class="container-xl">
-            <div class="row g-2 align-items-center">
-                <div class="col">
-                    <div class="page-pretitle">
-                        Overview
-                    </div>
-                    <h2 class="page-title">
-                        Dashboard
-                    </h2>
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <div class="page-pretitle">
+                    {{ __('dashboard.overview') }}
                 </div>
-                <!-- Page title actions -->
-                <div class="col-auto ms-auto d-print-none">
-                    <div class="btn-list">
-                        <a href="{{ route('orders.create') }}" class="btn btn-primary d-none d-sm-inline-block">
-                            <x-icon.plus />
-                            Create new order
-                        </a>
-                        <a href="{{ route('orders.create') }}" class="btn btn-primary d-sm-none btn-icon"
-                            aria-label="Create new report">
-                            <x-icon.plus />
-                        </a>
-                    </div>
+                <h2 class="page-title">
+                    {{ __('dashboard.dashboard') }}
+                </h2>
+            </div>
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+                <div class="btn-list">
+                    <a href="{{ route('orders.create') }}" class="btn btn-primary d-none d-sm-inline-block">
+                        <x-icon.plus />
+                        {{ __('dashboard.create_new_order') }}
+                    </a>
+                    <a href="{{ route('orders.create') }}" class="btn btn-primary d-sm-none btn-icon"
+                        aria-label="{{ __('dashboard.create_new_order') }}">
+                        <x-icon.plus />
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
     <div class="page-body">
         <div class="container-xl">
             <div class="row row-deck row-cards">
@@ -162,8 +163,8 @@
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
-                                            <span
-                                                class="bg-primary text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                                            <span class="bg-primary text-white avatar">
+                                                <!-- Icon: Currency Dollar -->
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-packages" width="24"
                                                     height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -184,10 +185,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                {{ $products }} Products
+                                                {{ $products }} {{ __('dashboard.products') }}
                                             </div>
                                             <div class="text-muted">
-                                                {{ $categories }} categories
+                                                {{ $categories }} {{ __('dashboard.categories') }}
                                             </div>
                                         </div>
                                     </div>
@@ -199,8 +200,8 @@
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
-                                            <span
-                                                class="bg-green text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/shopping-cart -->
+                                            <span class="bg-green text-white avatar">
+                                                <!-- Icon: Shopping Cart -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
                                                     height="24" viewBox="0 0 24 24" stroke-width="2"
                                                     stroke="currentColor" fill="none" stroke-linecap="round"
@@ -215,10 +216,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                {{ $orders }} Orders
+                                                {{ $orders }} {{ __('dashboard.orders') }}
                                             </div>
                                             <div class="text-muted">
-                                                {{ $todayOrders }} shipped
+                                                {{ $todayOrders }} {{ __('dashboard.today_orders') }}
                                             </div>
                                         </div>
                                     </div>
@@ -230,8 +231,8 @@
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
-                                            <span
-                                                class="bg-twitter text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-twitter -->
+                                            <span class="bg-twitter text-white avatar">
+                                                <!-- Icon: Truck Delivery -->
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-truck-delivery" width="24"
                                                     height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -247,10 +248,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                {{ $purchases }} Purchases
+                                                {{ $purchases }} {{ __('dashboard.purchases') }}
                                             </div>
                                             <div class="text-muted">
-                                                {{ $todayPurchases }} today
+                                                {{ $todayPurchases }} {{ __('dashboard.today_purchases') }}
                                             </div>
                                         </div>
                                     </div>
@@ -262,8 +263,8 @@
                                 <div class="card-body">
                                     <div class="row align-items-center">
                                         <div class="col-auto">
-                                            <span
-                                                class="bg-facebook text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/brand-facebook -->
+                                            <span class="bg-facebook text-white avatar">
+                                                <!-- Icon: Files -->
                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                     class="icon icon-tabler icon-tabler-files" width="24" height="24"
                                                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
@@ -279,10 +280,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                {{ $quotations }} Quotations
+                                                {{ $quotations }} {{ __('dashboard.quotations') }}
                                             </div>
                                             <div class="text-muted">
-                                                {{ $todayQuotations }} today
+                                                {{ $todayQuotations }} {{ __('dashboard.today_quotations') }}
                                             </div>
                                         </div>
                                     </div>
@@ -291,6 +292,7 @@
                         </div>
                     </div>
                 </div>
+                
 
                 {{-- -
                 <div class="col-lg-6">

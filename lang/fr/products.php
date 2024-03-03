@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'products' => 'Produits',
+    'create_product' => 'Créer un produit',
+    'import_products' => 'Importer des produits',
+    'export_products' => 'Exporter des produits',
+    'no_results_found' => 'Aucun résultat trouvé',
+    'no' => 'N°',
+    'image' => 'Image',
+    'name' => 'Nom',
+    'code' => 'Code',
+    'category' => 'Catégorie',
+    'quantity' => 'Quantité',
+    'action' => 'Action',
+    'showing' => 'Affichage de',
+    'to' => 'à',
+    'of' => 'de',
+    'entries' => 'entrées',
+    'search' => 'Recherche :',
+    'product_image' => 'Image du produit',
+    'image_info' => 'JPG ou PNG ne dépassant pas 2 Mo',
+    'product_create' => 'Créer un produit',
+    'product_name' => 'Nom du produit',
+    'product_category' => 'Catégorie du produit',
+    'select_category' => 'Sélectionnez une catégorie',
+];

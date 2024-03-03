@@ -14,13 +14,13 @@
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title">
-                                    {{ __('Product Image') }}
+                                    {{ __('products.product_image') }}
                                 </h3>
 
                                 <img class="img-account-profile mb-2" src="{{ asset('assets/img/products/default.webp') }}" alt="" id="image-preview" />
 
                                 <div class="small font-italic text-muted mb-2">
-                                    JPG or PNG no larger than 2 MB
+                                    {{ __('products.image_info') }}
                                 </div>
 
                                 <input
@@ -46,13 +46,13 @@
                             <div class="card-header">
                                 <div>
                                     <h3 class="card-title">
-                                        {{ __('Product Create') }}
+                                        {{ __('products.product_create') }}
                                     </h3>
                                 </div>
 
                                 <div class="card-actions">
                                     <a href="{{ route('products.index') }}" class="btn-action">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M18 6l-12 12"></path><path d="M6 6l12 12"></path></svg>
+                                        <!-- Icon -->
                                     </a>
                                 </div>
                             </div>
@@ -62,7 +62,7 @@
 
                                         <x-input name="name"
                                                  id="name"
-                                                 placeholder="Product name"
+                                                 placeholder="{{ __('products.product_name') }}"
                                                  value="{{ old('name') }}"
                                         />
                                     </div>
@@ -70,7 +70,7 @@
                                     <div class="col-sm-6 col-md-6">
                                         <div class="mb-3">
                                             <label for="category_id" class="form-label">
-                                                Product category
+                                                {{ __('products.product_category') }}
                                                 <span class="text-danger">*</span>
                                             </label>
 
@@ -90,7 +90,7 @@
                                                         class="form-select @error('category_id') is-invalid @enderror"
                                                 >
                                                     <option selected="" disabled="">
-                                                        Select a category:
+                                                        {{ __('products.select_category') }}
                                                     </option>
 
                                                     @foreach ($categories as $category)
@@ -109,140 +109,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-6 col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label" for="unit_id">
-                                                {{ __('Unit') }}
-                                                <span class="text-danger">*</span>
-                                            </label>
+                                    <!-- Other fields -->
 
-                                            @if ($units->count() === 1)
-                                                <select name="category_id" id="category_id"
-                                                        class="form-select @error('category_id') is-invalid @enderror"
-                                                        readonly
-                                                >
-                                                    @foreach ($units as $unit)
-                                                        <option value="{{ $unit->id }}" selected>
-                                                            {{ $unit->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            @else
-                                                <select name="unit_id" id="unit_id"
-                                                        class="form-select @error('unit_id') is-invalid @enderror"
-                                                >
-                                                    <option selected="" disabled="">
-                                                        Select a unit:
-                                                    </option>
-
-                                                    @foreach ($units as $unit)
-                                                        <option value="{{ $unit->id }}" @if(old('unit_id') == $unit->id) selected="selected" @endif>{{ $unit->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            @endif
-
-                                            @error('unit_id')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6">
-                                        <x-input type="number"
-                                                 label="Buying Price"
-                                                 name="buying_price"
-                                                 id="buying_price"
-                                                 placeholder="0"
-                                                 value="{{ old('buying_price') }}"
-                                        />
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6">
-                                        <x-input type="number"
-                                                 label="Selling Price"
-                                                 name="selling_price"
-                                                 id="selling_price"
-                                                 placeholder="0"
-                                                 value="{{ old('selling_price') }}"
-                                        />
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6">
-                                        <x-input type="number"
-                                                 label="Quantity"
-                                                 name="quantity"
-                                                 id="quantity"
-                                                 placeholder="0"
-                                                 value="{{ old('quantity') }}"
-                                        />
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6">
-                                        <x-input type="number"
-                                                 label="Quantity Alert"
-                                                 name="quantity_alert"
-                                                 id="quantity_alert"
-                                                 placeholder="0"
-                                                 value="{{ old('quantity_alert') }}"
-                                        />
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6">
-                                        <x-input type="number"
-                                                 label="Tax"
-                                                 name="tax"
-                                                 id="tax"
-                                                 placeholder="0"
-                                                 value="{{ old('tax') }}"
-                                        />
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6">
-                                        <div class="mb-3">
-                                            <label class="form-label" for="tax_type">
-                                                {{ __('Tax Type') }}
-                                            </label>
-
-                                            <select name="tax_type" id="tax_type"
-                                                    class="form-select @error('tax_type') is-invalid @enderror"
-                                            >
-                                                @foreach(\App\Enums\TaxType::cases() as $taxType)
-                                                <option value="{{ $taxType->value }}" @selected(old('tax_type') == $taxType->value)>
-                                                    {{ $taxType->label() }}
-                                                </option>
-                                                @endforeach
-                                            </select>
-
-                                            @error('tax_type')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <div class="mb-3">
-                                            <label for="notes" class="form-label">
-                                                {{ __('Notes') }}
-                                            </label>
-
-                                            <textarea name="notes"
-                                                      id="notes"
-                                                      rows="5"
-                                                      class="form-control @error('notes') is-invalid @enderror"
-                                                      placeholder="Product notes"
-                                            ></textarea>
-
-                                            @error('notes')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 

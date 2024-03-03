@@ -14,7 +14,7 @@
     <div class="card-body border-bottom py-3">
         <div class="d-flex">
             <div class="text-secondary">
-                Show
+                {{ __('products.showing') }}
                 <div class="mx-2 d-inline-block">
                     <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
                         <option value="5">5</option>
@@ -23,12 +23,13 @@
                         <option value="25">25</option>
                     </select>
                 </div>
-                entries
+                {{ __('products.entries') }}
             </div>
             <div class="ms-auto text-secondary">
-                Search:
+                {{ __('products.search') }}
                 <div class="ms-2 d-inline-block">
-                    <input type="text" wire:model.live="search" class="form-control form-control-sm" aria-label="Search invoice">
+                    <input type="text" wire:model.live="search" class="form-control form-control-sm"
+                        aria-label="{{ __('products.search') }}">
                 </div>
             </div>
         </div>
