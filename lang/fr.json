@@ -1,7 +1,10 @@
 {
-    "Dashboard": "Dashboard",
+    "Dashboard": "Tableau de bord",
     "Products": "Produits",
     "Settings": "Paramètres",
+    "Users": "Utilisateurs",
+    "Account": "Compte",
+    "Logout": "Se déconnecter",
     "Name": "Nom",
     "Save": "Enregistrer",
     "Cancel": "Annuler",
