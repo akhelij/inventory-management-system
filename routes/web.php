@@ -36,11 +36,12 @@ Route::get('php/', function () {
     return phpinfo();
 });
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('dashboard');
+// });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard');
 
