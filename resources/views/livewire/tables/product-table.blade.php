@@ -2,7 +2,7 @@
     <div class="card-header">
         <div>
             <h3 class="card-title">
-                {{ __('products.products') }}
+                {{ __('Products') }}
             </h3>
         </div>
 
@@ -15,15 +15,15 @@
                 <div class="dropdown-menu dropdown-menu-end" style="">
                     <a href="{{ route('products.create') }}" class="dropdown-item">
                         <x-icon.plus />
-                        {{ __('products.create_product') }}
+                        {{ __('Create product') }}
                     </a>
                     <a href="{{ route('products.import.view') }}" class="dropdown-item">
                         <x-icon.plus />
-                        {{ __('products.import_products') }}
+                        {{ __('Import_products') }}
                     </a>
                     <a href="{{ route('products.export.store') }}" class="dropdown-item">
                         <x-icon.plus />
-                        {{ __('products.export_products') }}
+                        {{ __('Export_products') }}
                     </a>
                 </div>
             </div>
@@ -33,7 +33,7 @@
     <div class="card-body border-bottom py-3">
         <div class="d-flex">
             <div class="text-secondary">
-                {{ __('products.showing') }}
+                {{ __('Showing') }}
                 <div class="mx-2 d-inline-block">
                     <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
                         <option value="5">5</option>
@@ -42,13 +42,13 @@
                         <option value="25">25</option>
                     </select>
                 </div>
-                {{ __('products.entries') }}
+                {{ __('Entries') }}
             </div>
             <div class="ms-auto text-secondary">
-                {{ __('products.search') }}
+                {{ __('Search') }}
                 <div class="ms-2 d-inline-block">
                     <input type="text" wire:model.live="search" class="form-control form-control-sm"
-                        aria-label="{{ __('products.search') }}">
+                        aria-label="{{ __('Search') }}">
                 </div>
             </div>
         </div>
@@ -61,37 +61,37 @@
             <thead class="thead-light">
                 <tr>
                     <th class="align-middle text-center w-1">
-                        {{ __('products.no') }}
+                        {{ __('No') }}
                     </th>
                     <th scope="col" class="align-middle text-center">
-                        {{ __('products.image') }}
+                        {{ __('Image') }}
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('name')" href="#" role="button">
-                            {{ __('products.name') }}
+                            {{ __('Name') }}
                             @include('inclues._sort-icon', ['field' => 'name'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('code')" href="#" role="button">
-                            {{ __('products.code') }}
+                            {{ __('Code') }}
                             @include('inclues._sort-icon', ['field' => 'code'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('category_id')" href="#" role="button">
-                            {{ __('products.category') }}
+                            {{ __('Category') }}
                             @include('inclues._sort-icon', ['field' => 'category_id'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('quantity')" href="#" role="button">
-                            {{ __('products.quantity') }}
+                            {{ __('quantity') }}
                             @include('inclues._sort-icon', ['field' => 'quantity'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
-                        {{ __('products.action') }}
+                        {{ __('Action') }}
                     </th>
                 </tr>
             </thead>
@@ -128,7 +128,7 @@
                 @empty
                     <tr>
                         <td class="align-middle text-center" colspan="7">
-                            {{ __('products.no_results_found') }}
+                            {{ __('No results found') }}
                         </td>
                     </tr>
                 @endforelse
@@ -138,9 +138,9 @@
 
     <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-secondary">
-            {{ __('products.showing') }} <span>{{ $products->firstItem() }}</span>
-            {{ __('products.to') }} <span>{{ $products->lastItem() }}</span> {{ __('products.of') }}
-            <span>{{ $products->total() }}</span> {{ __('products.entries') }}
+            {{ __('Showing') }} <span>{{ $products->firstItem() }}</span>
+            {{ __('to') }} <span>{{ $products->lastItem() }}</span> {{ __('of') }}
+            <span>{{ $products->total() }}</span> {{ __('entries') }}
         </p>
 
         <ul class="pagination m-0 ms-auto">

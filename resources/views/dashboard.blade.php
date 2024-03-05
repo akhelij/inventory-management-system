@@ -6,10 +6,10 @@
         <div class="row g-2 align-items-center">
             <div class="col">
                 <div class="page-pretitle">
-                    {{ __('dashboard.overview') }}
+                    {{ __('Overview') }}
                 </div>
                 <h2 class="page-title">
-                    {{ __('dashboard.dashboard') }}
+                    {{ __('Dashboard') }}
                 </h2>
             </div>
             <!-- Page title actions -->
@@ -17,10 +17,10 @@
                 <div class="btn-list">
                     <a href="{{ route('orders.create') }}" class="btn btn-primary d-none d-sm-inline-block">
                         <x-icon.plus />
-                        {{ __('dashboard.create_new_order') }}
+                        {{ __('Create new order') }}
                     </a>
                     <a href="{{ route('orders.create') }}" class="btn btn-primary d-sm-none btn-icon"
-                        aria-label="{{ __('dashboard.create_new_order') }}">
+                        aria-label="{{ __('Create new order') }}">
                         <x-icon.plus />
                     </a>
                 </div>
@@ -185,10 +185,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                {{ $products }} {{ __('dashboard.products') }}
+                                                {{ $products }} {{ __('Products') }}
                                             </div>
                                             <div class="text-muted">
-                                                {{ $categories }} {{ __('dashboard.categories') }}
+                                                {{ $categories }} {{ __('Categories') }}
                                             </div>
                                         </div>
                                     </div>
@@ -216,10 +216,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                {{ $orders }} {{ __('dashboard.orders') }}
+                                                {{ $orders }} {{ __('Orders') }}
                                             </div>
                                             <div class="text-muted">
-                                                {{ $todayOrders }} {{ __('dashboard.today_orders') }}
+                                                {{ $todayOrders }} {{ __('Today orders') }}
                                             </div>
                                         </div>
                                     </div>
@@ -248,10 +248,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                {{ $purchases }} {{ __('dashboard.purchases') }}
+                                                {{ $purchases }} {{ __('Purchases') }}
                                             </div>
                                             <div class="text-muted">
-                                                {{ $todayPurchases }} {{ __('dashboard.today_purchases') }}
+                                                {{ $todayPurchases }} {{ __('Today purchases') }}
                                             </div>
                                         </div>
                                     </div>
@@ -280,10 +280,10 @@
                                         </div>
                                         <div class="col">
                                             <div class="font-weight-medium">
-                                                {{ $quotations }} {{ __('dashboard.quotations') }}
+                                                {{ $quotations }} {{ __('Quotations') }}
                                             </div>
                                             <div class="text-muted">
-                                                {{ $todayQuotations }} {{ __('dashboard.today_quotations') }}
+                                                {{ $todayQuotations }} {{ __('Today quotations') }}
                                             </div>
                                         </div>
                                     </div>
