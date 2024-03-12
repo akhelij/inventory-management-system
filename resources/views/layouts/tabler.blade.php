@@ -191,7 +191,7 @@
                                 </a>
                             </li>
 
-<!--
+
                             <li class="nav-item dropdown {{ request()->is('orders*') ? 'active' : null }}">
                                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                                     data-bs-auto-close="outside" role="button" aria-expanded="false">
@@ -277,7 +277,7 @@
                             </li>
 
 
-
+<!--
                             <li class="nav-item {{ request()->is('quotations') ? 'active' : null }}">
                                 <a class="nav-link" href="{{ route('quotations.index') }}">
                                     <span
