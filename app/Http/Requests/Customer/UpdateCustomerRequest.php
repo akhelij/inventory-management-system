@@ -33,6 +33,12 @@ class UpdateCustomerRequest extends FormRequest
                 'string',
                 'max:50'
             ],
+            'type' => [
+                'required',
+                'string',
+                'max:25',
+                Rule::in(['particulier', 'grossiste', 'magasinier'])
+            ],
             'email' => [
                 'required',
                 'email',

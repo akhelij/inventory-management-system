@@ -298,8 +298,6 @@
                                 </a>
                             </li>
 
-
-
                             <li
                                 class="nav-item dropdown {{ request()->is('suppliers*', 'customers*') ? 'active' : null }}">
                                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
@@ -325,10 +323,7 @@
                                         <div class="dropdown-menu-column">
                                             <a class="dropdown-item" href="{{ route('suppliers.index') }}">
                                                 {{ __('Suppliers') }}
-                                            </a>
-                                            <a class="dropdown-item" href="{{ route('customers.index') }}">
-                                                {{ __('Customers') }}
-                                            </a>
+                                            </a>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -366,6 +361,9 @@
                                             </a>
                                             <a class="dropdown-item" href="{{ route('units.index') }}">
                                                 {{ __('Units') }}
+                                            </a>
+                                            <a class="dropdown-item" href="{{ route('customers.index') }}">
+                                                {{ __('Customers') }}
                                             </a>
                                         </div>
                                     </div>

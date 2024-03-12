@@ -40,6 +40,25 @@
                                 </div>
 
                                 <div class="col-md-4">
+                                    <label class="small mb-1" for="type">
+                                        {{ __('Type') }}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="type" name="type" required>
+                                        <option disabled>{{ __('Choose...') }}</option>
+                                        <option value="particulier" selected>{{ __('Particulier') }}</option>
+                                        <option value="grossiste">{{ __('Grossiste') }}</option>
+                                        <option value="magasinier">{{ __('Magasinier') }}</option>
+                                    </select>
+
+                                    @error('type')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-4">
                                     <label class="small mb-1" for="customer_id">
                                         {{ __('Customer') }}
                                         <span class="text-danger">*</span>
@@ -58,25 +77,6 @@
                                     </select>
 
                                     @error('customer_id')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-4">
-                                    <label class="small mb-1" for="reference">
-                                        {{ __('Reference') }}
-                                    </label>
-
-                                    <input type="text" class="form-control"
-                                           id="reference"
-                                           name="reference"
-                                           value="ORD"
-                                           readonly
-                                    >
-
-                                    @error('reference')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>

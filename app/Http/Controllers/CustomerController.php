@@ -32,22 +32,16 @@ class CustomerController extends Controller
         if ($request->hasFile('photo')) {
             $image = $request->file('photo')->store("customers", "public");
         }
-        Customer::create([
+
+        $data = $request->safe()->all();
+
+        $data = array_merge($data, [
             "user_id" => auth()->id(),
             "uuid" => Str::uuid(),
             'photo' => $image,
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'shopname' => $request->shopname,
-            'type' => $request->type,
-            'account_holder' => $request->account_holder,
-            'account_number' => $request->account_number,
-            'bank_name' => $request->bank_name,
-            'address' => $request->address,
         ]);
 
-
+        Customer::create($data);
 
         return redirect()
             ->route('customers.index')
@@ -87,18 +81,13 @@ class CustomerController extends Controller
             $image = $request->file('photo')->store("customers", "public");
         }
 
-        $customer->update([
+        $data = $request->safe()->all();
+
+        $data = array_merge($data, [
             'photo' => $image,
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'shopname' => $request->shopname,
-            'type' => $request->type,
-            'account_holder' => $request->account_holder,
-            'account_number' => $request->account_number,
-            'bank_name' => $request->bank_name,
-            'address' => $request->address,
         ]);
+
+        $customer->update($data);
 
         return redirect()
             ->route('customers.index')
