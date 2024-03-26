@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
         <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{{ config('app.name') }}</title>
+        <title>Alami Gestion</title>
         {{--- <script defer data-api="/stats/api/event" data-domain="preview.tabler.io" src="{{ asset('stats/js/script.js') }}"></script> ---}}
         <meta name="msapplication-TileColor" content="#0054a6"/>
         <meta name="theme-color" content="#0054a6"/>
