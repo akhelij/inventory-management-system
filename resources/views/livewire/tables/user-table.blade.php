@@ -110,7 +110,7 @@
 
     <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-secondary d-none d-sm-block">
-            {{ __('Showing') }} <span>{{ $users->firstItem() }}</span> to <span>{{ $users->lastItem() }}</span> of <span>{{ $users->total() }}</span> entries
+            {{ __('Showing') }} <span>{{ $users->firstItem() }}</span> {{ __('to') }} <span>{{ $users->lastItem() }}</span> {{ __('of') }} <span>{{ $users->total() }}</span> {{ __('entries') }}
         </p>
 
         <ul class="pagination m-0 ms-auto">

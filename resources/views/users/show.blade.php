@@ -24,7 +24,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h3 class="card-title">
-                                    {{ __('user.profile_image') }}
+                                    {{ __('Profile Image') }}
                                 </h3>
 
                                 <img id="image-preview"
@@ -40,24 +40,24 @@
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    {{ __('user.user_details') }}
+                                    {{ __('User Details') }}
                                 </h3>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
                                     <tbody>
-                                        <tr>
-                                            <td>{{ __('user.name') }}</td>
-                                            <td>{{ $user->name }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ __('user.email_address') }}</td>
-                                            <td>{{ $user->email }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{{ __('user.email_verification') }}</td>
-                                            <td>{{ $user->email_verified_at }}</td>
-                                        </tr>
+                                    <tr>
+                                        <td>{{ __('Name') }}</td>
+                                        <td>{{ $user->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ __('Email address') }}</td>
+                                        <td>{{ $user->email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ __('Email Verification') }}</td>
+                                        <td>{{ $user->email_verified_at }}</td>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -65,12 +65,12 @@
                             <div class="card-footer text-end">
                                 <a class="btn btn-info" href="{{ route('users.index') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
-                                    {{ __('user.back') }}
+                                    {{ __('Back') }}
                                 </a>
 
                                 <a class="btn btn-warning" href="{{ route('users.edit', $user) }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" /><path d="M13.5 6.5l4 4" /></svg>
-                                    {{ __('user.edit') }}
+                                    {{ __('Edit') }}
                                 </a>
                             </div>
                         </div>
