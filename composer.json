@@ -10,6 +10,7 @@
         "awobaz/compoships": "^2.2",
         "guzzlehttp/guzzle": "^7.2",
         "haruncpi/laravel-id-generator": "^1.1",
+        "kyslik/column-sortable": "^6.5",
         "laravel/framework": "^10.8",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
@@ -20,8 +21,8 @@
         "picqer/php-barcode-generator": "^2.2",
         "power-components/livewire-powergrid": "^5.1",
         "rappasoft/laravel-livewire-tables": "^3.1",
-        "spatie/laravel-permission": "^6.3",        
-        "kyslik/column-sortable": "^6.5"
+        "spatie/laravel-activitylog": "^4.8",
+        "spatie/laravel-permission": "^6.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.9",

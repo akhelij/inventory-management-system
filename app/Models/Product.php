@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\TaxType;
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, HasActivityLogs;
 
     protected $guarded = ['id'];
 

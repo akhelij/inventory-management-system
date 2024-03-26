@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Order extends Model
 {
+    use HasActivityLogs;
+
     protected $guarded = [
         'id',
     ];
