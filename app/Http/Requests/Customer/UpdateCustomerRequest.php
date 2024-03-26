@@ -34,21 +34,22 @@ class UpdateCustomerRequest extends FormRequest
                 'max:50'
             ],
             'type' => [
-                'required',
+                'nullable',
                 'string',
                 'max:25',
                 Rule::in(['particulier', 'grossiste', 'magasinier'])
             ],
             'email' => [
-                'required',
+                'nullable',
                 'email',
                 'max:50'
             ],
             'phone' => [
-                'required',
+                'nullable',
                 'string',
                 'max:25'
             ],
+            'city' => 'nullable|string|max:25',
             'account_holder' => [
                 'max:50'
             ],
@@ -59,7 +60,7 @@ class UpdateCustomerRequest extends FormRequest
                 'max:25'
             ],
             'address' => [
-                'required',
+                'nullable',
                 'string',
                 'max:100'
             ],

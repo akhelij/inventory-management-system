@@ -46,31 +46,31 @@
                                 <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
                                     <tbody>
                                     <tr>
-                                        <td>Name</td>
+                                        <td>{{ __('Name') }}</td>
                                         <td>{{ $customer->name }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Email address</td>
+                                        <td>{{ __('Email address') }}</td>
                                         <td>{{ $customer->email }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Phone number</td>
+                                        <td>{{ __('Phone number') }}</td>
                                         <td>{{ $customer->phone }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Address</td>
+                                        <td>{{ __('Address') }}</td>
                                         <td>{{ $customer->address }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Account holder</td>
+                                        <td>{{ __('Account holder') }}</td>
                                         <td>{{ $customer->account_holder }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Account number</td>
+                                        <td>{{ __('Account number') }}</td>
                                         <td>{{ $customer->account_number }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Bank name</td>
+                                        <td>{{ __('Bank name') }}</td>
                                         <td>{{ $customer->bank_name }}</td>
                                     </tr>
                                     </tbody>
