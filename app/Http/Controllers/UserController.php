@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use Spatie\Activitylog\Models\Activity;
 
 class UserController extends Controller
 {
     public function index()
     {
-        // TODO: Select columns
         $users = User::all();
 
         return view('users.index', [
@@ -130,5 +130,12 @@ class UserController extends Controller
         return redirect()
             ->route('users.index')
             ->with('success', 'User has been deleted!');
+    }
+
+    public function activityLogs()
+    {
+        return view('users.activity_logs', [
+            'activities' => Activity::with('causer')->latest()->paginate(50)
+        ]);
     }
 }

@@ -179,6 +179,30 @@
                             </a>
                         </li>
 
+                        <li class="nav-item dropdown {{ request()->is('orders*') ? 'active' : null }}">
+                            <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
+                               data-bs-auto-close="outside" role="button" aria-expanded="false">
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="icon icon-tabler icon-tabler-package-export" width="24"
+                                             height="24" viewBox="0 0 24 24" stroke-width="2"
+                                             stroke="currentColor" fill="none" stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5"/>
+                                            <path d="M12 12l8 -4.5"/>
+                                            <path d="M12 12v9"/>
+                                            <path d="M12 12l-8 -4.5"/>
+                                            <path d="M15 18h7"/>
+                                            <path d="M19 15l3 3l-3 3"/>
+                                        </svg>
+                                    </span>
+                                <span class="nav-link-title">
+                                        {{ __('Orders') }}
+                                    </span>
+                            </a>
+                        </li>
+
 
                         <li class="nav-item {{ request()->is('products*') ? 'active' : null }}">
                             <a class="nav-link" href="{{ route('products.index') }}">
@@ -208,64 +232,18 @@
                         </li>
 
 
-                        <li class="nav-item dropdown {{ request()->is('orders*') ? 'active' : null }}">
-                            <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
-                               data-bs-auto-close="outside" role="button" aria-expanded="false">
-                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                        <svg xmlns="http://www.w3.org/2000/svg"
-                                             class="icon icon-tabler icon-tabler-package-export" width="24"
-                                             height="24" viewBox="0 0 24 24" stroke-width="2"
-                                             stroke="currentColor" fill="none" stroke-linecap="round"
-                                             stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                            <path d="M12 21l-8 -4.5v-9l8 -4.5l8 4.5v4.5"/>
-                                            <path d="M12 12l8 -4.5"/>
-                                            <path d="M12 12v9"/>
-                                            <path d="M12 12l-8 -4.5"/>
-                                            <path d="M15 18h7"/>
-                                            <path d="M19 15l3 3l-3 3"/>
-                                        </svg>
-                                    </span>
-                                <span class="nav-link-title">
-                                        {{ __('Orders') }}
-                                    </span>
-                            </a>
-                            <div class="dropdown-menu">
-                                <div class="dropdown-menu-columns">
-                                    <div class="dropdown-menu-column">
-                                        <a class="dropdown-item" href="{{ route('orders.index') }}">
-                                            {{ __('All') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('orders.complete') }}">
-                                            {{ __('Completed') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('orders.pending') }}">
-                                            {{ __('Pending') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('due.index') }}">
-                                            {{ __('Due') }}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-
-
-                        <li class="nav-item {{ request()->is('users*') ? 'active' : null }}">
-                            <a class="nav-link" href="{{ route('users.index') }}">
+                        <li class="nav-item {{ request()->is('categories*') ? 'active' : null }}">
+                            <a class="nav-link" href="{{ route('categories.index') }}">
                                     <span
                                         class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
 
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                             stroke-width="1.5" stroke="currentColor" width="24"
-                                             height="22" >
-                                              <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
                                         </svg>
-
                                     </span>
                                 <span class="nav-link-title">
-                                        {{ __('Users') }}
+                                        {{ __('Categories') }}
                                     </span>
                             </a>
                         </li>
@@ -367,7 +345,7 @@
 !-->
 
                         <li
-                            class="nav-item dropdown {{ request()->is('categories*', 'units*') ? 'active' : null }}">
+                            class="nav-item dropdown {{ request()->is('activity-logs', 'users*', 'units*') ? 'active' : null }}">
                             <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                                data-bs-auto-close="outside" role="button" aria-expanded="false">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -389,14 +367,14 @@
                             <div class="dropdown-menu">
                                 <div class="dropdown-menu-columns">
                                     <div class="dropdown-menu-column">
-                                        <a class="dropdown-item" href="{{ route('categories.index') }}">
-                                            {{ __('Categories') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('units.index') }}">
-                                            {{ __('Units') }}
-                                        </a>
                                         <a class="dropdown-item" href="{{ route('customers.index') }}">
                                             {{ __('Customers') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('users.index') }}">
+                                            {{ __('Users') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('activity-logs') }}">
+                                            {{ __('Activity logs') }}
                                         </a>
                                     </div>
                                 </div>

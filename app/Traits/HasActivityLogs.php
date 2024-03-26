@@ -13,6 +13,8 @@ trait HasActivityLogs
     {
         return LogOptions::defaults()
             ->logAll()
-            ->logOnlyDirty();
+            ->dontLogIfAttributesChangedOnly(['created_at', 'updated_at', 'deleted_at'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 }

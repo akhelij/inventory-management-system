@@ -60,7 +60,7 @@
                                     <tbody>
                                     @foreach($product_entries as $entry)
                                         <tr>
-                                            <td>{{ $entry->quantity_added }}</td>
+                                            <td>+{{ $entry->quantity_added }}</td>
                                             <td>{{ $entry->created_at }}</td>
                                         </tr>
                                     @endforeach

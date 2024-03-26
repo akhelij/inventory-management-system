@@ -83,7 +83,7 @@ class ProductController extends Controller
 
     public function show($uuid)
     {
-        $product = Product::where("uuid", $uuid)->firstOrFail();
+        $product = Product::where("uuid", $uuid)->orWhere('id', $uuid)->firstOrFail();
         $product_entries = $product->product_entries()->get();
 
         // Generate a barcode

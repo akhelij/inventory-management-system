@@ -118,6 +118,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/purchases/update/{purchase}', [PurchaseController::class, 'update'])->name('purchases.update');
     Route::delete('/purchases/delete/{purchase}', [PurchaseController::class, 'destroy'])->name('purchases.delete');
 
+    Route::get('/activity-logs', [UserController::class, 'activityLogs'])->name('activity-logs');
 
     Route::get('/lang/{lang}', function ($lang) {
         // Validate the language
@@ -125,13 +126,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if (!in_array($lang, $supportedLocales)) {
             abort(400, 'Unsupported language');
         }
-    
+
         // Set the locale
         App::setLocale($lang);
-        
+
         // Store the locale in the session
         session(['locale' => $lang]);
-        
+
         return redirect()->back();
     })->name('lang.switch');
 });
