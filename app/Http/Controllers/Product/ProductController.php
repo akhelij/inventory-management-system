@@ -10,8 +10,8 @@ use App\Models\Product;
 use App\Models\Unit;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Picqer\Barcode\BarcodeGeneratorHTML;
-use Str;
 
 class ProductController extends Controller
 {
@@ -72,9 +72,9 @@ class ProductController extends Controller
             'tax'               => $request->tax,
             'tax_type'          => $request->tax_type,
             'notes'             => $request->notes,
-            "user_id" => auth()->id(),
-            "slug" => Str::slug($request->name, '-'),
-            "uuid" => Str::uuid()
+            "user_id"           => auth()->id(),
+            "slug"              => Str::slug($request->name, '-'),
+            "uuid"              => Str::uuid()
         ]);
 
 
@@ -84,13 +84,15 @@ class ProductController extends Controller
     public function show($uuid)
     {
         $product = Product::where("uuid", $uuid)->firstOrFail();
+        $product_entries = $product->product_entries()->get();
+
         // Generate a barcode
         $generator = new BarcodeGeneratorHTML();
-
         $barcode = $generator->getBarcode($product->code, $generator::TYPE_CODE_128);
 
         return view('products.show', [
             'product' => $product,
+            'product_entries' => $product_entries,
             'barcode' => $barcode,
         ]);
     }
@@ -108,7 +110,6 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, $uuid)
     {
         $product = Product::where("uuid", $uuid)->firstOrFail();
-        $product->update($request->except('product_image'));
 
         $image = $product->product_image;
         if ($request->hasFile('product_image')) {
@@ -120,20 +121,10 @@ class ProductController extends Controller
             $image = $request->file('product_image')->store('products', 'public');
         }
 
-        $product->name = $request->name;
-        $product->slug = Str::slug($request->name, '-');
-        $product->category_id = $request->category_id;
-        $product->unit_id = $request->unit_id;
-        $product->quantity = $request->quantity;
-        $product->buying_price = $request->buying_price;
-        $product->selling_price = $request->selling_price;
-        $product->quantity_alert = $request->quantity_alert;
-        $product->tax = $request->tax;
-        $product->tax_type = $request->tax_type;
-        $product->notes = $request->notes;
-        $product->product_image = $image;
-        $product->save();
-
+        $product->update(array_merge($request->except('product_image'), [
+            'slug' => Str::slug($request->name, '-'),
+            'product_image' => $image,
+        ]));
 
         return redirect()
             ->route('products.index')

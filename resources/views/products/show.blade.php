@@ -46,7 +46,29 @@
                                     src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
                                     alt="" class="img-account-profile mb-2">
                             </div>
+                            <div class="table-responsive">
+                                <h3 class="card-title ms-3">
+                                    {{ __('Stock history') }}
+                                </h3>
+                                <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ __('Quantity') }}</th>
+                                        <th>{{ __('Date') }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($product_entries as $entry)
+                                        <tr>
+                                            <td>{{ $entry->quantity_added }}</td>
+                                            <td>{{ $entry->created_at }}</td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+
                     </div>
 
                     <div class="col-lg-8">
@@ -91,7 +113,7 @@
                                                 </a>
                                             </td>
                                         </tr>
-                            
+
                                         <tr>
                                             <td>{{ __('Quantity') }}</td>
                                             <td>{{ $product->quantity }}</td>
@@ -104,7 +126,7 @@
                                                 </span>
                                             </td>
                                         </tr>
-                            
+
                                         <tr>
                                             <td>{{ __('Buying Price') }}</td>
                                             <td>{{ $product->buying_price }}</td>
@@ -132,7 +154,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            
+
                             <div class="card-footer text-end">
                                 <a class="btn btn-info" href="{{ url()->previous() }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left"

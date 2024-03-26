@@ -45,6 +45,11 @@ class Product extends Model
         return 'slug';
     }
 
+    public function product_entries()
+    {
+        return $this->hasMany(ProductEntry::class);
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -84,5 +89,24 @@ class Product extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected static function booted()
+    {
+        static::updating(function ($product) {
+            if ($product->isDirty('quantity')) {
+                // Calculate the quantity added
+                $quantityAdded = $product->quantity - $product->getOriginal('quantity');
+                // If the quantity has increased
+                if ($quantityAdded > 0) {
+                    // Create a new product entry
+                    ProductEntry::create([
+                        'product_id' => $product->id,
+                        'user_id' => auth()->id(),
+                        'quantity_added' => $quantityAdded,
+                    ]);
+                }
+            }
+        });
     }
 }
