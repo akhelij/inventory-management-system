@@ -12,6 +12,7 @@ trait HasActivityLogs
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
+            ->logAll()
             ->logOnlyDirty();
     }
 }
