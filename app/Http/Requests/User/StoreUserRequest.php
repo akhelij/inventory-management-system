@@ -28,6 +28,7 @@ class StoreUserRequest extends FormRequest
             //'username' => 'required|min:4|max:25|alpha_dash:ascii|unique:users,username',
             'password' => 'required_with:password_confirmation|min:6',
             'password_confirmation' => 'same:password|min:6',
+            'role_id' => 'required|exists:roles,id'
         ];
     }
 }

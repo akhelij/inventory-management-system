@@ -12,6 +12,7 @@ use App\Models\Customer;
 use App\Models\Supplier;
 use Illuminate\Database\Seeder;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,6 +22,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            RoleSeeder::class,
+            PermissionSeeder::class,
+            AssignPermissionToRoleSeeder::class,
             UserSeeder::class,
             CategorySeeder::class,
             UnitSeeder::class,

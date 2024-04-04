@@ -14,7 +14,7 @@
     <div class="card-body border-bottom py-3">
         <div class="d-flex">
             <div class="text-secondary">
-                {{ __('products.showing') }}
+                {{ __('Showing') }}
                 <div class="mx-2 d-inline-block">
                     <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
                         <option value="5">5</option>
@@ -23,13 +23,13 @@
                         <option value="25">25</option>
                     </select>
                 </div>
-                {{ __('products.entries') }}
+                {{ __('Entries') }}
             </div>
             <div class="ms-auto text-secondary">
-                {{ __('products.search') }}
+                {{ __('Search') }}
                 <div class="ms-2 d-inline-block">
                     <input type="text" wire:model.live="search" class="form-control form-control-sm"
-                        aria-label="{{ __('products.search') }}">
+                        aria-label="{{ __('Search') }}">
                 </div>
             </div>
         </div>
@@ -100,7 +100,7 @@
             @empty
                 <tr>
                         <td class="align-middle text-center" colspan="7">
-                            {{ __('products.no_results_found') }}
+                            {{ __('No results found') }}
                         </td>
                     </tr>
             @endforelse

@@ -38,6 +38,20 @@ class User extends Authenticatable implements MustVerifyEmail
         'updated_at' => 'datetime'
     ];
 
+    protected $appends = [
+        'role'
+    ];
+
+    public function getRoleAttribute()
+    {
+        $this->load('roles');
+        if ($this->roles->count() > 1) {
+            $this->roles()->detach($this->roles->first()->id);
+        }
+
+        return $this->roles()->with('permissions')->latest()->first();
+    }
+
     public function scopeSearch($query, $value): void
     {
         $query->where('name', 'like', "%{$value}%")
