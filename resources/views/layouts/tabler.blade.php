@@ -1,3 +1,6 @@
+@php
+    use App\Enums\PermissionEnum;
+@endphp
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
@@ -75,7 +78,7 @@
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
                             <path
-                                d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>
+                                    d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"/>
                         </svg>
                     </a>
 
@@ -126,7 +129,7 @@
                                  fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                                 <path
-                                    d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z">
+                                        d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z">
                                 </path>
                                 <path d="M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path>
                             </svg>
@@ -141,7 +144,7 @@
                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                     <path
-                                        d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/>
+                                            d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2"/>
                                     <path d="M9 12h12l-3 -3"/>
                                     <path d="M18 15l3 -3"/>
                                 </svg>
@@ -162,7 +165,7 @@
                         <li class="nav-item {{ request()->is('dashboard*') ? 'active' : null }}">
                             <a class="nav-link" href="{{ route('dashboard') }}">
                                     <span
-                                        class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
                                              height="24" viewBox="0 0 24 24" stroke-width="2"
                                              stroke="currentColor" fill="none" stroke-linecap="round"
@@ -178,9 +181,9 @@
                                     </span>
                             </a>
                         </li>
-
+                        @can(PermissionEnum::READ_ORDERS)
                         <li class="nav-item dropdown {{ request()->is('orders*') ? 'active' : null }}">
-                            <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
+                            <a class="nav-link" href="{{ route('orders.index') }}"
                                data-bs-auto-close="outside" role="button" aria-expanded="false">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
                                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -198,16 +201,16 @@
                                         </svg>
                                     </span>
                                 <span class="nav-link-title">
-                                        {{ __('Orders') }}
-                                    </span>
+                                    {{ __('Orders') }}
+                                </span>
                             </a>
                         </li>
-
-
+                        @endcan
+                        @can(PermissionEnum::READ_PRODUCTS)
                         <li class="nav-item {{ request()->is('products*') ? 'active' : null }}">
                             <a class="nav-link" href="{{ route('products.index') }}">
                                     <span
-                                        class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              class="icon icon-tabler icon-tabler-packages" width="24"
                                              height="24" viewBox="0 0 24 24" stroke-width="2"
@@ -230,16 +233,18 @@
                                     </span>
                             </a>
                         </li>
-
-
+                        @endcan
+                        @can(PermissionEnum::READ_CATEGORIES)
                         <li class="nav-item {{ request()->is('categories*') ? 'active' : null }}">
                             <a class="nav-link" href="{{ route('categories.index') }}">
                                     <span
-                                        class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
 
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                             stroke-width="1.5" stroke="currentColor">
+                                          <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/>
+                                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z"/>
                                         </svg>
                                     </span>
                                 <span class="nav-link-title">
@@ -247,7 +252,7 @@
                                     </span>
                             </a>
                         </li>
-
+                        @endcan
                         <!--
                             <li class="nav-item dropdown {{ request()->is('purchases*') ? 'active' : null }}">
                                 <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
@@ -345,7 +350,7 @@
 !-->
 
                         <li
-                            class="nav-item dropdown {{ request()->is('activity-logs', 'users*', 'units*') ? 'active' : null }}">
+                                class="nav-item dropdown {{ request()->is('activity-logs', 'users*', 'units*', 'roles*') ? 'active' : null }}">
                             <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
                                data-bs-auto-close="outside" role="button" aria-expanded="false">
                                     <span class="nav-link-icon d-md-none d-lg-inline-block">
@@ -356,7 +361,7 @@
                                              stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                             <path
-                                                d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/>
+                                                    d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z"/>
                                             <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"/>
                                         </svg>
                                     </span>
@@ -367,15 +372,26 @@
                             <div class="dropdown-menu">
                                 <div class="dropdown-menu-columns">
                                     <div class="dropdown-menu-column">
-                                        <a class="dropdown-item" href="{{ route('customers.index') }}">
-                                            {{ __('Customers') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('users.index') }}">
-                                            {{ __('Users') }}
-                                        </a>
-                                        <a class="dropdown-item" href="{{ route('activity-logs') }}">
-                                            {{ __('Activity logs') }}
-                                        </a>
+                                        @can(PermissionEnum::READ_CUSTOMERS)
+                                            <a class="dropdown-item" href="{{ route('customers.index') }}">
+                                                {{ __('Customers') }}
+                                            </a>
+                                        @endcan
+                                        @can(PermissionEnum::READ_USERS)
+                                            <a class="dropdown-item" href="{{ route('users.index') }}">
+                                                {{ __('Users') }}
+                                            </a>
+                                        @endcan
+                                        @can(PermissionEnum::READ_ROLES_PERMISSIONS)
+                                            <a class="dropdown-item" href="{{ route('roles.index') }}">
+                                                {{ __('Roles & Permissions') }}
+                                            </a>
+                                        @endcan
+                                        @can(PermissionEnum::ACTIVITY_LOGS)
+                                            <a class="dropdown-item" href="{{ route('activity-logs') }}">
+                                                {{ __('Activity logs') }}
+                                            </a>
+                                        @endcan
                                     </div>
                                 </div>
                             </div>

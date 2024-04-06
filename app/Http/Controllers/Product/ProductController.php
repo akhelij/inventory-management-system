@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 
+use App\Enums\PermissionEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
@@ -17,6 +18,7 @@ class ProductController extends Controller
 {
     public function index()
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
         $products = Product::where("user_id", auth()->id())->count();
 
         return view('products.index', [
@@ -26,6 +28,7 @@ class ProductController extends Controller
 
     public function create(Request $request)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::CREATE_PRODUCTS), 403);
         $categories = Category::where("user_id", auth()->id())->get(['id', 'name']);
         $units = Unit::where("user_id", auth()->id())->get(['id', 'name']);
 
@@ -45,6 +48,7 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::CREATE_PRODUCTS), 403);
         /**
          * Handle upload image
          */
@@ -83,6 +87,7 @@ class ProductController extends Controller
 
     public function show($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
         $product = Product::where("uuid", $uuid)->orWhere('id', $uuid)->firstOrFail();
         $product_entries = $product->product_entries()->get();
 
@@ -99,6 +104,7 @@ class ProductController extends Controller
 
     public function edit($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
         $product = Product::where("uuid", $uuid)->firstOrFail();
         return view('products.edit', [
             'categories' => Category::where("user_id", auth()->id())->get(),
@@ -109,6 +115,7 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, $uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
         $product = Product::where("uuid", $uuid)->firstOrFail();
 
         $image = $product->product_image;
@@ -133,6 +140,7 @@ class ProductController extends Controller
 
     public function destroy($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::DELETE_PRODUCTS), 403);
         $product = Product::where("uuid", $uuid)->firstOrFail();
         /**
          * Delete photo if exists.

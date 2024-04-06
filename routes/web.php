@@ -18,6 +18,7 @@ use App\Http\Controllers\Quotation\QuotationController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 
@@ -47,6 +48,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // User Management
     Route::resource('/users', UserController::class); //->except(['show']);
+    Route::resource('/roles', RoleController::class);
+
     Route::put('/user/change-password/{username}', [UserController::class, 'updatePassword'])->name('users.updatePassword');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

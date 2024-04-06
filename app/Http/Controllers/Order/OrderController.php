@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Enums\OrderStatus;
+use App\Enums\PermissionEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderStoreRequest;
 use App\Models\Customer;
@@ -21,6 +22,7 @@ class OrderController extends Controller
 {
     public function index()
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
         $orders = Order::where("user_id", auth()->id())->count();
 
         return view('orders.index', [
@@ -30,6 +32,7 @@ class OrderController extends Controller
 
     public function create()
     {
+        abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
         $products = Product::where("user_id", auth()->id())->with(['category', 'unit'])->get();
 
         $customers = Customer::where("user_id", auth()->id())->get(['id', 'name']);
@@ -45,6 +48,7 @@ class OrderController extends Controller
 
     public function store(OrderStoreRequest $request)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'payment_type' => $request->payment_type,
@@ -91,6 +95,7 @@ class OrderController extends Controller
 
     public function show($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
         $order = Order::where("uuid", $uuid)->firstOrFail();
         $order->loadMissing(['customer', 'details'])->get();
 
@@ -101,6 +106,7 @@ class OrderController extends Controller
 
     public function update($uuid, Request $request)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS), 403);
         $order = Order::where("uuid", $uuid)->firstOrFail();
         // TODO refactoring
 
@@ -124,12 +130,14 @@ class OrderController extends Controller
 
     public function destroy($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::DELETE_ORDERS), 403);
         $order = Order::where("uuid", $uuid)->firstOrFail();
         $order->delete();
     }
 
     public function downloadInvoice($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
         $order = Order::with(['customer', 'details'])->where("uuid", $uuid)->firstOrFail();
         // TODO: Need refactor
         //dd($order);

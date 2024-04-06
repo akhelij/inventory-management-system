@@ -13,15 +13,17 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        //Create crud permission for every model [User, Role, Permission, Category, Product, Unit, Customer, Order]
-        $models = ['User', 'Role', 'Permission', 'Category', 'Product', 'Unit', 'Customer', 'Order'];
+        $models = ['Users', 'Roles & Permissions', 'Products', 'Orders', 'Categories',  'Customers'];
         foreach ($models as $model) {
             Permission::insert([
-                ['name' => 'create ' . strtolower($model), 'guard_name' => 'web'],
                 ['name' => 'read ' . strtolower($model), 'guard_name' => 'web'],
+                ['name' => 'create ' . strtolower($model), 'guard_name' => 'web'],
                 ['name' => 'update ' . strtolower($model), 'guard_name' => 'web'],
                 ['name' => 'delete ' . strtolower($model), 'guard_name' => 'web'],
             ]);
         }
+        Permission::insert([
+            ['name' => 'activity logs', 'guard_name' => 'web'],
+        ]);
     }
 }

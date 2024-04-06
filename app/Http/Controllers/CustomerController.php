@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PermissionEnum;
 use App\Models\Customer;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
@@ -11,6 +12,7 @@ class CustomerController extends Controller
 {
     public function index()
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
         $customers = Customer::where("user_id", auth()->id())->count();
 
         return view('customers.index', [
@@ -20,11 +22,13 @@ class CustomerController extends Controller
 
     public function create()
     {
+        abort_unless(auth()->user()->can(PermissionEnum::CREATE_CUSTOMERS), 403);
         return view('customers.create');
     }
 
     public function store(StoreCustomerRequest $request)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::CREATE_CUSTOMERS), 403);
         /**
          * Handle upload an image
          */
@@ -50,6 +54,7 @@ class CustomerController extends Controller
 
     public function show($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
         $customer = Customer::where("uuid", $uuid)->firstOrFail();
         $customer->loadMissing(['quotations', 'orders'])->get();
 
@@ -60,6 +65,7 @@ class CustomerController extends Controller
 
     public function edit($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CUSTOMERS), 403);
         $customer = Customer::where("uuid", $uuid)->firstOrFail();
         return view('customers.edit', [
             'customer' => $customer
@@ -68,6 +74,7 @@ class CustomerController extends Controller
 
     public function update(UpdateCustomerRequest $request, $uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CUSTOMERS), 403);
         $customer = Customer::where("uuid", $uuid)->firstOrFail();
 
         /**
@@ -96,6 +103,7 @@ class CustomerController extends Controller
 
     public function destroy($uuid)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::DELETE_CUSTOMERS), 403);
         $customer = Customer::where("uuid", $uuid)->firstOrFail();
         if ($customer->photo) {
             unlink(public_path('storage/customers/') . $customer->photo);

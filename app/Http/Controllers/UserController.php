@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PermissionEnum;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
     public function index()
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_USERS), 403);
         $users = User::all();
 
         return view('users.index', [
@@ -22,11 +25,13 @@ class UserController extends Controller
 
     public function create()
     {
+        abort_unless(auth()->user()->can(PermissionEnum::CREATE_USERS), 403);
         return view('users.create');
     }
 
     public function store(StoreUserRequest $request)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::CREATE_USERS), 403);
         $user = User::create($request->all());
 
         /**
@@ -42,6 +47,10 @@ class UserController extends Controller
             ]);
         }
 
+        if ($request->has('role_id')) {
+            $user->assignRole(Role::find($request->role_id)->name);
+        }
+
         return redirect()
             ->route('users.index')
             ->with('success', 'New User has been created!');
@@ -49,6 +58,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_USERS), 403);
         return view('users.show', [
            'user' => $user
         ]);
@@ -56,6 +66,7 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_USERS), 403);
         return view('users.edit', [
             'user' => $user
         ]);
@@ -63,6 +74,7 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_USERS), 403);
 
 //        if ($validatedData['email'] != $user->email) {
 //            $validatedData['email_verified_at'] = null;
@@ -93,6 +105,11 @@ class UserController extends Controller
             ]);
         }
 
+        if ($request->has('role_id')) {
+            $user->roles()->detach();
+            $user->assignRole(Role::find($request->role_id)->name);
+        }
+
         return redirect()
             ->route('users.index')
             ->with('success', 'User has been updated!');
@@ -100,6 +117,7 @@ class UserController extends Controller
 
     public function updatePassword(Request $request, String $username)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_USERS), 403);
         # Validation
         $validated = $request->validate([
             'password' => 'required_with:password_confirmation|min:6',
@@ -118,6 +136,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        auth()->user()->can(PermissionEnum::DELETE_USERS);
         /**
          * Delete photo if exists.
          */
@@ -134,6 +153,7 @@ class UserController extends Controller
 
     public function activityLogs()
     {
+        auth()->user()->can(PermissionEnum::ACTIVITY_LOGS);
         return view('users.activity_logs', [
             'activities' => Activity::with('causer')->latest()->paginate(50)
         ]);
