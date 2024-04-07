@@ -35,4 +35,5 @@ enum PermissionEnum
     const DELETE_CUSTOMERS = 'delete customers';
 
     const ACTIVITY_LOGS = 'activity logs';
+    const UPDATE_ORDERS_STATUS = 'update orders status';
 }

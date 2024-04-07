@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatus;
+use App\Enums\PermissionEnum;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -36,8 +37,37 @@ class Order extends Model
         'order_date'    => 'date',
         'created_at'    => 'datetime',
         'updated_at'    => 'datetime',
-        'order_status'  => OrderStatus::class
     ];
+
+    protected $appends = ['status', 'status_color', 'is_updatable_status'];
+
+    public function getStatusAttribute()
+    {
+        $statuses = [
+            OrderStatus::PENDING => 'Pending',
+            OrderStatus::APPROVED => 'Approved',
+            OrderStatus::CANCELED => 'Canceled',
+        ];
+
+        return $statuses[$this->order_status];
+    }
+
+
+    public function getStatusColorAttribute()
+    {
+        $colors = [
+            OrderStatus::PENDING => 'orange',
+            OrderStatus::APPROVED => 'green',
+            OrderStatus::CANCELED => 'red',
+        ];
+
+        return $colors[$this->order_status];
+    }
+
+    public function getIsUpdatableStatusAttribute(): bool
+    {
+        return ($this->order_status === OrderStatus::PENDING) && auth()->user()->can(PermissionEnum::UPDATE_ORDERS_STATUS);
+    }
 
     public function customer(): BelongsTo
     {

@@ -11,7 +11,7 @@ class OrderCompleteController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $orders = Order::where('order_status', OrderStatus::COMPLETE)
+        $orders = Order::where('order_status', OrderStatus::APPROVED)
             ->latest()
             ->get();
 

@@ -24,6 +24,7 @@ class PermissionSeeder extends Seeder
         }
         Permission::insert([
             ['name' => 'activity logs', 'guard_name' => 'web'],
+            ['name' => 'update orders status', 'guard_name' => 'web'],
         ]);
     }
 }

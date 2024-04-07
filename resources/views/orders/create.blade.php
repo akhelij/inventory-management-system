@@ -4,6 +4,15 @@
 <div class="page-body">
     <div class="container-xl">
         <div class="row row-cards">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="col-lg-7">
                 <div class="card">
                     <div class="card-header">
@@ -16,7 +25,7 @@
                             <x-action.close route="{{ route('orders.index') }}"/>
                         </div>
                     </div>
-                    <form action="{{ route('invoice.create') }}" method="POST">
+                    <form action="{{ route('orders.store') }}" method="POST">
                     @csrf
                         <div class="card-body">
                             <div class="row gx-3 mb-3">
@@ -40,25 +49,6 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="small mb-1" for="type">
-                                        {{ __('Type') }}
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <select class="form-select" id="type" name="type" required>
-                                        <option disabled>{{ __('Choose...') }}</option>
-                                        <option value="particulier" selected>{{ __('Particulier') }}</option>
-                                        <option value="grossiste">{{ __('Grossiste') }}</option>
-                                        <option value="magasinier">{{ __('Magasinier') }}</option>
-                                    </select>
-
-                                    @error('type')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-4">
                                     <label class="small mb-1" for="customer_id">
                                         {{ __('Customer') }}
                                         <span class="text-danger">*</span>
@@ -68,7 +58,6 @@
                                         <option selected="" disabled="">
                                             Select a customer:
                                         </option>
-
                                         @foreach ($customers as $customer)
                                             <option value="{{ $customer->id }}" @selected( old('customer_id') == $customer->id)>
                                                 {{ $customer->name }}
@@ -77,6 +66,24 @@
                                     </select>
 
                                     @error('customer_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="small mb-1" for="payment_type">
+                                        {{ __('Payment') }}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type">
+                                        <option selected="" disabled="">Select a payment:</option>
+                                        <option value="HandCash">Cash</option>
+                                        <option value="Cheque">Cheque</option>
+                                    </select>
+
+                                    @error('payment_type')
                                     <div class="invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -162,7 +169,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" class="text-end">Tax</td>
+                                            <td colspan="4" class="text-end">Total</td>
                                             <td class="text-center">
                                                 {{ Cart::total() }}
                                             </td>
@@ -174,7 +181,7 @@
                         </div>
                         <div class="card-footer text-end">
                             <button type="submit" class="btn btn-success add-list mx-1">
-                                {{ __('Create Invoice') }}
+                                {{ __('Create Order') }}
                             </button>
                         </div>
                     </form>

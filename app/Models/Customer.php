@@ -12,6 +12,8 @@ class Customer extends Model
 {
     use HasFactory, HasActivityLogs;
 
+    const ALAMI = "Electro Alami";
+
     protected $guarded = [
         'id',
     ];

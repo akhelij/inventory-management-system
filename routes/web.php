@@ -42,6 +42,7 @@ Route::get('php/', function () {
 // });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard');
@@ -91,6 +92,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // SHOW ORDER
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('/orders/update/{order}', [OrderController::class, 'update'])->name('orders.update');
+    Route::get('/orders/update_status/{order}/{order_status}', [OrderController::class, 'update_status']);
 
     // DUES
     Route::get('due/orders/', [DueOrderController::class, 'index'])->name('due.index');

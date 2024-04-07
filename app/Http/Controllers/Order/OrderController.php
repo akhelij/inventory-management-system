@@ -13,7 +13,6 @@ use App\Models\Product;
 use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Str;
@@ -49,12 +48,15 @@ class OrderController extends Controller
     public function store(OrderStoreRequest $request)
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
+
+        $customer = Customer::find($request->customer_id);
+
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'payment_type' => $request->payment_type,
-            'pay' => $request->pay,
+            'pay' => $request->pay ?? 0,
             'order_date' => Carbon::now()->format('Y-m-d'),
-            'order_status' => OrderStatus::PENDING->value,
+            'order_status' => ($customer->name == Customer::ALAMI) ? OrderStatus::APPROVED : OrderStatus::PENDING,
             'total_products' => Cart::count(),
             'sub_total' => Cart::subtotal(),
             'vat' => Cart::tax(),
@@ -120,12 +122,22 @@ class OrderController extends Controller
         }
 
         $order->update([
-            'order_status' => OrderStatus::COMPLETE
+            'order_status' => OrderStatus::APPROVED
         ]);
 
         return redirect()
             ->route('orders.complete')
             ->with('success', 'Order has been completed!');
+    }
+
+    public function update_status(Order $order, Int $order_status){
+        $order->update([
+            'order_status' => $order_status
+        ]);
+
+        return redirect()
+            ->route('orders.index')
+            ->with('success', 'Order status has been updated!');
     }
 
     public function destroy($uuid)
@@ -142,7 +154,7 @@ class OrderController extends Controller
         // TODO: Need refactor
         //dd($order);
 
-        //$order = Order::with('customer')->where('id', $order_id)->first();
+        // $order = Order::with('customer')->where('id', $order_id)->first();
         // $order = Order::
         //     ->where('id', $order)
         //     ->first();

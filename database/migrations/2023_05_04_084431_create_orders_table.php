@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId("user_id")->constrained()->onDelete('cascade');
             $table->foreignIdFor(\App\Models\Customer::class)->constrained();
             $table->string('order_date');
-            $table->tinyInteger('order_status')->comment('0 - Pending / 1 - Complete');
+            $table->tinyInteger('order_status')->nullable()->comment('null - Pending / 0 - Canceled / 1 - Approved');
             $table->integer('total_products');
             $table->integer('sub_total');
             $table->integer('vat');

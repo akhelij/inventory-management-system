@@ -23,21 +23,13 @@ class UserSeeder extends Seeder
                 "uuid" => Str::uuid()
             ],
             [
-                'name' => 'quest',
-                'email' => 'quest@quest.com',
+                'name' => 'Electro Alami',
+                'email' => 'electro@alami.com',
                 'email_verified_at' => now(),
                 'password' => bcrypt('password'),
                 'created_at' => now(),
                 "uuid" => Str::uuid()
             ],
-            [
-                'name' => 'user',
-                'email' => 'user@user.com',
-                'email_verified_at' => now(),
-                'password' => bcrypt('password'),
-                'created_at' => now(),
-                "uuid" => Str::uuid()
-            ]
         ]);
 
         $users->each(function ($user) {
