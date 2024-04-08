@@ -89,7 +89,7 @@ class ProductController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
         $product = Product::where("uuid", $uuid)->orWhere('id', $uuid)->firstOrFail();
-        $product_entries = $product->product_entries()->get();
+        $product_entries = $product->product_entries()->orderBy('created_at', 'desc')->get();
 
         // Generate a barcode
         $generator = new BarcodeGeneratorHTML();
