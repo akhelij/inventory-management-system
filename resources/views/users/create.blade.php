@@ -72,9 +72,9 @@
                                     </h3>
 
                                     <div class="row row-cards">
-                                        <div class="col-md-12">
-                                            <div class="col-md-4">
-                                                <label class="small mb-1" for="role">
+                                        <div class="row gx-3 mb-3">
+                                            <div class="col-md-6">
+                                                <label for="role" class="form-label">
                                                     {{ __('Role') }}
                                                     <span class="text-danger">*</span>
                                                 </label>
@@ -92,7 +92,7 @@
                                                 @enderror
                                             </div>
 
-                                            <div class="col-md-4">
+                                            <div class="col-md-6">
                                                 <label for="name" class="form-label">
                                                     {{ __('Name') }}
                                                     <span class="text-danger">*</span>
