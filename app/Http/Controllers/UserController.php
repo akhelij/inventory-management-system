@@ -26,7 +26,8 @@ class UserController extends Controller
     public function create()
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_USERS), 403);
-        return view('users.create');
+        $roles = Role::all();
+        return view('users.create', compact('roles'));
     }
 
     public function store(StoreUserRequest $request)

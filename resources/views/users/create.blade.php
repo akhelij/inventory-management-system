@@ -36,7 +36,6 @@
                                     <h3 class="card-title">
                                         {{ __('Image') }}
                                     </h3>
-
                                     <div class="card-body text-center">
                                         <img class="img-account-profile rounded-circle mb-2"
                                              src="{{ asset('assets/img/demo/user-placeholder.svg') }}"
@@ -74,7 +73,26 @@
 
                                     <div class="row row-cards">
                                         <div class="col-md-12">
-                                            <div class="mb-3">
+                                            <div class="col-md-4">
+                                                <label class="small mb-1" for="role">
+                                                    {{ __('Role') }}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                                <select class="form-control" id="role" name="role_id">
+                                                    <option selected="" disabled="">Select a role:</option>
+                                                    @foreach($roles as $role)
+                                                        <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                                    @endforeach
+                                                </select>
+
+                                                @error('payment_type')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                                @enderror
+                                            </div>
+
+                                            <div class="col-md-4">
                                                 <label for="name" class="form-label">
                                                     {{ __('Name') }}
                                                     <span class="text-danger">*</span>
@@ -94,6 +112,8 @@
                                                 @enderror
                                             </div>
 
+                                        </div>
+                                        <div class="col-md-12">
 
                                             <div class="mb-3">
                                                 <label for="email" class="form-label">
