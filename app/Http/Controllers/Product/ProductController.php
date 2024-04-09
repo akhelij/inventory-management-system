@@ -19,7 +19,7 @@ class ProductController extends Controller
     public function index()
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
-        $products = Product::where("user_id", auth()->id())->count();
+        $products = Product::count();
 
         return view('products.index', [
             'products' => $products,

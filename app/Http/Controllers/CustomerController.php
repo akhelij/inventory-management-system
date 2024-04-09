@@ -13,7 +13,7 @@ class CustomerController extends Controller
     public function index()
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
-        $customers = Customer::where("user_id", auth()->id())->count();
+        $customers = Customer::count();
 
         return view('customers.index', [
             'customers' => $customers
