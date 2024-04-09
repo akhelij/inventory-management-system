@@ -113,7 +113,7 @@ Version:    1.1.0
 }
 
 .btn-download {
-    background: #25cc7e!important;
+    background: #910706!important;
 }
 
 .btn-download:after {
@@ -570,7 +570,7 @@ table th{
 }
 
 .invoice-2 .total-amount h1 {
-    color: #25cc7e;
+    color: #910706;
     font-weight: 700;
     margin-bottom: 5px;
     font-size: 30px;
@@ -797,11 +797,11 @@ table th{
     margin-bottom: 30px;
 }
 
-.invoice-3 .informeshon p {
+.invoice-3 .information p {
     margin-bottom: 0;
 }
 
-.invoice-3 .informeshon .inv-title-1 {
+.invoice-3 .information .inv-title-1 {
     margin-bottom: 10px;
 }
 
@@ -817,7 +817,7 @@ table th{
     margin: 0 0 30px;
 }
 
-.invoice-3 .informeshon .bold {
+.invoice-3 .information .bold {
     opacity: 1;
     font-weight: 600;
     font-size: 15px;
@@ -828,7 +828,7 @@ table th{
     font-size: 14px;
 }
 
-.invoice-3 .informeshon{
+.invoice-3 .information{
     z-index: 999;
 }
 
@@ -982,7 +982,7 @@ table th{
         padding: 30px 30px 0;
     }
 
-    .invoice-3 .informeshon {
+    .invoice-3 .information {
         margin-bottom: 30px;
     }
 
@@ -1714,7 +1714,7 @@ table th{
     font-weight: 500;
 }
 
-.invoice-6 .invoice-informeshon {
+.invoice-6 .invoice-information {
     padding: 50px 100px 20px;
     background: #f7f7f7;
 }
@@ -1723,7 +1723,7 @@ table th{
     color: #535353 !important;
 }
 
-.invoice-6 .invoice-informeshon p {
+.invoice-6 .invoice-information p {
     font-size: 14px;
 }
 
@@ -1779,7 +1779,7 @@ table th{
         padding: 50px;
     }
 
-    .invoice-6 .invoice-informeshon {
+    .invoice-6 .invoice-information {
         padding: 50px 50px 20px;
     }
 
@@ -1813,7 +1813,7 @@ table th{
         padding: 30px;
     }
 
-    .invoice-6 .invoice-informeshon {
+    .invoice-6 .invoice-information {
         padding: 30px 30px 0;
     }
 
@@ -2491,7 +2491,7 @@ table th{
     font-weight: 500;
 }
 
-.invoice-9 .invoice-informeshon {
+.invoice-9 .invoice-information {
     padding: 0 50px 20px;
 }
 
@@ -2499,7 +2499,7 @@ table th{
     color: #535353 !important;
 }
 
-.invoice-9 .invoice-informeshon p {
+.invoice-9 .invoice-information p {
     font-size: 14px;
 }
 
@@ -2552,7 +2552,7 @@ table th{
         padding: 0 30px 30px;
     }
 
-    .invoice-9 .invoice-informeshon {
+    .invoice-9 .invoice-information {
         padding: 0 30px;
     }
 
@@ -2967,7 +2967,7 @@ table th{
     float: right;
     clip-path: polygon(0 0, 100% 0, 100% 0%, 100% 100%, 20% 100%);
     position: relative;
-    background: #25cc7e;
+    background: #910706;
     padding: 70px 70px 75px 120px;
 }
 
@@ -3560,12 +3560,12 @@ table th{
     font-size: 17px;
     background: #fff6f6;
     margin: 0 2px 2px 0;
-    color: #25cc7e;
+    color: #910706;
     border-radius: 50%;
 }
 
 .invoice-13 .social-list a:hover{
-    background: #25cc7e;
+    background: #910706;
     color: #fff;
 }
 /** MEDIA **/
@@ -3875,7 +3875,7 @@ table th{
 }
 
 .invoice-15 .invoice-titel{
-    background: #25cc7e;
+    background: #910706;
 }
 
 .invoice-15 .bank-transfer-list-1 li strong{
@@ -3981,7 +3981,7 @@ table th{
     text-transform: initial !important;
 }
 
-.invoice-15 .invoice-informeshon {
+.invoice-15 .invoice-information {
     padding: 50px 150px;
     background: #fbf8f8;
 }
@@ -3990,12 +3990,12 @@ table th{
     color: #535353 !important;
 }
 
-.invoice-15 .invoice-informeshon p {
+.invoice-15 .invoice-information p {
     font-size: 13px;
     margin-bottom: 7px;
 }
 
-.invoice-15 .invoice-informeshon p strong {
+.invoice-15 .invoice-information p strong {
     font-weight: 600;
 }
 
@@ -4045,7 +4045,7 @@ table th{
         padding: 50px;
     }
 
-    .invoice-15 .invoice-informeshon {
+    .invoice-15 .invoice-information {
         padding: 50px;
     }
 
@@ -4083,7 +4083,7 @@ table th{
         padding: 30px 30px 0;
     }
 
-    .invoice-informeshon .payment-info {
+    .invoice-information .payment-info {
         margin-bottom: 30px;
     }
 
@@ -4118,7 +4118,7 @@ table th{
         background: #fbf8f8;
     }
 
-    .invoice-15 .invoice-informeshon {
+    .invoice-15 .invoice-information {
         padding: 30px;
     }
 
@@ -4223,7 +4223,7 @@ table th{
     position: relative;
     padding: 20px 30px;
     font-size: 16px;
-    color: #25cc7e;
+    color: #910706;
     font-weight: 500;
     line-height: 30px;
     white-space: nowrap;
@@ -4236,7 +4236,7 @@ table th{
 
 .invoice-16 .default-table tr td {
     position: relative;
-    padding: 21px 30px;
+    padding: 20px 30px;
     font-size: 14px;
     color: #535353;
     font-weight: 400;
@@ -4255,7 +4255,7 @@ table th{
 }
 
 .invoice-16 .invoice-top {
-    padding: 100px 150px 50px;
+    padding: 100px 50px 50px 100px;
 }
 
 .invoice-16 .invoice-top .invoice {
@@ -4265,12 +4265,12 @@ table th{
 .invoice-16 .invoice-top .invoice h1 {
     font-weight: 600;
     margin-bottom: 0;
-    color: #25cc7e;
+    color: #910706;
     font-size: 22px;
 }
 
 .invoice-16 .invoice-info {
-    padding: 0 150px 50px;
+    padding: 0 50px 50px 100px;
 }
 
 .invoice-16 .invoice-info .inv-from-2 {
@@ -4279,16 +4279,18 @@ table th{
 }
 
 .invoice-16 .order-summary{
-    padding: 0 150px 100px;
+    padding: 0 50px 50px 100px;
 }
 
-.invoice-16 .invoice-informeshon-footer{
-    position: relative;
-    padding: 50px 180px 40px;
+.invoice-16 .invoice-information-footer{
+    padding: 50px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
     border-top: 1px solid #ECEDF2;
 }
 
-.invoice-16 .invoice-informeshon-footer ul {
+.invoice-16 .invoice-information-footer ul {
     display: -ms-flexbox;
     display: flex;
     -ms-flex-align: center;
@@ -4301,7 +4303,7 @@ table th{
     list-style: none;
 }
 
-.invoice-16 .invoice-informeshon-footer ul li {
+.invoice-16 .invoice-information-footer ul li {
     position: relative;
     margin: 0 30px 10px;
     font-size: 15px;
@@ -4309,7 +4311,7 @@ table th{
     line-height: 20px;
 }
 
-.invoice-16 .invoice-informeshon-footer li a{
+.invoice-16 .invoice-information-footer li a{
     color: #535353;
 }
 
@@ -4367,11 +4369,11 @@ table th{
         padding: 50px;
     }
 
-    .invoice-16 .invoice-informeshon-footer {
+    .invoice-16 .invoice-information-footer {
         padding: 50px 50px 40px;
     }
 
-    .invoice-16 .invoice-informeshon-footer ul li {
+    .invoice-16 .invoice-information-footer ul li {
         margin: 0 10px 10px;
     }
 }
@@ -4409,7 +4411,7 @@ table th{
         padding: 0 30px 30px;
     }
 
-    .invoice-16 .invoice-informeshon-footer {
+    .invoice-16 .invoice-information-footer {
         padding: 30px 20px 20px;
     }
 
@@ -4433,7 +4435,7 @@ table th{
         float: left;
     }
 
-    .invoice-16 .invoice-informeshon-footer ul{
+    .invoice-16 .invoice-information-footer ul{
         display: initial;
     }
 

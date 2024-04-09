@@ -24,65 +24,66 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="invoice-inner-9" id="invoice_wrapper">
-                        <div class="invoice-top">
+                    <div class="invoice-inner-9" id="invoice_wrapper" style="position:relative; height: 340vh; display: flex; align-items: center; flex-direction: column">
+                        <div class="invoice-top w-100">
                             <div class="row">
-                                <div class="col-lg-6 col-sm-6">
-                                    <div class="logo">
-                                        <h1>{{ Str::title(auth()->user()->store_name) }}</h1>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 col-sm-6">
-                                    <div class="invoice">
-                                        <h1>
-                                            Invoice # <span>{{ $order->invoice_no }}</span>
-                                        </h1>
-                                    </div>
+                                <div class="logo"
+                                     style=" display: flex; justify-content: center;  align-items: center; margin-bottom: 40px">
+                                    <img src="{{ asset('logo.jpeg') }}" alt="logo" style="height:100px;">
                                 </div>
                             </div>
-                        </div>
-                        <div class="invoice-info">
                             <div class="row">
-                                <div class="col-sm-6 mb-50">
+                                    <div class="col-sm-9">
+                                        <h4 class="inv-title-1">STE PLATINIUM ELECTRO</h4>
+                                        <p class="inv-from-1">AVENUE ATLAS TAHLA <br/>TAHLA<br/>Maroc</p>
+                                    </div>
+
+                                    <div class="col-sm-3">
+                                        <h4 class="inv-title-1">Vendeur :</h4>
+                                        <p class="inv-from-1">{{ $order->user->name }}</p>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="invoice-info w-100">
+                            <div class="row">
+                                <div class="col-sm-9">
+                                    <div class="invoice">
+                                        <h4 style="color:#910706">
+                                            FACTURE : <span>{{ $order->invoice_no }}</span>
+                                        </h4>
+                                    </div>
                                     <div class="invoice-number">
                                         <h4 class="inv-title-1">
-                                            Invoice date:
+                                            Date de facture :
                                         </h4>
                                         <p class="invo-addr-1">
-                                            {{ $order->order_date }}
+                                            {{ $order->order_date->format('d M Y') }}
                                         </p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6 mb-50">
-                                    <h4 class="inv-title-1">Customer</h4>
+                                <div class="col-sm-3" style="margin-left: -15px;">
+                                    <h4 class="inv-title-1">Client :</h4>
                                     <p class="inv-from-1">{{ $order->customer->name }}</p>
                                     <p class="inv-from-1">{{ $order->customer->phone }}</p>
                                     <p class="inv-from-1">{{ $order->customer->email }}</p>
                                     <p class="inv-from-2">{{ $order->customer->address }}</p>
-                                </div>
-                                @php
-                                    $user = auth()->user();
-                                @endphp
-                                <div class="col-sm-6 text-end mb-50">
-                                    <h4 class="inv-title-1">Store</h4>
-                                    <p class="inv-from-1">{{ Str::title($user->store_name) }}</p>
-                                    <p class="inv-from-1">{{ $user->store_phone }}</p>
-                                    <p class="inv-from-1">{{ $user->store_email }}</p>
-                                    <p class="inv-from-2">{{ $user->store_address }}</p>
+                                    {{--                                <h4 class="inv-title-1">Store</h4>--}}
+                                    {{--                                <p class="inv-from-1">{{ Str::title($user->store_name) }}</p>--}}
+                                    {{--                                <p class="inv-from-1">{{ $user->store_phone }}</p>--}}
+                                    {{--                                <p class="inv-from-1">{{ $user->store_email }}</p>--}}
+                                    {{--                                <p class="inv-from-2">{{ $user->store_address }}</p>--}}
                                 </div>
                             </div>
                         </div>
-                        <div class="order-summary">
+                        <div class="order-summary w-100">
                             <div class="table-outer">
                                 <table class="default-table invoice-table">
                                     <thead>
                                         <tr>
-                                            <th class="align-middle">Item</th>
-                                            <th class="align-middle text-center">Price</th>
-                                            <th class="align-middle text-center">Quantity</th>
-                                            <th class="align-middle text-center">Subtotal</th>
+                                            <th class="align-middle">Description</th>
+                                            <th class="align-middle text-center">Quantité</th>
+                                            <th class="align-middle text-center">Prix unitaire</th>
+                                            <th class="align-middle text-center">Prix total</th>
                                         </tr>
                                     </thead>
 
@@ -94,13 +95,13 @@
                                                     {{ $item->product->name }}
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    {{ Number::currency($item->unitcost, 'EUR') }}
-                                                </td>
-                                                <td class="align-middle text-center">
                                                     {{ $item->quantity }}
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    {{ Number::currency($item->total, 'EUR') }}
+                                                    {{ Number::currency($item->unitcost, 'MAD') }}
+                                                </td>
+                                                <td class="align-middle text-center">
+                                                    {{ Number::currency($item->total, 'MAD') }}
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -108,12 +109,12 @@
                                         <tr>
                                             <td colspan="3" class="text-end">
                                                 <strong>
-                                                    Subtotal
+                                                    Total HT
                                                 </strong>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <strong>
-                                                    {{ Number::currency($order->sub_total, 'EUR') }}
+                                                    {{ Number::currency($order->sub_total, 'MAD') }}
                                                 </strong>
                                             </td>
                                         </tr>
@@ -123,7 +124,7 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <strong>
-                                                    {{ Number::currency($order->vat, 'EUR') }}
+                                                    {{ Number::currency($order->vat, 'MAD') }}
                                                 </strong>
                                             </td>
                                         </tr>
@@ -133,7 +134,7 @@
                                             </td>
                                             <td class="align-middle text-center">
                                                 <strong>
-                                                    {{ Number::currency($order->total, 'EUR') }}
+                                                    {{ Number::currency($order->total, 'MAD') }}
                                                 </strong>
                                             </td>
                                         </tr>
@@ -141,30 +142,23 @@
                                 </table>
                             </div>
                         </div>
-                        {{-- <div class="invoice-informeshon-footer">
-                                <ul>
-                                    <li><a href="#">www.website.com</a></li>
-                                    <li><a href="mailto:sales@hotelempire.com">info@example.com</a></li>
-                                    <li><a href="tel:+088-01737-133959">+62 123 123 123</a></li>
-                                </ul>
-                            </div> --}}
-                    </div>
-                    <div class="invoice-btn-section clearfix d-print-none">
-                        <a href="javascript:window.print()" class="btn btn-lg btn-print">
-                            <i class="fa fa-print"></i>
-                            Print Invoice
-                        </a>
-                        <a id="invoice_download_btn" class="btn btn-lg btn-download">
-                            <i class="fa fa-download"></i>
-                            Download Invoice
-                        </a>
+                        <div class="invoice-information-footer row">
+                            <p class="inv-from-1" style="text-align: center">
+                                AVENUE ATLAS TAHLA - MAROC<br/>
+                                Tél: +212 697-940615<br/>
+                                ICE: 003299107000084 | IF: 53784335
+                            </p>
+                        </div>
                     </div>
 
-                    {{-- back button --}}
                     <div class="invoice-btn-section clearfix d-print-none">
                         <a href="{{ route('orders.index') }}" class="btn btn-lg btn-print">
                             <i class="fa fa-arrow-left"></i>
-                            Back
+                            Retour
+                        </a>
+                        <a id="invoice_download_btn" class="btn btn-lg btn-download">
+                            <i class="fa fa-download"></i>
+                            Telecharger la facture
                         </a>
                     </div>
                 </div>

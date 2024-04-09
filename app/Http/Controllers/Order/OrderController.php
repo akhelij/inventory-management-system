@@ -56,7 +56,7 @@ class OrderController extends Controller
             'payment_type' => $request->payment_type,
             'pay' => $request->pay ?? 0,
             'order_date' => Carbon::now()->format('Y-m-d'),
-            'order_status' => ($customer->name == Customer::ALAMI) ? OrderStatus::APPROVED : OrderStatus::PENDING,
+            'order_status' => ($customer->name === Customer::ALAMI) ? OrderStatus::APPROVED : OrderStatus::PENDING,
             'total_products' => Cart::count(),
             'sub_total' => Cart::subtotal(),
             'vat' => Cart::tax(),
@@ -65,7 +65,7 @@ class OrderController extends Controller
                 'table' => 'orders',
                 'field' => 'invoice_no',
                 'length' => 10,
-                'prefix' => 'INV-'
+                'prefix' => ''
             ]),
             'due' => (Cart::total() - $request->pay),
             "user_id" => auth()->id(),
@@ -151,13 +151,6 @@ class OrderController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
         $order = Order::with(['customer', 'details'])->where("uuid", $uuid)->firstOrFail();
-        // TODO: Need refactor
-        //dd($order);
-
-        // $order = Order::with('customer')->where('id', $order_id)->first();
-        // $order = Order::
-        //     ->where('id', $order)
-        //     ->first();
 
         return view('orders.print-invoice', [
             'order' => $order,
