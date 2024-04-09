@@ -8,7 +8,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach ($properties['old'] as $property => $value)
+        @foreach ((isset($properties['old']) ?  $properties['old'] : []) as $property => $value)
             <tr>
                 <td>{{ ucfirst($property) }}</td>
                 <td>{{ $value }}</td>
