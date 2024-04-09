@@ -68,10 +68,11 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h3 class="card-title">
-                                        {{ __('Edit Customer') }}
+                                        {{ __('Create Customer') }}
                                     </h3>
 
                                     <div class="row row-cards">
+                                        <input type="hidden" id="uuid" name="uuid" value="{{ Str::uuid() }}">
                                         <div class="row gx-3 mb-3">
                                             <div class="col-md-6">
                                                 <label for="role" class="form-label">
