@@ -12,8 +12,7 @@
                     </div>
 
                     <div class="card-actions btn-actions">
-
-                        @if ($order->order_status === \App\Enums\OrderStatus::PENDING)
+                        @if ($order->order_status == \App\Enums\OrderStatus::PENDING)
                             <div class="dropdown">
                                 <a href="#" class="btn-action dropdown-toggle" data-bs-toggle="dropdown"
                                     aria-haspopup="true"
