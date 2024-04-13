@@ -65,7 +65,7 @@ class OrderController extends Controller
                 'table' => 'orders',
                 'field' => 'invoice_no',
                 'length' => 10,
-                'prefix' => ''
+//                'prefix' => ''
             ]),
             'due' => (Cart::total() - $request->pay),
             "user_id" => auth()->id(),
