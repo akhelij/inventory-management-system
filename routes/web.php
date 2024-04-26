@@ -91,8 +91,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // SHOW ORDER
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/update_items', [OrderController::class, 'updateItems'])->name('orders.update_items');
     Route::put('/orders/update/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::get('/orders/update_status/{order}/{order_status}', [OrderController::class, 'update_status']);
+    Route::post('/orders/update_status/{order}/{order_status}', [OrderController::class, 'update_status']);
 
     // DUES
     Route::get('due/orders/', [DueOrderController::class, 'index'])->name('due.index');

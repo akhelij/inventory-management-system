@@ -16,13 +16,13 @@
                                 <h3 class="card-title">
                                     {{ __('Product image') }}
                                 </h3>
-                        
+
                                 <img class="img-account-profile mb-2" src="{{ asset('assets/img/products/default.webp') }}" alt="" id="image-preview" />
-                        
+
                                 <div class="small font-italic text-muted mb-2">
                                     {{ __('Image info') }}
                                 </div>
-                        
+
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -31,7 +31,7 @@
                                     class="form-control @error('product_image') is-invalid @enderror"
                                     onchange="previewImage();"
                                 >
-                        
+
                                 @error('product_image')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -39,7 +39,7 @@
                                 @enderror
                             </div>
                         </div>
-                        
+
                     </div>
 
                     <div class="col-lg-8">
@@ -50,7 +50,7 @@
                                         {{ __('Product create') }}
                                     </h3>
                                 </div>
-                    
+
                                 <div class="card-actions">
                                     <a href="{{ route('products.index') }}" class="btn-action">
                                     </a>
@@ -59,21 +59,21 @@
                             <div class="card-body">
                                 <div class="row row-cards">
                                     <div class="col-md-12">
-                    
+
                                         <x-input name="name"
                                                  id="name"
                                                  placeholder="{{ __('Product name') }}"
                                                  value="{{ old('name') }}"
                                         />
                                     </div>
-                    
+
                                     <div class="col-sm-6 col-md-6">
                                         <div class="mb-3">
                                             <label for="category_id" class="form-label">
                                                 {{ __('Category') }}
                                                 <span class="text-danger">*</span>
                                             </label>
-                    
+
                                             @if ($categories->count() === 1)
                                                 <select name="category_id" id="category_id"
                                                         class="form-select @error('category_id') is-invalid @enderror"
@@ -92,7 +92,7 @@
                                                     <option selected="" disabled="">
                                                         {{ __('Select category') }}
                                                     </option>
-                    
+
                                                     @foreach ($categories as $category)
                                                         <option value="{{ $category->id }}" @if(old('category_id') == $category->id) selected="selected" @endif>
                                                             {{ $category->name }}
@@ -100,7 +100,7 @@
                                                     @endforeach
                                                 </select>
                                             @endif
-                    
+
                                             @error('category_id')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -108,14 +108,14 @@
                                             @enderror
                                         </div>
                                     </div>
-                    
+
                                     <div class="col-sm-6 col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label" for="unit_id">
                                                 {{ __('Unit') }}
                                                 <span class="text-danger">*</span>
                                             </label>
-                    
+
                                             @if ($units->count() === 1)
                                                 <select name="unit_id" id="unit_id"
                                                         class="form-select @error('unit_id') is-invalid @enderror"
@@ -131,16 +131,12 @@
                                                 <select name="unit_id" id="unit_id"
                                                         class="form-select @error('unit_id') is-invalid @enderror"
                                                 >
-                                                    <option selected="" disabled="">
-                                                        {{ __('Select unit') }}
-                                                    </option>
-                    
                                                     @foreach ($units as $unit)
                                                         <option value="{{ $unit->id }}" @if(old('unit_id') == $unit->id) selected="selected" @endif>{{ $unit->name }}</option>
                                                     @endforeach
                                                 </select>
                                             @endif
-                    
+
                                             @error('unit_id')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -148,7 +144,7 @@
                                             @enderror
                                         </div>
                                     </div>
-                    
+
                                     <div class="col-sm-6 col-md-6">
                                         <x-input type="number"
                                                  label="Buying Price"
@@ -158,7 +154,7 @@
                                                  value="{{ old('buying_price') }}"
                                         />
                                     </div>
-                    
+
                                     <div class="col-sm-6 col-md-6">
                                         <x-input type="number"
                                                  label="Selling Price"
@@ -168,7 +164,7 @@
                                                  value="{{ old('selling_price') }}"
                                         />
                                     </div>
-                    
+
                                     <div class="col-sm-6 col-md-6">
                                         <x-input type="number"
                                                  label="Quantity"
@@ -178,7 +174,7 @@
                                                  value="{{ old('quantity') }}"
                                         />
                                     </div>
-                    
+
                                     <div class="col-sm-6 col-md-6">
                                         <x-input type="number"
                                                  label="Quantity Alert"
@@ -188,23 +184,24 @@
                                                  value="{{ old('quantity_alert') }}"
                                         />
                                     </div>
-                    
-                                    <div class="col-sm-6 col-md-6">
+
+                                    <div class="col-sm-6 col-md-6" hidden>
                                         <x-input type="number"
                                                  label="Tax"
                                                  name="tax"
                                                  id="tax"
+                                                 value="0"
                                                  placeholder="0"
                                                  value="{{ old('tax') }}"
                                         />
                                     </div>
-                    
-                                    <div class="col-sm-6 col-md-6">
+
+                                    <div class="col-sm-6 col-md-6" hidden>
                                         <div class="mb-3">
                                             <label class="form-label" for="tax_type">
                                                 {{ __('Tax Type') }}
                                             </label>
-                    
+
                                             <select name="tax_type" id="tax_type"
                                                     class="form-select @error('tax_type') is-invalid @enderror"
                                             >
@@ -214,7 +211,7 @@
                                                 </option>
                                                 @endforeach
                                             </select>
-                    
+
                                             @error('tax_type')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -222,20 +219,20 @@
                                             @enderror
                                         </div>
                                     </div>
-                    
+
                                     <div class="col-md-12">
                                         <div class="mb-3">
                                             <label for="notes" class="form-label">
                                                 {{ __('Notes') }}
                                             </label>
-                    
+
                                             <textarea name="notes"
                                                       id="notes"
                                                       rows="5"
                                                       class="form-control @error('notes') is-invalid @enderror"
                                                       placeholder="Product notes"
                                             ></textarea>
-                    
+
                                             @error('notes')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -245,19 +242,19 @@
                                     </div>
                                 </div>
                             </div>
-                    
+
                             <div class="card-footer text-end">
                                 <x-button.save type="submit">
                                     {{ __('Save') }}
                                 </x-button.save>
-                    
+
                                 <a class="btn btn-warning" href="{{ url()->previous() }}">
                                     {{ __('Cancel') }}
                                 </a>
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </form>
         </div>

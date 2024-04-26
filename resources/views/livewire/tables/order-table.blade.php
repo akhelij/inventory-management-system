@@ -104,7 +104,7 @@
                         {{ $order->payment_type }}
                     </td>
                     <td class="align-middle text-center">
-                        {{ Number::currency($order->total, 'EUR') }}
+                        {{ Number::currency($order->total, 'MAD') }}
                     </td>
                     <td class="align-middle text-center">
                         <ul class="navbar-nav">
@@ -127,14 +127,10 @@
                                                         {{ __('Approve') }}
                                                     </x-status>
                                                 </a>
-
-                                                <a href="{{'/orders/update_status/'. $order->id .'/'. 0}}">
-                                                    <x-status dot
-                                                              color="red"
-                                                              class="text-uppercase btn">
+                                                <span class="status status-red" data-order-id= {{$order->id }} id="cancelButton">
+                                                        <span class="status-dot"></span>
                                                         {{ __('Cancel') }}
-                                                    </x-status>
-                                                </a>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -173,3 +169,28 @@
         </ul>
     </div>
 </div>
+
+<script>
+    document.getElementById('cancelButton').addEventListener('click', function () {
+        var reason = prompt('Raison : ');
+        if (reason != null) {
+            fetch('/orders/update_status/' + this.dataset.orderId + '/' + 0, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    reason: reason,
+                })
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                this.closest('li').innerHTML = '<a class="nav-link " href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false"><span class="status status-red text-uppercase"><span class="status-dot "></span>Canceled</span></a>';
+            }).catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+            });
+        }
+    });
+</script>

@@ -3,16 +3,27 @@
 @section('content')
     <div class="page-body">
         <div class="container-xl">
-            <div class="card">
+            @if ($order->reason)
+                <div class="alert alert-danger">
+                    <ul>
+                        <li>{{ $order->reason }}</li>
+                    </ul>
+                </div>
+            @endif
+
+            <div class="card status-{{$order->status_color}}" style="background: rgba(var(--tblr-status-color-rgb),.1)">
                 <div class="card-header">
                     <div>
                         <h3 class="card-title">
-                            {{ __('Order Details') }}
+                            {{ __('Order') }}
+                            <x-status dot color="{{ $order->status_color }}" class="text-uppercase">
+                                {{ $order->status }}
+                            </x-status>
                         </h3>
                     </div>
 
                     <div class="card-actions btn-actions">
-                        @if ($order->order_status == \App\Enums\OrderStatus::PENDING)
+                        @if ($order->order_status === \App\Enums\OrderStatus::PENDING)
                             <div class="dropdown">
                                 <a href="#" class="btn-action dropdown-toggle" data-bs-toggle="dropdown"
                                     aria-haspopup="true"

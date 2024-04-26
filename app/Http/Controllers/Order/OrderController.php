@@ -32,23 +32,17 @@ class OrderController extends Controller
     public function create()
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
-        $products = Product::where("user_id", auth()->id())->with(['category', 'unit'])->get();
-
-        $customers = Customer::where("user_id", auth()->id())->get(['id', 'name']);
-
-        $carts = Cart::content();
 
         return view('orders.create', [
-            'products' => $products,
-            'customers' => $customers,
-            'carts' => $carts,
+            'products' => Product::where("user_id", auth()->id())->with(['category', 'unit'])->get(),
+            'customers' => Customer::where("user_id", auth()->id())->get(['id', 'name']),
+            'carts' => Cart::content(),
         ]);
     }
 
     public function store(OrderStoreRequest $request)
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
-
         $customer = Customer::find($request->customer_id);
 
         $order = Order::create([
@@ -101,38 +95,62 @@ class OrderController extends Controller
         $order = Order::where("uuid", $uuid)->firstOrFail();
         $order->loadMissing(['customer', 'details'])->get();
 
-        return view('orders.show', [
+        return view('orders.edit', [
+            'products' => Product::where("user_id", auth()->id())->with(['category', 'unit'])->get(),
+            'customers' => Customer::where("user_id", auth()->id())->get(['id', 'name']),
             'order' => $order
         ]);
     }
 
-    public function update($uuid, Request $request)
+    public function update(Order $order)
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS), 403);
-        $order = Order::where("uuid", $uuid)->firstOrFail();
-        // TODO refactoring
 
-        // Reduce the stock
-        $products = OrderDetails::where('order_id', $order->id)->get();
+        $details = OrderDetails::where('order_id', $order->id)->get();
+        $total = 0;
 
-        foreach ($products as $product) {
-            Product::where('id', $product->product_id)
-                //->update(['stock' => DB::raw('stock-'.$product->quantity)]);
-                ->update(['quantity' => DB::raw('quantity-' . $product->quantity)]);
+        foreach ($details as $item) {
+            $total += $item->total;
         }
 
         $order->update([
-            'order_status' => OrderStatus::APPROVED
+            'total_products' => $details->count(),
+            'sub_total' => $total,
+            'vat' => 0,
+            'total' => $total,
+            'due' => $total,
         ]);
 
         return redirect()
-            ->route('orders.complete')
+            ->route('orders.index')
             ->with('success', 'Order has been completed!');
     }
 
-    public function update_status(Order $order, Int $order_status){
+    public function updateItems(Order $order, Request $request)
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS), 403);
+        $order->details()->delete();
+        $oDetails = [];
+        foreach ($request->product_id as $key => $product_id) {
+            $oDetails['order_id'] = $order['id'];
+            $oDetails['product_id'] = $product_id;
+            $oDetails['quantity'] = $request->quantity[$key];
+            $oDetails['unitcost'] = $request->unitcost[$key];
+            $oDetails['total'] = $request->total[$key];
+            $oDetails['created_at'] = Carbon::now();
+
+            OrderDetails::insert($oDetails);
+        }
+
+        return redirect()
+            ->route('orders.index')
+            ->with('success', 'Order items has been updated!');
+    }
+
+    public function update_status(Order $order, Int $order_status, Request $request){
         $order->update([
-            'order_status' => $order_status
+            'order_status' => $order_status,
+            'reason' => $request->reason
         ]);
 
         return redirect()

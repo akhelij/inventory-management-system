@@ -214,7 +214,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-6 col-md-6">
+                                        <div class="col-sm-6 col-md-6" hidden>
                                             <div class="mb-3">
                                                 <label for="tax" class="form-label">
                                                     {{ __('Tax') }}
@@ -233,7 +233,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-6 col-md-6">
+                                        <div class="col-sm-6 col-md-6" hidden>
                                             <div class="mb-3">
                                                 <label class="form-label" for="tax_type">
                                                     {{ __('Tax Type') }}

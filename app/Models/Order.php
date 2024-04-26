@@ -21,6 +21,7 @@ class Order extends Model
         'customer_id',
         'order_date',
         'order_status',
+        'reason',
         'total_products',
         'sub_total',
         'vat',

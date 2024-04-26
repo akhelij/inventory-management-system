@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\Customer::class)->constrained();
             $table->string('order_date');
             $table->tinyInteger('order_status')->nullable()->comment('null - Pending / 0 - Canceled / 1 - Approved');
+            $table->string('reason')->nullable();
             $table->integer('total_products');
             $table->integer('sub_total');
             $table->integer('vat');
