@@ -47,6 +47,10 @@ class ProductList extends Component
 
     public function addCartItem($id, $name, $price)
     {
+        if($this->order_id) {
+            $this->updateOrderDetails($id, $price);
+        }
+
         Cart::add([
             'id' => $id,
             'name' => $name,
@@ -61,6 +65,10 @@ class ProductList extends Component
 
     public function updateOrderDetails($product_id, $unitcost)
     {
+        if(!$this->order_id){
+            $this->addCartItem();
+        }
+
         $order_details = OrderDetails::where('order_id', $this->order_id)
             ->where('product_id', $product_id)
             ->first();

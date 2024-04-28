@@ -95,7 +95,7 @@ class OrderController extends Controller
         $order = Order::where("uuid", $uuid)->firstOrFail();
         $order->loadMissing(['customer', 'details'])->get();
 
-        return view('orders.edit', [
+        return view('orders.'. ($order->order_status == null ? 'edit' : 'show'), [
             'products' => Product::where("user_id", auth()->id())->with(['category', 'unit'])->get(),
             'customers' => Customer::where("user_id", auth()->id())->get(['id', 'name']),
             'order' => $order
@@ -104,6 +104,7 @@ class OrderController extends Controller
 
     public function update(Order $order)
     {
+        abort_if($order->order_status != null, 403, 'Only pending orders can be updated');
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS), 403);
 
         $details = OrderDetails::where('order_id', $order->id)->get();

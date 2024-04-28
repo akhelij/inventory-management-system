@@ -56,15 +56,8 @@
                     </td>
                     <td class="align-middle text-center" style="width: 10%">
                         <div class="d-flex">
-
-                            @php
-                                $url = request()->url();
-                                $orderId = basename($url);
-                                $isUpdateOrderUrl = !str_contains($url, 'create');
-                            @endphp
-
                             <button
-                                wire:click="{{ $isUpdateOrderUrl ? "updateOrderDetails({$product->id}, {$product->selling_price})" : "addCartItem({$product->id}, '{$product->name}', {$product->selling_price})" }}"
+                                wire:click="addCartItem({{$product->id}}, '{{$product->name}}', {{$product->selling_price}})"
                                 class="btn btn-icon btn-outline-primary" style="width: 20px">
                                 <x-icon.plus/>
                             </button>
