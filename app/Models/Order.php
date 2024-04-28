@@ -4,11 +4,14 @@ namespace App\Models;
 
 use App\Enums\OrderStatus;
 use App\Enums\PermissionEnum;
+use App\Observers\OrderObserver;
 use App\Traits\HasActivityLogs;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+#[ObservedBy([OrderObserver::class])]
 class Order extends Model
 {
     use HasActivityLogs;

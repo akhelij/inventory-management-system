@@ -13,7 +13,7 @@ class CategoryController extends Controller
     public function index()
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CATEGORIES), 403);
-        $categories = Category::where("user_id", auth()->id())->count();
+        $categories = Category::count();
 
         return view('categories.index', [
             'categories' => $categories,

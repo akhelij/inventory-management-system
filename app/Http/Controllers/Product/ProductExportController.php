@@ -44,6 +44,12 @@ class ProductExportController extends Controller
             );
         }
 
+        if(!auth()->user()->hasRole('admin')){
+            foreach ($product_array as $key => $product) {
+                unset($product_array[$key]['Buying Price']);
+            }
+        }
+
         $this->store($product_array);
     }
 

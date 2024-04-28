@@ -22,10 +22,13 @@ class OrderController extends Controller
     public function index()
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
-        $orders = Order::where("user_id", auth()->id())->count();
-
+        $query = Order::query();
+        if(!auth()->user()->hasRole('admin'))
+        {
+            $query->where("user_id", auth()->id());
+        }
         return view('orders.index', [
-            'orders' => $orders
+            'orders' => $query->count()
         ]);
     }
 
@@ -34,7 +37,7 @@ class OrderController extends Controller
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
 
         return view('orders.create', [
-            'products' => Product::where("user_id", auth()->id())->with(['category', 'unit'])->get(),
+            'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::where("user_id", auth()->id())->get(['id', 'name']),
             'carts' => Cart::content(),
         ]);
@@ -96,7 +99,7 @@ class OrderController extends Controller
         $order->loadMissing(['customer', 'details'])->get();
 
         return view('orders.'. ($order->order_status == null ? 'edit' : 'show'), [
-            'products' => Product::where("user_id", auth()->id())->with(['category', 'unit'])->get(),
+            'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::where("user_id", auth()->id())->get(['id', 'name']),
             'order' => $order
         ]);

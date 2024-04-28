@@ -16,7 +16,7 @@ class DashboardController extends Controller
     public function index()
     {
         $orders = Order::where("user_id", auth()->id())->count();
-        $products = Product::where("user_id", auth()->id())->count();
+        $products = Product::count();
 
         $purchases = Purchase::where("user_id", auth()->id())->count();
         $todayPurchases = Purchase::where('date', today()->format('Y-m-d'))->count();

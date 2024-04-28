@@ -126,11 +126,12 @@
                                                 </span>
                                             </td>
                                         </tr>
-
+                                        @if(auth()->user()->hasRole('admin'))
                                         <tr>
                                             <td>{{ __('Buying Price') }}</td>
                                             <td>{{ $product->buying_price }}</td>
                                         </tr>
+                                        @endif
                                         <tr>
                                             <td>{{ __('Selling Price') }}</td>
                                             <td>{{ $product->selling_price }}</td>

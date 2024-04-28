@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Enums\TaxType;
+use App\Observers\ProductObserver;
 use App\Traits\HasActivityLogs;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+#[ObservedBy([ProductObserver::class])]
 class Product extends Model
 {
     use HasFactory, HasActivityLogs;
@@ -90,24 +93,5 @@ class Product extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    protected static function booted()
-    {
-        static::updating(function ($product) {
-            if ($product->isDirty('quantity')) {
-                // Calculate the quantity added
-                $quantityAdded = $product->quantity - $product->getOriginal('quantity');
-                // If the quantity has increased
-                if ($quantityAdded > 0) {
-                    // Create a new product entry
-                    ProductEntry::create([
-                        'product_id' => $product->id,
-                        'user_id' => auth()->id(),
-                        'quantity_added' => $quantityAdded,
-                    ]);
-                }
-            }
-        });
     }
 }

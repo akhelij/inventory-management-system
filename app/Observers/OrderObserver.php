@@ -21,9 +21,9 @@ class OrderObserver
     public function updated(Order $order): void
     {
         if ($order->wasChanged('order_status') && $order->order_status == 1){
-           foreach($order->order_details as $item) {
+           foreach($order->details as $item) {
                $product = Product::find($item->product_id);
-               $product->quantity = $product->quantity - $item->unitcost;
+               $product->quantity = $product->quantity - $item->quantity;
                $product->save();
            }
         }
