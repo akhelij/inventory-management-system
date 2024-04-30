@@ -24,4 +24,13 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($payment) {
+            $payment->user_id = auth()->id();
+        });
+    }
 }

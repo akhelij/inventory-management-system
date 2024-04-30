@@ -1,8 +1,18 @@
 @extends('layouts.tabler')
 
 @section('content')
+
     <div class="page-header d-print-none">
         <div class="container-xl">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="row g-2 align-items-center mb-3">
                 <div class="col">
                     <h2 class="page-title">
@@ -142,7 +152,7 @@
                             </div>
 
                             <div class="card-actions">
-                                <x-action.create route="{{ route('payments.create') }}"/>
+                                <x-action.create route="{{ '/payments/'.$customer->id.'/create'}}"/>
                             </div>
                         </div>
                         <div class="table-responsive">
