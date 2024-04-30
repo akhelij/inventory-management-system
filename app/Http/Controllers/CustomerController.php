@@ -56,7 +56,7 @@ class CustomerController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
         $customer = Customer::where("uuid", $uuid)->firstOrFail();
-        $customer->loadMissing(['quotations', 'orders'])->get();
+        $customer->loadMissing(['quotations', 'orders', 'payments'])->get();
 
         return view('customers.show', [
             'customer' => $customer

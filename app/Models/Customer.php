@@ -24,12 +24,14 @@ class Customer extends Model
         'type',
         'phone',
         'address',
+        'city',
         'photo',
+        'limit',
         'account_holder',
         'account_number',
         'bank_name',
-        "user_id",
-        "uuid"
+        'user_id',
+        'uuid'
     ];
 
     protected $casts = [
@@ -39,7 +41,7 @@ class Customer extends Model
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class)->where('order_status', 1)->orderBy('created_at', 'desc');
     }
 
     public function quotations(): HasMany
@@ -47,19 +49,20 @@ class Customer extends Model
         return $this->HasMany(Quotation::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class)->orderBy('created_at', 'desc');
+    }
+
     public function scopeSearch($query, $value): void
     {
         $query->where('name', 'like', "%{$value}%")
             ->orWhere('email', 'like', "%{$value}%")
             ->orWhere('phone', 'like', "%{$value}%");
-    }
-     /**
-     * Get the user that owns the Category
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

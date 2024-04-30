@@ -27,6 +27,7 @@ class StoreCustomerRequest extends FormRequest
             'email' => 'nullable|email|max:50',
             'phone' => 'nullable|string|max:25',
             'city' => 'nullable|string|max:25',
+            'limit' => 'integer',
             'account_holder' => 'max:50',
             'account_number' => 'max:25',
             'bank_name' => 'max:25',

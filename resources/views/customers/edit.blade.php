@@ -78,6 +78,14 @@
                                             />
                                         </div>
 
+
+                                        <div class="col-12">
+                                            <x-input label="{{ __('Limit') }}" name="limit"
+                                                     :value="old('limit', $customer->limit)"
+                                            />
+                                        </div>
+
+
                                         <div class="col-sm-6 col-md-6">
                                             <label for="bank_name" class="form-label">
                                                 {{ __('Bank Name') }}

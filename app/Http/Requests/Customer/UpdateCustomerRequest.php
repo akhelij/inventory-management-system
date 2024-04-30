@@ -50,6 +50,7 @@ class UpdateCustomerRequest extends FormRequest
                 'max:25'
             ],
             'city' => 'nullable|string|max:25',
+            'limit' => 'integer',
             'account_holder' => [
                 'max:50'
             ],

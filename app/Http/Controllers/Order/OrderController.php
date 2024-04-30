@@ -98,7 +98,7 @@ class OrderController extends Controller
         $order = Order::where("uuid", $uuid)->firstOrFail();
         $order->loadMissing(['customer', 'details'])->get();
 
-        return view('orders.'. ($order->order_status == null ? 'edit' : 'show'), [
+        return view('orders.'. ($order->order_status === null ? 'edit' : 'show'), [
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::where("user_id", auth()->id())->get(['id', 'name']),
             'order' => $order

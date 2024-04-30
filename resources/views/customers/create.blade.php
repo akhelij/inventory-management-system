@@ -70,6 +70,10 @@
                                             <x-input name="city" label="{{ __('City') }}"/>
                                         </div>
 
+                                        <div class="col-12">
+                                            <x-input name="limit" label="{{ __('Limit') }}"/>
+                                        </div>
+
                                         <div class="col-sm-6 col-md-6">
                                             <label for="bank_name" class="form-label">
                                                 {{ __('Bank Name') }}
