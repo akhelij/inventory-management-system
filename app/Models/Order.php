@@ -33,8 +33,8 @@ class Order extends Model
         'payment_type',
         'pay',
         'due',
-        "user_id",
-        "uuid"
+        'user_id',
+        'uuid'
     ];
 
     protected $casts = [

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('vat');
             $table->integer('total');
             $table->string('invoice_no');
-            $table->string('payment_type');
+            $table->string('payment_type')->nullable();
             $table->integer('pay');
             $table->integer('due');
             $table->timestamps();

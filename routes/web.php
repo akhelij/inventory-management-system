@@ -92,6 +92,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/payments/{customer_id}/create', [PaymentController::class, 'create'])->name('payments.create');
     Route::post('/payments/{customer}', [PaymentController::class, 'store'])->name('payments.store');
+    Route::post('/payments/{payment}/cash-in', [PaymentController::class, 'cash_in'])->name('payments.cash_in');
+    Route::post('/payments/{payment}/report', [PaymentController::class, 'report'])->name('payments.report');
 
     // SHOW ORDER
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

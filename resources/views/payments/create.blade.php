@@ -43,7 +43,6 @@
                             <div class="col-6">
                                 <label for="nature" class="small my-1">
                                     {{ __('Nature') }}
-                                    <span class="text-danger">*</span>
                                 </label>
                                 <input name="nature" id="nature" type="text"
                                        class="form-control example-date-input @error('nature') is-invalid @enderror"
@@ -54,7 +53,6 @@
                             <div class="col-6">
                                 <label for="bank" class="small my-1">
                                     {{ __('Bank') }}
-                                    <span class="text-danger">*</span>
                                 </label>
                                 <input name="bank" id="bank" type="text"
                                        class="form-control example-date-input @error('bank') is-invalid @enderror"
@@ -62,10 +60,21 @@
                                        required
                                 >
                             </div>
+
+                            <div class="col-6">
+                                <label for="date" class="small my-1">
+                                    {{ __('Date') }}
+                                </label>
+                                <input name="date" id="date" type="date"
+                                       class="form-control example-date-input @error('date') is-invalid @enderror"
+                                       value="{{ old('date') ?? now()->format('Y-m-d') }}"
+                                       required
+                                >
+                            </div>
+
                             <div class="col-6">
                                 <label for="echeance" class="small my-1">
                                     {{ __('Echeance') }}
-                                    <span class="text-danger">*</span>
                                 </label>
                                 <input name="echeance" id="echeance" type="date"
                                        class="form-control example-date-input @error('echeance') is-invalid @enderror"
@@ -73,25 +82,26 @@
                                        required
                                 >
                             </div>
+
+
+
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="customer_id">
+                                    {{ __('Payment type') }}
+                                </label>
+
+                                <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type">
+                                    <option value="HandCash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                            </div>
                             <div class="col-6">
                                 <label for="amount" class="small my-1">
                                     {{ __('Amount') }}
-                                    <span class="text-danger">*</span>
                                 </label>
                                 <input name="amount" id="amount" type="text"
                                        class="form-control example-date-input @error('amount') is-invalid @enderror"
                                        value="{{ old('amount') }}"
-                                       required
-                                >
-                            </div>
-                            <div class="col-6">
-                                <label for="date" class="small my-1">
-                                    {{ __('Date') }}
-                                    <span class="text-danger">*</span>
-                                </label>
-                                <input name="date" id="date" type="date"
-                                       class="form-control example-date-input @error('date') is-invalid @enderror"
-                                       value="{{ old('date') ?? now()->format('Y-m-d') }}"
                                        required
                                 >
                             </div>

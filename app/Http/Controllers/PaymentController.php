@@ -34,11 +34,12 @@ class PaymentController extends Controller
     public function store(Request $request, Customer $customer)
     {
         $request->validate([
-            'amount' => 'required|numeric',
+            'date'   => 'required|date',
             'nature' => 'required|string',
             'bank'   => 'required|string',
-            'date'   => 'required|date',
+            'payment_type' => 'required|string',
             'echeance' => 'required|date',
+            'amount' => 'required|numeric',
         ]);
 
         Payment::create($request->all());
@@ -70,11 +71,32 @@ class PaymentController extends Controller
         //
     }
 
+    public function cash_in(Payment $payment)
+    {
+        $payment->update([
+            'cashed_in' => true,
+            'cashed_in_at' => now(),
+            'reported' => false,
+        ]);
+
+        return redirect()->route('customers.show', $payment->customer->uuid);
+    }
+
+    public function report(Payment $payment)
+    {
+        $payment->update([
+            'reported' => true,
+        ]);
+
+        return redirect()->route('customers.show', $payment->customer->uuid);
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Payment $payment)
     {
-        //
+        $payment->delete();
+
+        return redirect()->route('customers.show', $payment->customer->uuid);
     }
 }

@@ -111,24 +111,38 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
+            @if ($limit_reached)
+                <div class="alert alert-danger mt-4">
+                    <ul>
+                        <li>{{ __('The customer has reached his limit') }}</li>
+                    </ul>
+                </div>
+            @endif
+
             <div class="row" style="margin-left:-20px; margin-top:1%">
-                <div class="col-6">
+                <div class="col-4">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
                                 {{ __('Orders') }}
                             </h3>
+                            <div class="card-actions">
+                                <x-status dot
+                                          color="green"
+                                          class="text-uppercase btn">
+                                    {{ __('Total') }}: {{ $totalOrders }}
+                                </x-status>
+                            </div>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <thead>
-                                    <tr>
-                                        <th>{{ __('Date') }}</th>
-                                        <th>{{ __('Amount') }}</th>
-                                    </tr>
+                                <tr>
+                                    <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Amount') }}</th>
+                                </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($customer->orders as $order)
@@ -142,7 +156,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-6">
+                <div class="col-8">
                     <div class="card">
                         <div class="card-header">
                             <div>
@@ -152,6 +166,11 @@
                             </div>
 
                             <div class="card-actions">
+                                <x-status dot
+                                          color="green"
+                                          class="text-uppercase btn">
+                                    {{ __('Total') }}: {{ $totalPayments }}
+                                </x-status>
                                 <x-action.create route="{{ '/payments/'.$customer->id.'/create'}}"/>
                             </div>
                         </div>
@@ -160,14 +179,70 @@
                                 <thead>
                                 <tr>
                                     <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Nature') }}</th>
+                                    <th>{{ __('Type') }}</th>
                                     <th>{{ __('Amount') }}</th>
+                                    <th>{{ __('Echeance') }}</th>
+                                    <th>{{ __('Status') }}</th>
+                                    <th>{{ __('Action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($customer->payments as $payment)
                                     <tr>
-                                        <td>{{$payment->created_at}}</td>
+                                        <td>{{$payment->date}}</td>
+                                        <td>{{$payment->nature}}</td>
+                                        <td>{{$payment->payment_type}}</td>
                                         <td>{{ Number::currency($payment->amount, 'MAD') }}</td>
+                                        <td>{{$payment->echeance}}</td>
+                                        <td>
+                                            <div class="row">
+                                                @if($payment->reported)
+                                                    <x-status dot
+                                                              color="red"
+                                                              class="text-uppercase btn">
+                                                        {{ __('Reported') }}
+                                                    </x-status>
+                                                @elseif($payment->cashed_in)
+                                                    <x-status dot
+                                                              color="green"
+                                                              class="text-uppercase btn">
+                                                        {{ __('Cashed In') }}
+                                                    </x-status>
+                                                @else
+                                                    <x-status dot
+                                                              color="orange"
+                                                              class="text-uppercase btn">
+                                                        {{ __('Pending') }}
+                                                    </x-status>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="row">
+                                                @if(!$payment->reported && !$payment->cashed_in)
+                                                    <form class="col-4"
+                                                          action="{{ '/payments/' . $payment->id . '/report'}}"
+                                                          method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-warning">Reporté
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                @if(!$payment->cashed_in)
+                                                    <form class="col-3"
+                                                          action="{{ '/payments/' . $payment->id . '/cash-in'}}"
+                                                          method="POST">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-primary">Encaissé
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                                @if($payment->cashed_in)
+                                                    --
+                                                @endif
+                                            </div>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>

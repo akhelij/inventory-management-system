@@ -58,8 +58,17 @@ class CustomerController extends Controller
         $customer = Customer::where("uuid", $uuid)->firstOrFail();
         $customer->loadMissing(['quotations', 'orders', 'payments'])->get();
 
+        $totalOrders = $customer->orders->where('order_status', true)->sum('total');
+        $totalPayments = $customer->payments->where('cashed_in', true)->sum('amount');
+
+        $diff = $totalOrders - $totalPayments;
+        $limit_reached = $diff > $customer->limit;
         return view('customers.show', [
-            'customer' => $customer
+            'customer' => $customer,
+            'totalOrders' => $totalOrders,
+            'totalPayments' => $totalPayments,
+            'diff' => $diff,
+            'limit_reached' => $limit_reached
         ]);
     }
 

@@ -14,15 +14,27 @@ class Payment extends Model
         'customer_id',
         'date',
         'nature',
-        'banque',
+        'bank',
+        'payment_type',
         'echeance',
         'amount',
-        'reported'
+        'reported',
+        'cashed_in',
+        'cashed_in_at',
+    ];
+
+    protected $with = [
+        'customer',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public static function boot()
