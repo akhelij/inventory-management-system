@@ -16,7 +16,7 @@
 
     <x-spinner.loading-spinner/>
 
-    <div class="table-responsive">
+    <div class="table">
         <table wire:loading.remove class="table table-bordered card-table table-vcenter text-nowrap datatable">
             <thead class="thead-light">
             <tr>
@@ -48,7 +48,8 @@
                              src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
                              alt="">
                     </td>
-                    <td class="align-middle text-center">
+                    <td class="align-middle text-center"
+                        style="max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         {{ $product->name }}
                     </td>
                     <td class="align-middle text-center">
