@@ -12,7 +12,7 @@ class Customer extends Model
 {
     use HasFactory, HasActivityLogs;
 
-    const ALAMI = "Electro Alami";
+    const ALAMI = "electro@alami.com";
 
     protected $guarded = [
         'id',
@@ -47,7 +47,7 @@ class Customer extends Model
 
     public function getIsOutOfLimitAttribute(): bool
     {
-        return $this->total_orders - $this->total_payments > $this->limit;
+        return $this->email === self::ALAMI ? true : ($this->total_orders - $this->total_payments > $this->limit);
     }
 
     public function getTotalOrdersAttribute(): float

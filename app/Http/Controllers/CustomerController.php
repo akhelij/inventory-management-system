@@ -6,6 +6,7 @@ use App\Enums\PermissionEnum;
 use App\Models\Customer;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 use Str;
 
@@ -54,7 +55,7 @@ class CustomerController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
         $customer = Customer::where("uuid", $uuid)->firstOrFail();
-        $customer->loadMissing(['quotations', 'orders', 'payments'])->get();
+        $customer->loadMissing(['orders', 'payments'])->get();
 
         $diff = $customer->total_orders - $customer->total_payments;
         $limit_reached = $diff > $customer->limit;
@@ -118,5 +119,13 @@ class CustomerController extends Controller
         return redirect()
             ->back()
             ->with('success', 'Customer has been deleted!');
+    }
+
+    public function downloadPayments(Customer $customer)
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
+        return view('customer.print-payments', [
+            'payments' => $customer->payments,
+        ]);
     }
 }

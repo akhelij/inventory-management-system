@@ -63,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('/quotations', QuotationController::class);
     Route::resource('/customers', CustomerController::class);
+    Route::get('/customers/{customer}/download-payments', [CustomerController::class, 'downloadPayments'])->name('customers.download.payments');
     Route::resource('/suppliers', SupplierController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/units', UnitController::class);
