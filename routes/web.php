@@ -9,6 +9,7 @@ use App\Http\Controllers\Order\OrderCompleteController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\OrderPendingController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentExportController;
 use App\Http\Controllers\PosController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductExportController;
@@ -63,7 +64,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('/quotations', QuotationController::class);
     Route::resource('/customers', CustomerController::class);
-    Route::get('/customers/{customer}/download-payments', [CustomerController::class, 'downloadPayments'])->name('customers.download.payments');
     Route::resource('/suppliers', SupplierController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/units', UnitController::class);
@@ -95,6 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/payments/{customer}', [PaymentController::class, 'store'])->name('payments.store');
     Route::post('/payments/{payment}/cash-in', [PaymentController::class, 'cash_in'])->name('payments.cash_in');
     Route::post('/payments/{payment}/report', [PaymentController::class, 'report'])->name('payments.report');
+    Route::get('payments/export/', [PaymentExportController::class, 'create'])->name('payments.export');
 
     // SHOW ORDER
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

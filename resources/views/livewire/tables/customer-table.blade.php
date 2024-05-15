@@ -8,6 +8,7 @@
             {{ __('Display Only Out Of Limit') }}
         </x-button>
     @endif
+
     <div class="card-header">
         <div>
             <h3 class="card-title">
@@ -16,6 +17,7 @@
         </div>
 
         <div class="card-actions">
+            <x-button.print class="btn-icon" route="{{ route('payments.export') }}"/>
             <x-action.create route="{{ route('customers.create') }}" />
         </div>
     </div>
