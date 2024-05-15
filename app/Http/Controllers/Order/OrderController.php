@@ -47,13 +47,14 @@ class OrderController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
         $customer = Customer::find($request->customer_id);
+        $is_out_of_limit = ($customer->total_orders + Cart::subtotal()) - $customer->total_payments > $customer->limit;
 
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'payment_type' => $request->payment_type,
             'pay' => $request->pay ?? 0,
             'order_date' => Carbon::now()->format('Y-m-d'),
-            'order_status' => ($customer->name === Customer::ALAMI) ? OrderStatus::APPROVED : OrderStatus::PENDING,
+            'order_status' => ($customer->name === Customer::ALAMI || !$is_out_of_limit) ? OrderStatus::APPROVED : OrderStatus::PENDING,
             'total_products' => Cart::count(),
             'sub_total' => Cart::subtotal(),
             'vat' => Cart::tax(),

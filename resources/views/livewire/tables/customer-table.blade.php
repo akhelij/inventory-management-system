@@ -1,4 +1,13 @@
 <div class="card">
+    @if(request()->has('only_unpaid'))
+        <x-button class="btn-icon" route="{{ route('customers.index') }}">
+            {{ __('Display All') }}
+        </x-button>
+    @else
+        <x-button class="btn-icon" route="{{ route('customers.index') }}?only_unpaid=1" >
+            {{ __('Display Only Out Of Limit') }}
+        </x-button>
+    @endif
     <div class="card-header">
         <div>
             <h3 class="card-title">

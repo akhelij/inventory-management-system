@@ -39,6 +39,27 @@ class Customer extends Model
         'updated_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'total_orders',
+        'total_payments',
+        'is_out_of_limit',
+    ];
+
+    public function getIsOutOfLimitAttribute(): bool
+    {
+        return $this->total_orders - $this->total_payments > $this->limit;
+    }
+
+    public function getTotalOrdersAttribute(): float
+    {
+        return $this->orders->where('order_status', true)->sum('total');
+    }
+
+    public function getTotalPaymentsAttribute(): float
+    {
+        return $this->payments->where('cashed_in', true)->sum('amount');
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class)->where('order_status', 1)->orderBy('created_at', 'desc');

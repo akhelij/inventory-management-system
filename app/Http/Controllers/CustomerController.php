@@ -6,17 +6,17 @@ use App\Enums\PermissionEnum;
 use App\Models\Customer;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
+use Illuminate\Http\Request;
 use Str;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
-        $customers = Customer::count();
 
         return view('customers.index', [
-            'customers' => $customers
+            'customers' => Customer::count()
         ]);
     }
 
@@ -29,9 +29,7 @@ class CustomerController extends Controller
     public function store(StoreCustomerRequest $request)
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CUSTOMERS), 403);
-        /**
-         * Handle upload an image
-         */
+
         $image = "";
         if ($request->hasFile('photo')) {
             $image = $request->file('photo')->store("customers", "public");
@@ -58,15 +56,12 @@ class CustomerController extends Controller
         $customer = Customer::where("uuid", $uuid)->firstOrFail();
         $customer->loadMissing(['quotations', 'orders', 'payments'])->get();
 
-        $totalOrders = $customer->orders->where('order_status', true)->sum('total');
-        $totalPayments = $customer->payments->where('cashed_in', true)->sum('amount');
-
-        $diff = $totalOrders - $totalPayments;
+        $diff = $customer->total_orders - $customer->total_payments;
         $limit_reached = $diff > $customer->limit;
         return view('customers.show', [
             'customer' => $customer,
-            'totalOrders' => $totalOrders,
-            'totalPayments' => $totalPayments,
+            'totalOrders' => $customer->total_orders,
+            'totalPayments' => $customer->total_payments,
             'diff' => $diff,
             'limit_reached' => $limit_reached
         ]);
