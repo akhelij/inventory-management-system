@@ -40,7 +40,7 @@
             <tbody>
             @forelse ($products as $product)
                 <tr>
-                    <td class="align-middle text-center">
+                    <td class="">
                         <img style="width: 50px;"
                              src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
                              alt="">
