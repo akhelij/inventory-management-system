@@ -35,10 +35,10 @@ class ProductCart extends Component
             $this->data = $data;
 
             $this->global_discount = $data->discount_percentage;
-            $this->global_tax = $data->tax_percentage;
+            $this->global_tax = 0;
             $this->shipping = $data->shipping_amount;
 
-            $this->updatedGlobalTax();
+//            $this->updatedGlobalTax();
             $this->updatedGlobalDiscount();
 
             $cart_items = Cart::instance($this->cart_instance)->content();
@@ -110,7 +110,7 @@ class ProductCart extends Component
                 'stock'                 => $product['quantity'],
                 //'unit'                  => $product['product_unit'],
                 'unit'                  => $product['unit_id'],
-                'product_tax'           => $this->calculate($product)['tax'],
+                'product_tax'           => 0,//$this->calculate($product)['tax'],
                 'unit_price'            => $this->calculate($product)['unit_price']
             ]
         ]);
@@ -157,7 +157,7 @@ class ProductCart extends Component
                 'code'                  => $cart_item->options->code,
                 'stock'                 => $cart_item->options->stock,
                 'unit'                  => $cart_item->options->unit,
-                'product_tax'           => $cart_item->options->product_tax,
+                'product_tax'           => 0,//$cart_item->options->product_tax,
                 'unit_price'            => $cart_item->options->unit_price,
                 'product_discount'      => $cart_item->options->product_discount,
                 'product_discount_type' => $cart_item->options->product_discount_type,
@@ -218,7 +218,7 @@ class ProductCart extends Component
                 'stock'                 => $cart_item->options->stock,
                 'unit'                  => $cart_item->options->unit,
 //                'product_tax'           => $this->calculate($product, $this->unit_price[$product['id']])['product_tax'],
-                'product_tax'           => $this->calculate($product, $this->unit_price[$product['id']])['tax'],
+                'product_tax'           => 0,//$this->calculate($product, $this->unit_price[$product['id']])['tax'],
                 'unit_price'            => $this->calculate($product, $this->unit_price[$product['id']])['unit_price'],
                 'product_discount'      => $cart_item->options->product_discount,
                 'product_discount_type' => $cart_item->options->product_discount_type,
@@ -246,26 +246,10 @@ class ProductCart extends Component
         $product_tax = 0;
         $sub_total = 0;
 
-        if ($product['tax_type'] == 1)
-        {
-            $price = $product_price + ($product_price * ($product['tax'] / 100));
-            $unit_price = $product_price;
-            $product_tax = $product_price * ($product['tax'] / 100);
-            $sub_total = $product_price + ($product_price * ($product['tax'] / 100));
-
-        } elseif ($product['tax_type'] == 2) {
-
-            $price = $product_price;
-            $unit_price = $product_price - ($product_price * ($product['tax'] / 100));
-            $product_tax = $product_price * ($product['tax'] / 100);
-            $sub_total = $product_price;
-
-        } else {
-            $price = $product_price;
-            $unit_price = $product_price;
-            $product_tax = 0.00;
-            $sub_total = $product_price;
-        }
+        $price = $product_price;
+        $unit_price = $product_price;
+        $product_tax = 0.00;
+        $sub_total = $product_price;
 
         return ['price' => $price, 'unit_price' => $unit_price, 'tax' => $product_tax, 'sub_total' => $sub_total];
     }
@@ -277,7 +261,7 @@ class ProductCart extends Component
             'code'                  => $cart_item->options->code,
             'stock'                 => $cart_item->options->stock,
             'unit'                  => $cart_item->options->unit,
-            'product_tax'           => $cart_item->options->product_tax,
+            'product_tax'           => 0,//$cart_item->options->product_tax,
             'unit_price'            => $cart_item->options->unit_price,
             'product_discount'      => $discount_amount,
             'product_discount_type' => $this->discount_type[$product_id],
