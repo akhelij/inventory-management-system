@@ -13,7 +13,10 @@
                         </ul>
                     </div>
                 @endif
-                <div class="col-lg-7">
+                <div class="col-lg-6">
+                    <livewire:tables.product-list/>
+                </div>
+                <div class="col-lg-6">
                     <div class="card">
                         <form action="{{ route('orders.store') }}" method="POST">
                             @csrf
@@ -82,8 +85,8 @@
                                         </label>
                                         <select class="form-control @error('payment_type') is-invalid @enderror"
                                                 id="payment_type" name="payment_type">
-                                            <option selected="" disabled="">Select a payment:</option>
-                                            <option value="HandCash">Cash</option>
+                                            <option disabled="">Select a payment:</option>
+                                            <option value="HandCash" selected="">Cash</option>
                                             <option value="Cheque">Cheque</option>
                                         </select>
 
@@ -107,11 +110,6 @@
                             </div>
                         </form>
                     </div>
-                </div>
-
-
-                <div class="col-lg-5">
-                    <livewire:tables.product-list/>
                 </div>
             </div>
         </div>

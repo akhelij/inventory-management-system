@@ -19,10 +19,9 @@
                 {{ $item->product->name }}
             </td>
             <td style="min-width: 170px;">
-
-                    <div class="input-group">
-                        <input type="number" class="form-control" name="qty" wire:change="updateQuantity('{{ $item->product->id }}', $event.target.value)" value="{{ old('qty', $item->quantity) }}" min="1" required />
-                    </div>
+                <div class="input-group">
+                    <input type="number" class="form-control" name="qty" wire:change="updateQuantity('{{ $item->product->id }}', $event.target.value)" value="{{ old('qty', $item->quantity) }}" min="1" required />
+                </div>
             </td>
             <td class="text-center">
                 {{ $item->unitcost }}

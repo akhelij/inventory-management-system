@@ -22,8 +22,7 @@
                 <form action="{{ route('pos.updateCartItem', $item->rowId) }}" method="POST">
                     @csrf
                     <div class="input-group">
-                        <input type="number" class="form-control" name="qty" min="1" required
-                               value="{{ old('qty', $item->qty) }}"/>
+                        <input type="number" class="form-control" name="qty" wire:change="updateQuantity('{{ $item->rowId }}', $event.target.value)" value="{{ old('qty', $item->qty) }}" min="1" required/>
                     </div>
                 </form>
             </td>

@@ -13,7 +13,11 @@
                         </ul>
                     </div>
                 @endif
-                <div class="col-lg-7">
+                    <div class="col-lg-6">
+                        <livewire:tables.product-list :order_id="$order->id"/>
+                    </div>
+
+                    <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
                             <div>
@@ -96,7 +100,7 @@
                             </div>
 
                             <div class="table-responsive">
-                                <livewire:orderUpdate :order_id="$order->id"/>
+                                <livewire:order-update :order_id="$order->id"/>
                             </div>
 
                         </div>
@@ -111,10 +115,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-5">
-                    <livewire:tables.product-list :order_id="$order->id"/>
-                </div>
-
             </div>
         </div>
     </div>

@@ -82,10 +82,11 @@ class PaymentController extends Controller
         return redirect()->route('customers.show', $payment->customer->uuid);
     }
 
-    public function report(Payment $payment)
+    public function report(Request $request, Payment $payment)
     {
         $payment->update([
             'reported' => true,
+            'echeance' => $request->new_date,
         ]);
 
         return redirect()->route('customers.show', $payment->customer->uuid);

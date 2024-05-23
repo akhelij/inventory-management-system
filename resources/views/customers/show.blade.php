@@ -221,11 +221,12 @@
                                         <td>
                                             <div class="row">
                                                 @if(!$payment->reported && !$payment->cashed_in)
-                                                    <form class="col-4"
+                                                    <form class="reportForm col-4"
                                                           action="{{ '/payments/' . $payment->id . '/report'}}"
                                                           method="POST">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-sm btn-warning">Reporté
+                                                        <button class="reportButton btn btn-sm btn-warning"
+                                                                type="submit">Reporté
                                                         </button>
                                                     </form>
                                                 @endif
@@ -253,4 +254,25 @@
             </div>
         </div>
     </div>
+    <script>
+        document.querySelectorAll('.reportButton').forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the form from submitting
+
+                var newDate = prompt('New date'); // Show a prompt to the user to enter the new date
+
+                if (newDate) { // If a date is entered
+                    var input = document.createElement('input'); // Create a new input element
+                    input.type = 'hidden'; // Make it a hidden input
+                    input.name = 'new_date'; // Set the name attribute
+                    input.value = newDate; // Set the value to the entered date
+
+                    var form = button.parentElement; // Get the form
+                    form.appendChild(input); // Add the input to the form
+
+                    form.submit(); // Submit the form
+                }
+            });
+        });
+    </script>
 @endsection
