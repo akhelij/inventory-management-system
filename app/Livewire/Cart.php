@@ -2,8 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Models\OrderDetails;
-use Gloudemans\Shoppingcart\CartItem;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Gloudemans\Shoppingcart\Facades\Cart as G_Cart;
