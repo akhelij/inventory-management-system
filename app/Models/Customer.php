@@ -86,4 +86,12 @@ class Customer extends Model
             ->orWhere('email', 'like', "%{$value}%")
             ->orWhere('phone', 'like', "%{$value}%");
     }
+
+    public function scopeOfAuth($query)
+    {
+        if(!auth()->user()->can('see all customers')) {
+            return $query->where("user_id", auth()->id());
+        }
+        return $query;
+    }
 }

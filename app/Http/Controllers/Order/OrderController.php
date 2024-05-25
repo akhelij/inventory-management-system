@@ -38,7 +38,7 @@ class OrderController extends Controller
 
         return view('orders.create', [
             'products' => Product::with(['category', 'unit'])->get(),
-            'customers' => Customer::where("user_id", auth()->id())->get(['id', 'name']),
+            'customers' => Customer::ofAuth()->get(['id', 'name']),
             'carts' => Cart::content(),
         ]);
     }
@@ -101,7 +101,7 @@ class OrderController extends Controller
 
         return view('orders.'. ($order->order_status === null ? 'edit' : 'show'), [
             'products' => Product::with(['category', 'unit'])->get(),
-            'customers' => Customer::where("user_id", auth()->id())->get(['id', 'name']),
+            'customers' => Customer::ofAuth()->get(['id', 'name']),
             'order' => $order
         ]);
     }

@@ -71,6 +71,12 @@
                     </a>
                 </th>
                 <th scope="col" class="align-middle text-center">
+                    <a wire:click.prevent="sortBy('user_id')" href="#" role="button">
+                        {{ __('Author') }}
+                        @include('inclues._sort-icon', ['field' => 'user_id'])
+                    </a>
+                </th>
+                <th scope="col" class="align-middle text-center">
                     <a wire:click.prevent="sortBy('created_at')" href="#" role="button">
                         {{ __('Created at') }}
                         @include('inclues._sort-icon', ['field' => 'Created_at'])
@@ -92,6 +98,9 @@
                     </td>
                     <td class="align-middle text-center">
                         {{ $customer->email }}
+                    </td>
+                    <td class="align-middle text-center">
+                        {{ $customer->user?->name ?? '--' }}
                     </td>
                     <td class="align-middle text-center">
                         {{ $customer->created_at->diffForHumans() }}

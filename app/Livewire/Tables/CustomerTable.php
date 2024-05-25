@@ -32,19 +32,19 @@ class CustomerTable extends Component
 
     public function render()
     {
-        $customers = Customer::where("user_id", auth()->id())
+        $query = Customer::ofAuth()
             ->with('orders', 'payments')
             ->search($this->search)
             ->get();
 
         if(request()->input('only_unpaid')) {
-            $customers = $customers->where('is_out_of_limit', true);
+            $query = $query->where('is_out_of_limit', true);
         }
 
         // Manually create a paginator for the filtered customers
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentItems = $customers->slice(($currentPage - 1) * $this->perPage, $this->perPage)->values();
-        $customers = new LengthAwarePaginator($currentItems, $customers->count(), $this->perPage, $currentPage);
+        $currentItems = $query->slice(($currentPage - 1) * $this->perPage, $this->perPage)->values();
+        $customers = new LengthAwarePaginator($currentItems, $query->count(), $this->perPage, $currentPage);
 
         return view('livewire.tables.customer-table', [
             'customers' => $customers
