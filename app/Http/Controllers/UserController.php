@@ -33,7 +33,10 @@ class UserController extends Controller
     public function store(StoreUserRequest $request)
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_USERS), 403);
-        $user = User::create($request->all());
+
+        $data = $request->validated();
+        $data['password'] = Hash::make($data['password']);
+        $user = User::create($data);
 
         /**
          * Handle upload an image
