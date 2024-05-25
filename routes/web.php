@@ -21,6 +21,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
 
@@ -66,6 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/customers', CustomerController::class);
     Route::resource('/suppliers', SupplierController::class);
     Route::resource('/categories', CategoryController::class);
+    Route::resource('/warehouses', WarehouseController::class);
     Route::resource('/units', UnitController::class);
 
     // Route Products

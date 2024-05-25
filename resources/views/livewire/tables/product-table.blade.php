@@ -85,6 +85,12 @@
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
+                        <a wire:click.prevent="sortBy('warehouse_id')" href="#" role="button">
+                            {{ __('Warehouse') }}
+                            @include('inclues._sort-icon', ['field' => 'warehouse_id'])
+                        </a>
+                    </th>
+                    <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('quantity')" href="#" role="button">
                             {{ __('quantity') }}
                             @include('inclues._sort-icon', ['field' => 'quantity'])
@@ -114,6 +120,9 @@
                         </td>
                         <td class="align-middle text-center">
                             {{ $product->category ? $product->category->name : '--' }}
+                        </td>
+                        <td class="align-middle text-center">
+                            {{ $product->warehouse ? $product->warehouse->name : '--' }}
                         </td>
                         <td class="align-middle text-center">
                             {{ $product->quantity }}

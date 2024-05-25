@@ -35,6 +35,7 @@ class Product extends Model
         'created_at',
         'updated_at',
         "user_id",
+        'warehouse_id',
         "uuid"
     ];
 
@@ -57,6 +58,11 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function unit(): BelongsTo

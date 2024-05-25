@@ -9,6 +9,7 @@ use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Unit;
+use App\Models\Warehouse;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -42,6 +43,7 @@ class ProductController extends Controller
 
         return view('products.create', [
             'categories' => $categories,
+            'warehouses' => Warehouse::all(),
             'units' => $units,
         ]);
     }
@@ -68,6 +70,7 @@ class ProductController extends Controller
             'product_image'     => $image,
             'name'              => $request->name,
             'category_id'       => $request->category_id,
+            'warehouse_id'      => $request->warehouse_id,
             'unit_id'           => $request->unit_id,
             'quantity'          => $request->quantity,
             'buying_price'      => $request->buying_price,
@@ -108,6 +111,7 @@ class ProductController extends Controller
         $product = Product::where("uuid", $uuid)->firstOrFail();
         return view('products.edit', [
             'categories' => Category::where("user_id", auth()->id())->get(),
+            'warehouses' => Warehouse::all(),
             'units' => Unit::where("user_id", auth()->id())->get(),
             'product' => $product
         ]);

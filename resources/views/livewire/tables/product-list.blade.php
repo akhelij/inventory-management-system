@@ -27,6 +27,11 @@
                     </a>
                 </th>
                 <th scope="col" class="align-middle text-center">
+                    <a wire:click.prevent="sortBy('warehouse_id')" href="#" role="button">
+                        {{ __('Warehouse') }}
+                        @include('inclues._sort-icon', ['field' => 'warehouse_id'])
+                    </a>
+                <th scope="col" class="align-middle text-center">
                     <a wire:click.prevent="sortBy('quantity')" href="#" role="button">
                         {{ __('Quantity') }}
                         @include('inclues._sort-icon', ['field' => 'quantity'])
@@ -45,6 +50,9 @@
                              src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
                              alt="">
                         {{ $product->name }}
+                    </td>
+                    <td class="align-middle text-center">
+                        {{ $product->warehouse?->name ?? '--' }}
                     </td>
                     <td class="align-middle text-center">
                         {{ $product->quantity }}

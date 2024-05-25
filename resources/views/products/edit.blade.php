@@ -62,6 +62,31 @@
                                     </h3>
 
                                     <div class="row row-cards">
+                                        <div class="col-12">
+                                            <div class="mb-3">
+                                                <label for="warehouse_id" class="form-label">
+                                                    {{ __('Product warehouse') }}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <select name="warehouse_id" id="warehouse_id"
+                                                        class="form-select @error('warehouse_id') is-invalid @enderror">
+                                                    <option selected=""
+                                                            disabled="">{{ __('Select a warehouse:') }}</option>
+                                                    @foreach ($warehouses as $warehouse)
+                                                        <option value="{{ $warehouse->id }}"
+                                                                @if (old('warehouse_id', $product->warehouse_id) == $warehouse->id) selected="selected" @endif>
+                                                            {{ $warehouse->name }}</option>
+                                                    @endforeach
+                                                </select>
+
+                                                @error('warehouse_id')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                                @enderror
+                                            </div>
+                                        </div>
                                         <div class="col-md-12">
                                             <div class="mb-3">
                                                 <label for="name" class="form-label">
