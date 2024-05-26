@@ -30,15 +30,15 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_PRODUCTS), 403);
-        $categories = Category::where("user_id", auth()->id())->get(['id', 'name']);
-        $units = Unit::where("user_id", auth()->id())->get(['id', 'name']);
+        $categories = Category::get(['id', 'name']);
+        $units = Unit::get(['id', 'name']);
 
         if ($request->has('category')) {
-            $categories = Category::where("user_id", auth()->id())->whereSlug($request->get('category'))->get();
+            $categories = Category::whereSlug($request->get('category'))->get();
         }
 
         if ($request->has('unit')) {
-            $units = Unit::where("user_id", auth()->id())->whereSlug($request->get('unit'))->get();
+            $units = Unit::whereSlug($request->get('unit'))->get();
         }
 
         return view('products.create', [
@@ -110,9 +110,9 @@ class ProductController extends Controller
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
         $product = Product::where("uuid", $uuid)->firstOrFail();
         return view('products.edit', [
-            'categories' => Category::where("user_id", auth()->id())->get(),
+            'categories' => Category::get(),
             'warehouses' => Warehouse::all(),
-            'units' => Unit::where("user_id", auth()->id())->get(),
+            'units' => Unit::get(),
             'product' => $product
         ]);
     }
