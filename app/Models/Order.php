@@ -70,7 +70,7 @@ class Order extends Model
 
     public function getIsUpdatableStatusAttribute(): bool
     {
-        return ($this->order_status === OrderStatus::PENDING) && auth()->user()->can(PermissionEnum::UPDATE_ORDERS_STATUS);
+        return ($this->order_status === OrderStatus::PENDING || $this->order_status === null) && auth()->user()->can(PermissionEnum::UPDATE_ORDERS_STATUS);
     }
 
     public function customer(): BelongsTo
