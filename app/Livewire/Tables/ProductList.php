@@ -95,7 +95,8 @@ class ProductList extends Component
     public function render()
     {
         return view('livewire.tables.product-list')->with([
-            'products' => Product::with(['category', 'warehouse', 'unit'])
+            'products' => Product::query()
+                ->with(['category', 'warehouse', 'unit'])
                 ->where('quantity', '>', 0)
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
