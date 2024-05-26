@@ -15,8 +15,9 @@
             </div>
         @else
             <div class="container-xl">
+
                 <x-alert />
-                @livewire('tables.product-table')
+                @livewire('tables.product-table', ['warehouses' => $warehouses])
             </div>
         @endif
     </div>

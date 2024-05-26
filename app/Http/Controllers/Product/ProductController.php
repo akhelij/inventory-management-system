@@ -24,6 +24,7 @@ class ProductController extends Controller
 
         return view('products.index', [
             'products' => $products,
+            'warehouses' => Warehouse::all(),
         ]);
     }
 

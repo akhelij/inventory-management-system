@@ -31,6 +31,7 @@
     </div>
 
     <div class="card-body border-bottom py-3">
+
         <div class="d-flex">
             <div class="text-secondary">
                 {{ __('Showing') }}
@@ -44,6 +45,16 @@
                 </div>
                 {{ __('Entries') }}
             </div>
+            @if ($warehouses->count() === 1)
+                <select wire:change="filterByWarehouse($event.target.value)" name="warehouse_id" id="warehouse_id"  style="width:200px;margin-left: 20px;" class="ms-auto form-control form-control-sm selector">
+                    <option value=""> Choose warehouse</option>
+                    @foreach ($warehouses as $warehouse)
+                        <option value="{{ $warehouse->id }}">
+                            {{ $warehouse->name }}
+                        </option>
+                    @endforeach
+                </select>
+            @endif
             <div class="ms-auto text-secondary">
                 {{ __('Search') }}
                 <div class="ms-2 d-inline-block">
