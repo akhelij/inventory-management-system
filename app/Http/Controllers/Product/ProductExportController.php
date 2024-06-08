@@ -12,7 +12,7 @@ class ProductExportController extends Controller
 {
     public function create()
     {
-        $products = Product::all()->sortBy('product_name');
+        $products = Product::where('quantity', '>', 0)->orderby('name')->get();
 
         $product_array[] = array(
             'Product Name',
@@ -24,7 +24,6 @@ class ProductExportController extends Controller
             "Stock Alert",
             'Buying Price',
             'Selling Price',
-            'Product Image',
             "Note"
         );
 
@@ -39,7 +38,6 @@ class ProductExportController extends Controller
                 "Stock Alert" => $product->quantity_alert,
                 'Buying Price' => $product->buying_price,
                 'Selling Price' => $product->selling_price,
-                'Product Image' => $product->product_image,
                 "Note" => $product->note
             );
         }
