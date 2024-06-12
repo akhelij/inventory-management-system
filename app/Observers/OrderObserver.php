@@ -12,7 +12,13 @@ class OrderObserver
      */
     public function created(Order $order): void
     {
-        //
+        if ($order->order_status == 1){
+            foreach($order->details as $item) {
+                $product = Product::find($item->product_id);
+                $product->quantity = $product->quantity - $item->quantity;
+                $product->save();
+            }
+        }
     }
 
     /**

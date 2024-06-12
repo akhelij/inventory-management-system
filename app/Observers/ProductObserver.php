@@ -24,7 +24,7 @@ class ProductObserver
             // Calculate the quantity added
             $quantityAdded = $product->quantity - $product->getOriginal('quantity');
             // If the quantity has increased
-            if ($quantityAdded > 0) {
+            if ($quantityAdded >= 0) {
                 // Create a new product entry
                 ProductEntry::create([
                     'product_id' => $product->id,
