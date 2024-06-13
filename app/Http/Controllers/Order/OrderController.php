@@ -23,13 +23,70 @@ class OrderController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
         $query = Order::query();
-        if(!auth()->user()->hasRole('admin'))
-        {
+        if (!auth()->user()->hasRole('admin')) {
             $query->where("user_id", auth()->id());
         }
         return view('orders.index', [
             'orders' => $query->count()
         ]);
+    }
+
+    public function store(OrderStoreRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
+            $customer = Customer::find($request->customer_id);
+            $is_out_of_limit = $customer->email === Customer::ALAMI ? true : (($customer->total_orders + Cart::subtotal()) - $customer->total_payments > $customer->limit);
+
+            $order = Order::create([
+                'customer_id' => $request->customer_id,
+                'payment_type' => $request->payment_type,
+                'pay' => $request->pay ?? 0,
+                'order_date' => Carbon::now()->format('Y-m-d'),
+                'order_status' => $is_out_of_limit ? OrderStatus::PENDING : OrderStatus::APPROVED,
+                'total_products' => Cart::count(),
+                'sub_total' => Cart::subtotal(),
+                'vat' => Cart::tax(),
+                'total' => Cart::total(),
+                'invoice_no' => IdGenerator::generate([
+                    'table' => 'orders',
+                    'field' => 'invoice_no',
+                    'length' => 10,
+                    'prefix' => 'INV-'
+                ]),
+                'due' => (Cart::total() - $request->pay),
+                "user_id" => auth()->id(),
+                "uuid" => Str::uuid(),
+            ]);
+
+            // Create Order Details
+            $contents = Cart::content();
+            $oDetails = [];
+
+            foreach ($contents as $content) {
+                $oDetails['order_id'] = $order['id'];
+                $oDetails['product_id'] = $content->id;
+                $oDetails['quantity'] = $content->qty;
+                $oDetails['unitcost'] = $content->price;
+                $oDetails['total'] = $content->subtotal;
+                $oDetails['created_at'] = Carbon::now();
+
+                OrderDetails::insert($oDetails);
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()
+                ->back()
+                ->with('error', $e->getMessage());
+        }
+        // Delete Cart Sopping History
+        Cart::destroy();
+
+        return redirect()
+            ->route('orders.index')
+            ->with('success', 'Order has been created!');
     }
 
     public function create()
@@ -43,54 +100,11 @@ class OrderController extends Controller
         ]);
     }
 
-    public function store(OrderStoreRequest $request)
+    public function destroy($uuid)
     {
-        abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
-        $customer = Customer::find($request->customer_id);
-        $is_out_of_limit = $customer->email === Customer::ALAMI ? true : (($customer->total_orders + Cart::subtotal()) - $customer->total_payments > $customer->limit);
-
-        $order = Order::create([
-            'customer_id' => $request->customer_id,
-            'payment_type' => $request->payment_type,
-            'pay' => $request->pay ?? 0,
-            'order_date' => Carbon::now()->format('Y-m-d'),
-            'order_status' => $is_out_of_limit ? OrderStatus::PENDING : OrderStatus::APPROVED,
-            'total_products' => Cart::count(),
-            'sub_total' => Cart::subtotal(),
-            'vat' => Cart::tax(),
-            'total' => Cart::total(),
-            'invoice_no' => IdGenerator::generate([
-                'table' => 'orders',
-                'field' => 'invoice_no',
-                'length' => 10,
-                'prefix' => 'INV-'
-            ]),
-            'due' => (Cart::total() - $request->pay),
-            "user_id" => auth()->id(),
-            "uuid" => Str::uuid(),
-        ]);
-
-        // Create Order Details
-        $contents = Cart::content();
-        $oDetails = [];
-
-        foreach ($contents as $content) {
-            $oDetails['order_id'] = $order['id'];
-            $oDetails['product_id'] = $content->id;
-            $oDetails['quantity'] = $content->qty;
-            $oDetails['unitcost'] = $content->price;
-            $oDetails['total'] = $content->subtotal;
-            $oDetails['created_at'] = Carbon::now();
-
-            OrderDetails::insert($oDetails);
-        }
-
-        // Delete Cart Sopping History
-        Cart::destroy();
-
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order has been created!');
+        abort_unless(auth()->user()->can(PermissionEnum::DELETE_ORDERS), 403);
+        $order = Order::where("uuid", $uuid)->firstOrFail();
+        $order->delete();
     }
 
     public function show($uuid)
@@ -99,11 +113,44 @@ class OrderController extends Controller
         $order = Order::where("uuid", $uuid)->firstOrFail();
         $order->loadMissing(['customer', 'details'])->get();
 
-        return view('orders.'. ($order->order_status === null ? 'edit' : 'show'), [
+        return view('orders.' . ($order->order_status === null ? 'edit' : 'show'), [
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::ofAuth()->get(['id', 'name']),
             'order' => $order
         ]);
+    }
+
+    public function updateItems(Order $order, Request $request)
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS), 403);
+        $order->details()->delete();
+        $oDetails = [];
+        foreach ($request->product_id as $key => $product_id) {
+            $oDetails['order_id'] = $order['id'];
+            $oDetails['product_id'] = $product_id;
+            $oDetails['quantity'] = $request->quantity[$key];
+            $oDetails['unitcost'] = $request->unitcost[$key];
+            $oDetails['total'] = $request->total[$key];
+            $oDetails['created_at'] = Carbon::now();
+
+            OrderDetails::insert($oDetails);
+        }
+
+        return redirect()
+            ->route('orders.index')
+            ->with('success', 'Order items has been updated!');
+    }
+
+    public function update_status(Order $order, int $order_status, Request $request)
+    {
+        $order->update([
+            'order_status' => $order_status,
+            'reason' => $request->reason
+        ]);
+
+        return redirect()
+            ->route('orders.index')
+            ->with('success', 'Order status has been updated!');
     }
 
     public function update(Order $order)
@@ -129,45 +176,6 @@ class OrderController extends Controller
         return redirect()
             ->route('orders.index')
             ->with('success', 'Order has been completed!');
-    }
-
-    public function updateItems(Order $order, Request $request)
-    {
-        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS), 403);
-        $order->details()->delete();
-        $oDetails = [];
-        foreach ($request->product_id as $key => $product_id) {
-            $oDetails['order_id'] = $order['id'];
-            $oDetails['product_id'] = $product_id;
-            $oDetails['quantity'] = $request->quantity[$key];
-            $oDetails['unitcost'] = $request->unitcost[$key];
-            $oDetails['total'] = $request->total[$key];
-            $oDetails['created_at'] = Carbon::now();
-
-            OrderDetails::insert($oDetails);
-        }
-
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order items has been updated!');
-    }
-
-    public function update_status(Order $order, Int $order_status, Request $request){
-        $order->update([
-            'order_status' => $order_status,
-            'reason' => $request->reason
-        ]);
-
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order status has been updated!');
-    }
-
-    public function destroy($uuid)
-    {
-        abort_unless(auth()->user()->can(PermissionEnum::DELETE_ORDERS), 403);
-        $order = Order::where("uuid", $uuid)->firstOrFail();
-        $order->delete();
     }
 
     public function downloadInvoice($uuid)

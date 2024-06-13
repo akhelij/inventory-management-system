@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Order;
 use App\Models\Product;
+use Gloudemans\Shoppingcart\Facades\Cart;
 
 class OrderObserver
 {
@@ -13,9 +14,10 @@ class OrderObserver
     public function created(Order $order): void
     {
         if ($order->order_status == 1){
-            foreach($order->details as $item) {
-                $product = Product::find($item->product_id);
-                $product->quantity = $product->quantity - $item->quantity;
+            $contents = Cart::content();
+            foreach($contents as $item) {
+                $product = Product::find($item->id);
+                $product->quantity = $product->quantity - $item->qty;
                 $product->save();
             }
         }
