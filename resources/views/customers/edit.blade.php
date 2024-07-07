@@ -106,6 +106,27 @@
                                                         @if (old('bank_name', $customer->bank_name) == 'BP') selected="selected" @endif>
                                                     BP
                                                 </option>
+
+                                                <option value="BMCE"
+                                                        @if (old('bank_name', $customer->bank_name) == 'BMCE') selected="selected" @endif>
+                                                    BMCE
+                                                </option>
+
+                                                <option value="CREDIT DU MAROC"
+                                                        @if (old('bank_name', $customer->bank_name) == 'CREDIT DU MAROC') selected="selected" @endif>
+                                                    CREDIT DU MAROC
+                                                </option>
+
+                                                <option value="BARID BANK"
+                                                        @if (old('bank_name', $customer->bank_name) == 'BARID BANK') selected="selected" @endif>
+                                                    BARID BANK
+                                                </option>
+
+
+                                                <option value="CREDIT AGRICOLE"
+                                                        @if (old('bank_name', $customer->bank_name) == 'CREDIT AGRICOLE') selected="selected" @endif>
+                                                    CREDIT AGRICOLE
+                                                </option>
                                             </select>
 
                                             @error('bank_name')
