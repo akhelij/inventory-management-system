@@ -132,7 +132,7 @@
                                 <x-status dot
                                           color="green"
                                           class="text-uppercase btn">
-                                    {{ __('Total') }}: {{ $totalOrders }}
+                                    {{ __('Total') }}: {{ $totalOrders }} MAD
                                 </x-status>
                             </div>
                         </div>
@@ -167,9 +167,14 @@
 
                             <div class="card-actions">
                                 <x-status dot
+                                          color="red"
+                                          class="text-uppercase btn">
+                                    {{ __('Reste') }}: {{ $totalOrders - $totalPayments }} MAD
+                                </x-status>
+                                <x-status dot
                                           color="green"
                                           class="text-uppercase btn">
-                                    {{ __('Total') }}: {{ $totalPayments }}
+                                    {{ __('Total') }}: {{ $totalPayments }} MAD
                                 </x-status>
                                 <x-action.create route="{{ '/payments/'.$customer->id.'/create'}}"/>
                             </div>
