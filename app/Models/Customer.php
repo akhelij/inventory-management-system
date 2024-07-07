@@ -57,7 +57,7 @@ class Customer extends Model
 
     public function getTotalPaymentsAttribute(): float
     {
-        return $this->payments->where('cashed_in', true)->sum('amount');
+            return $this->payments->sum('amount');
     }
 
     public function orders(): HasMany
