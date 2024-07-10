@@ -37,8 +37,12 @@ class CustomerTable extends Component
             ->search($this->search)
             ->get();
 
-        if(request()->input('only_unpaid')) {
+        if(request()->input('only_out_of_limit')) {
             $query = $query->where('is_out_of_limit', true);
+        }
+
+        if(request()->input('only_unpaid')) {
+            $query = $query->where('have_unpaid_checks', true);
         }
 
         // Manually create a paginator for the filtered customers

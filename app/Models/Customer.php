@@ -43,11 +43,17 @@ class Customer extends Model
         'total_orders',
         'total_payments',
         'is_out_of_limit',
+        'have_unpaid_checks',
     ];
 
     public function getIsOutOfLimitAttribute(): bool
     {
-        return $this->email === self::ALAMI ? true : ($this->total_orders - $this->total_payments > $this->limit);
+        return $this->email === self::ALAMI ? false : ($this->total_orders - $this->total_payments > $this->limit);
+    }
+
+    public function getHaveUnpaidChecksAttribute(): bool
+    {
+        return $this->email === self::ALAMI ? false : ($this->total_orders - $this->total_payments > 0);
     }
 
     public function getTotalOrdersAttribute(): float

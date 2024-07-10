@@ -1,12 +1,23 @@
 <div class="card">
-    @if(request()->has('only_unpaid'))
-        <x-button class="btn-icon" route="{{ route('customers.index') }}">
+    @if(request()->has('only_unpaid') || request()->has('only_out_of_limit'))
+        <div class="col-auto mt-2 ml-2">
+        <x-button class="btn-icon px-2" route="{{ route('customers.index') }}">
             {{ __('Display All') }}
         </x-button>
+        </div>
     @else
-        <x-button class="btn-icon" route="{{ route('customers.index') }}?only_unpaid=1" >
-            {{ __('Display Only Out Of Limit') }}
-        </x-button>
+        <div class="row mt-2 ml-2">
+            <div class="col-auto">
+                <x-button class="btn-icon btn-warning px-2" route="{{ route('customers.index') }}?only_out_of_limit=1">
+                    {{ __('Display Only Out Of Limit') }}
+                </x-button>
+            </div>
+            <div class="col-auto">
+                <x-button class="btn-icon btn-danger px-2" route="{{ route('customers.index') }}?only_unpaid=1">
+                    {{ __('Display Customers with unpaid checks') }}
+                </x-button>
+            </div>
+        </div>
     @endif
 
     <div class="card-header">
