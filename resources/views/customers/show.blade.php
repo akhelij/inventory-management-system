@@ -246,9 +246,10 @@
 
                                                     <form class="col-3"
                                                           action="{{ '/payments/' . $payment->id}}"
-                                                          method="DELETE"
+                                                          method="POST"
                                                           style="margin-left: 2px;">
                                                         @csrf
+                                                        @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-danger">X
                                                         </button>
                                                     </form>
