@@ -35,9 +35,13 @@ class PaymentController extends Controller
     {
         $request->validate([
             'date'   => 'required|date',
-            'nature' => 'required|string|unique:payments,nature',
-            'bank'   => 'required|string',
-            'payment_type' => 'required|string',
+            'bank'   => 'string',
+            'payment_type' => 'required|string|in:HandCash,Check,Exchange',
+            'nature' => [
+                'required',
+                'string',
+                $request->payment_type != 'HandCash' ? 'unique:payments,nature' : '',
+            ],
             'echeance' => 'required|date',
             'amount' => 'required|numeric',
         ]);
