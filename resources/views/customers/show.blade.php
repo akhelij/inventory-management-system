@@ -243,6 +243,14 @@
                                                         <button type="submit" class="btn btn-sm btn-primary">Encaissé
                                                         </button>
                                                     </form>
+
+                                                    <form class="col-3"
+                                                          action="{{ '/payments/' . $payment->id}}"
+                                                          method="DELETE">
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-sm btn-danger">X
+                                                        </button>
+                                                    </form>
                                                 @endif
                                                 @if($payment->cashed_in)
                                                     --

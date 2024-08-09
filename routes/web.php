@@ -95,6 +95,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/payments/{customer_id}/create', [PaymentController::class, 'create'])->name('payments.create');
     Route::post('/payments/{customer}', [PaymentController::class, 'store'])->name('payments.store');
+    Route::delete('/payments/{customer}', [PaymentController::class, 'destroy'])->name('payments.delete');
     Route::post('/payments/{payment}/cash-in', [PaymentController::class, 'cash_in'])->name('payments.cash_in');
     Route::post('/payments/{payment}/report', [PaymentController::class, 'report'])->name('payments.report');
     Route::get('payments/export/', [PaymentExportController::class, 'create'])->name('payments.export');
