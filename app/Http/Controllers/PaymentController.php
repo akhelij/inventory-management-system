@@ -35,7 +35,7 @@ class PaymentController extends Controller
     {
         $request->validate([
             'date'   => 'required|date',
-            'nature' => 'required|string',
+            'nature' => 'required|string|unique:payments,nature',
             'bank'   => 'required|string',
             'payment_type' => 'required|string',
             'echeance' => 'required|date',
