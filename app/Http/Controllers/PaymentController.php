@@ -36,7 +36,7 @@ class PaymentController extends Controller
         $request->validate([
             'date'   => 'required|date',
             'bank'   => 'string|nullable',
-            'payment_type' => 'required|string|in:HandCash,Check,Exchange',
+            'payment_type' => 'required|string|in:HandCash,Cheque,Exchange',
             'nature' => [
                 'required',
                 'string',
