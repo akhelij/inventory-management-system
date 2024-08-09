@@ -57,7 +57,6 @@
                                 <input name="bank" id="bank" type="text"
                                        class="form-control example-date-input @error('bank') is-invalid @enderror"
                                        value="{{ $customer->bank_name }}"
-                                       required
                                 >
                             </div>
 
@@ -93,6 +92,7 @@
                                 <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type">
                                     <option value="HandCash">Cash</option>
                                     <option value="Cheque">Cheque</option>
+                                    <option value="Exchange">Lettre de change</option>
                                 </select>
                             </div>
                             <div class="col-6">
