@@ -140,15 +140,22 @@
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th>{{ __('Date') }}</th>
+                                    <th>{{ __('Date') }} & {{ __('Ref') }}</th>
                                     <th>{{ __('Amount') }}</th>
+                                    <th></th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($customer->orders as $order)
                                     <tr>
-                                        <td>{{$order->created_at}}</td>
+                                        <td>
+                                            <a href="{{ route('orders.show', $order->uuid) }}" target="_blank">{{$order->invoice_no}}</a>
+                                            <span class="text-sm-start">{{$order->created_at}}</span>
+                                        </td>
                                         <td>{{ Number::currency($order->total, 'MAD') }}</td>
+                                        <td>
+                                            <x-button.print class="btn-icon" route="{{ route('order.downloadInvoice', $order->uuid) }}"/>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
