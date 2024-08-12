@@ -148,9 +148,9 @@
                                 <tbody>
                                 @foreach($customer->orders as $order)
                                     <tr>
-                                        <td>
+                                        <td class="column_uuid">
                                             <a href="{{ route('orders.show', $order->uuid) }}" target="_blank">{{$order->invoice_no}}</a>
-                                            <span class="text-sm-start">{{$order->created_at}}</span>
+                                            <span>{{$order->created_at}}</span>
                                         </td>
                                         <td>{{ Number::currency($order->total, 'MAD') }}</td>
                                         <td>
@@ -276,6 +276,16 @@
             </div>
         </div>
     </div>
+    <style>
+        .column_uuid {
+            display: flex;
+            flex-direction: column;
+        }
+        .column_uuid span {
+            font-size: 10px;
+            color: #999;
+        }
+    </style>
     <script>
         document.querySelectorAll('.reportButton').forEach(function (button) {
             button.addEventListener('click', function (event) {
