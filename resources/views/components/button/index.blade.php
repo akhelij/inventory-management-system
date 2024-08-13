@@ -1,10 +1,11 @@
 @props([
-    'type' => null ?? 'button',
+    'type' => 'button',
+    'target' => '_self',
     'route'
 ])
 
 @isset($route)
-    <a href="{{ $route }}" {{ $attributes->class(['btn btn-primary']) }} target="_blank">
+    <a href="{{ $route }}" {{ $attributes->class(['btn btn-primary']) }} target="{{ $target }}">
         {{ $slot }}
     </a>
 @else
