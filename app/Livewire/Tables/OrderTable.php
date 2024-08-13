@@ -18,6 +18,9 @@ class OrderTable extends Component
 
     public $sortAsc = false;
 
+    public $startDate = null;
+    public $endDate = null;
+
     public function sortBy($field): void
     {
         if($this->sortField === $field)
@@ -38,6 +41,12 @@ class OrderTable extends Component
         {
             $query->where("user_id", auth()->id());
         }
+
+        if($this->startDate && $this->endDate)
+        {
+            $query->whereBetween('order_date', [$this->startDate, $this->endDate]);
+        }
+
         return view('livewire.tables.order-table', [
             'orders' => $query->with(['customer', 'details'])
                 ->search($this->search)

@@ -10,7 +10,6 @@
             <x-action.create route="{{ route('orders.create') }}"/>
         </div>
     </div>
-
     <div class="card-body border-bottom py-3">
         <div class="d-flex">
             <div class="text-secondary">
@@ -32,9 +31,19 @@
                            aria-label="Search invoice">
                 </div>
             </div>
+            <div class="ms-auto text-secondary">
+                {{__('Filter by Date')}}:
+                <div class="ms-2 d-inline-block">
+                    <input type="date" wire:model.live="startDate" class="form-control form-control-sm"
+                           aria-label="Start date">
+                </div>
+                <div class="ms-2 d-inline-block">
+                    <input type="date" wire:model.live="endDate" class="form-control form-control-sm"
+                           aria-label="End date">
+                </div>
+            </div>
         </div>
     </div>
-
     <x-spinner.loading-spinner/>
 
     <div class="table-responsive">
@@ -127,7 +136,8 @@
                                                         {{ __('Approve') }}
                                                     </x-status>
                                                 </a>
-                                                <span class="status status-red" data-order-id= {{$order->id }} id="cancelButton">
+                                                <span class="status status-red"
+                                                      data-order-id={{$order->id }} id="cancelButton">
                                                         <span class="status-dot"></span>
                                                         {{ __('Cancel') }}
                                                 </span>
