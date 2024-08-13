@@ -64,7 +64,7 @@
                 </th>
                 <th scope="col" class="align-middle text-center">
                     <a wire:click.prevent="sortBy('payment_type')" href="#" role="button">
-                        {{ __('Paymet') }}
+                        {{ __('Payment') }}
                         @include('inclues._sort-icon', ['field' => 'payment_type'])
                     </a>
                 </th>
