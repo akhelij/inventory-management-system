@@ -4,7 +4,7 @@
 ])
 
 @isset($route)
-    <a href="{{ $route }}" {{ $attributes->class(['btn btn-primary']) }}>
+    <a href="{{ $route }}" {{ $attributes->class(['btn btn-primary']) }} target="_blank">
         {{ $slot }}
     </a>
 @else
