@@ -18,16 +18,21 @@
             <td>
                 {{ $item->name }}
             </td>
-            <td style="min-width: 170px;">
+            <td style="width: 120px;">
                 <form action="{{ route('pos.updateCartItem', $item->rowId) }}" method="POST">
                     @csrf
-                    <div class="input-group">
+                    <div class="input-group" style="width:110px">
                         <input type="number" class="form-control" name="qty" wire:change="updateQuantity('{{ $item->rowId }}', $event.target.value)" value="{{ old('qty', $item->qty) }}" min="1" required/>
                     </div>
                 </form>
             </td>
+{{--            <td class="text-center">--}}
+{{--                {{ $item->id }}--}}
+{{--            </td>--}}
             <td class="text-center">
-                {{ $item->price }}
+                <div class="input-group" style="width:110px">
+                    <input type="number" class="form-control" name="price" wire:change="updatePrice('{{ $item->rowId }}', $event.target.value)" value="{{ old('price', $item->price) }}" min="{{$item->price}}" required/>
+                </div>
             </td>
             <td class="text-center">
                 {{ $item->subtotal }}
