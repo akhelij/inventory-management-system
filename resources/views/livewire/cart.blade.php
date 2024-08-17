@@ -26,9 +26,6 @@
                     </div>
                 </form>
             </td>
-{{--            <td class="text-center">--}}
-{{--                {{ $item->id }}--}}
-{{--            </td>--}}
             <td class="text-center">
                 <div class="input-group" style="width:110px">
                     <input type="number" class="form-control" name="price" wire:change="updatePrice('{{ $item->rowId }}', $event.target.value)" value="{{ old('price', $item->price) }}" min="{{$item->price}}" required/>
