@@ -19,11 +19,10 @@ class Cart extends Component
         G_Cart::update($rowId, $quantity);
     }
 
-
     public function updatePrice($rowId, $price)
     {
         $cart = G_Cart::get($rowId);
-        if ($price > Product::find($cart->id)->price) {
+        if ($price > Product::find($cart->id)->selling_price) {
             $cart->updateFromArray(['price' => $price]);
         }
     }
