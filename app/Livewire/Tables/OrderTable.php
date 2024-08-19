@@ -21,6 +21,8 @@ class OrderTable extends Component
     public $startDate = null;
     public $endDate = null;
 
+    public $order_ids = [];
+
     public function sortBy($field): void
     {
         if($this->sortField === $field)
@@ -32,6 +34,16 @@ class OrderTable extends Component
         }
 
         $this->sortField = $field;
+    }
+
+    public function selectOrder($orderId)
+    {
+        if(in_array($orderId, $this->order_ids))
+        {
+            $this->order_ids = array_diff($this->order_ids, [$orderId]);
+        } else {
+            $this->order_ids[] = $orderId;
+        }
     }
 
     public function render()

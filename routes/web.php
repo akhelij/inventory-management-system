@@ -115,6 +115,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // TODO: Remove from OrderController
     Route::get('/orders/details/{order_id}/download', [OrderController::class, 'downloadInvoice'])->name('order.downloadInvoice');
+    Route::post('/orders/details/download', [OrderController::class, 'bulkDownloadInvoice'])->name('order.bulk.download');
 
 
     // Route Purchases

@@ -7,7 +7,13 @@
         </div>
 
         <div class="card-actions">
-            <x-action.create route="{{ route('orders.create') }}"/>
+            <form action="{{ route('order.bulk.download', ['order_ids' => $order_ids]) }}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                <x-action.create route="{{ route('orders.create') }}"/>
+                <button type="submit" class="btn btn-primary">
+                    <x-icon.printer/>
+                </button>
+            </form>
         </div>
     </div>
     <div class="card-body border-bottom py-3">
@@ -51,7 +57,7 @@
             <thead class="thead-light">
             <tr>
                 <th class="align-middle text-center w-1">
-                    {{ __('No.') }}
+
                 </th>
                 <th scope="col" class="align-middle text-center">
                     <a wire:click.prevent="sortBy('invoice_no')" href="#" role="button">
@@ -98,7 +104,7 @@
             @forelse ($orders as $order)
                 <tr>
                     <td class="align-middle text-center">
-                        {{ $loop->iteration }}
+                        <input type="checkbox" wire:click="selectOrder({{ $order->id }})" wire:ignore>
                     </td>
                     <td class="align-middle text-center">
                         {{ $order->invoice_no }}

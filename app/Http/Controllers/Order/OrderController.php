@@ -187,4 +187,14 @@ class OrderController extends Controller
             'order' => $order,
         ]);
     }
+
+    public function bulkDownloadInvoice(Request $request)
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
+        $orders = Order::with(['customer', 'details', 'user'])->whereIn('id', $request->order_ids)->get();
+
+        return view('orders.bulk-print-invoice', [
+            'orders' => $orders,
+        ]);
+    }
 }
