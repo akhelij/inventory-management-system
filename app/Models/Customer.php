@@ -83,7 +83,7 @@ class Customer extends Model
 
     public function payments(): HasMany
     {
-        return $this->hasMany(Payment::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(Payment::class)->orderBy('echeance', 'desc');
     }
 
     public function scopeSearch($query, $value): void
