@@ -158,7 +158,7 @@
                         </a>
                         <a id="invoice_download_btn" class="btn btn-lg btn-download">
                             <i class="fa fa-download"></i>
-                            Telecharger la facture
+                            Télécharger la facture
                         </a>
                     </div>
                 </div>
