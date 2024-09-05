@@ -159,6 +159,7 @@
                         @if($order->order_status === \App\Enums\OrderStatus::APPROVED)
                             <x-button.print class="btn-icon" route="{{ route('order.downloadInvoice', $order->uuid) }}"/>
                         @endif
+                        <x-button.delete class="btn-icon" route="{{ route('orders.destroy', $order->uuid) }}"  onclick="return confirm('Vous etes sure !')"/>
                     </td>
                 </tr>
             @empty
