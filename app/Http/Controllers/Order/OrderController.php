@@ -178,12 +178,14 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             $order = Order::where("uuid", $uuid)->firstOrFail();
-            $details = OrderDetails::where('order_id', $order->id)->get();
-            foreach ($details as $detail) {
-                $product = Product::find($detail->product_id);
-                $product->update([
-                    'quantity' => $product->quantity + $detail->quantity
-                ]);
+            if ($order->order_status != null) {
+                $details = OrderDetails::where('order_id', $order->id)->get();
+                foreach ($details as $detail) {
+                    $product = Product::find($detail->product_id);
+                    $product->update([
+                        'quantity' => $product->quantity + $detail->quantity
+                    ]);
+                }
             }
             $order->delete();
             DB::commit();
