@@ -100,13 +100,6 @@ class OrderController extends Controller
         ]);
     }
 
-    public function destroy($uuid)
-    {
-        abort_unless(auth()->user()->can(PermissionEnum::DELETE_ORDERS), 403);
-        $order = Order::where("uuid", $uuid)->firstOrFail();
-        $order->delete();
-    }
-
     public function show($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
@@ -176,6 +169,33 @@ class OrderController extends Controller
         return redirect()
             ->route('orders.index')
             ->with('success', 'Order has been completed!');
+    }
+
+    public function destroy($uuid)
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::DELETE_ORDERS), 403);
+
+        try {
+            DB::beginTransaction();
+            $order = Order::where("uuid", $uuid)->firstOrFail();
+            $details = OrderDetails::where('order_id', $order->id)->get();
+            foreach ($details as $detail) {
+                $product = Product::find($detail->product_id);
+                $product->update([
+                    'quantity' => $product->quantity + $detail->quantity
+                ]);
+            }
+            $order->delete();
+            DB::commit();
+            return redirect()
+                ->route('orders.index')
+                ->with('success', 'Order has been deleted!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()
+                ->route('orders.index')
+                ->with('error', $e->getMessage());
+        }
     }
 
     public function downloadInvoice($uuid)
