@@ -42,7 +42,7 @@
                                 {{ $activity->created_at->format('d-m-Y') }}
                             </td>
                             <td class="align-middle text-center d-none d-sm-table-cell">
-                                {{ $activity->causer->name }}
+                                {{ $activity->causer?->name }}
                             </td>
                             <td class="align-middle text-center">
                                 @if($activity->event == 'deleted')
