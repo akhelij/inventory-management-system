@@ -13,11 +13,17 @@
 
             <div class="card status-{{$order->status_color}}" style="background: rgba(var(--tblr-status-color-rgb),.1)">
                 <div class="card-header">
-                    <div>
+                    <div class="d-flex">
                         <h3 class="card-title">
                             {{ __('Order') }}
                             <x-status dot color="{{ $order->status_color }}" class="text-uppercase">
                                 {{ $order->status }}
+                            </x-status>
+                        </h3>
+                        <h3 class="card-title">
+                            {{ __('Author') }}
+                            <x-status dot color="gray" class="text-uppercase">
+                                {{ $order->user->name }}
                             </x-status>
                         </h3>
                     </div>
