@@ -66,6 +66,12 @@
                     </a>
                 </th>
                 <th scope="col" class="align-middle text-center">
+                    <a wire:click.prevent="sortBy('user_id')" href="#" role="button">
+                        {{ __('Author') }}
+                        @include('inclues._sort-icon', ['field' => 'user_id'])
+                    </a>
+                </th>
+                <th scope="col" class="align-middle text-center">
                     <a wire:click.prevent="sortBy('customer_id')" href="#" role="button">
                         {{ __('Customer') }}
                         @include('inclues._sort-icon', ['field' => 'customer_id'])
@@ -108,6 +114,9 @@
                     </td>
                     <td class="align-middle text-center">
                         {{ $order->invoice_no }}
+                    </td>
+                    <td class="align-middle text-center">
+                        {{ $order->user->name }}
                     </td>
                     <td class="align-middle text-center">
                         {{ $order->customer->name }}
