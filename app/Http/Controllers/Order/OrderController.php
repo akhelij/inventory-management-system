@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Product;
+use App\Models\User;
 use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
@@ -22,9 +23,9 @@ class OrderController extends Controller
     public function index()
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
-        $query = Order::query();
+        $query = Order::with('user');
         if (!auth()->user()->hasRole('admin')) {
-            $query->where("user_id", auth()->id());
+            $query->where("user_id", auth()->id())->whereIn("user_id", User::role('admin')->pluck('id'));
         }
         return view('orders.index', [
             'orders' => $query->count()
