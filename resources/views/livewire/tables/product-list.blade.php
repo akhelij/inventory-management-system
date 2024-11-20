@@ -45,11 +45,13 @@
             <tbody>
             @forelse ($products as $product)
                 <tr>
-                    <td class="">
-                        <img style="width: 50px;"
-                             src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
-                             alt="">
-                        {{ $product->name }}
+                    <td class="text-truncate" style="max-width: 300px;">
+                        <div class="d-flex align-items-center gap-2">
+                            <img style="width: 50px; flex-shrink: 0;"
+                                 src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
+                                 alt="">
+                            <span class="text-truncate">{{ $product->name }}</span>
+                        </div>
                     </td>
                     <td class="align-middle text-center">
                         {{ $product->warehouse?->name ?? '--' }}
