@@ -50,7 +50,7 @@
                             <img style="width: 50px; flex-shrink: 0;"
                                  src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
                                  alt="">
-                            <span class="text-truncate">{{ $product->name }}</span>
+                            <span class="text-truncate" title="{{ $product->name }}">{{ $product->name }}</span>
                         </div>
                     </td>
                     <td class="align-middle text-center">
