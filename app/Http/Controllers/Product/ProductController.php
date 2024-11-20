@@ -93,7 +93,26 @@ class ProductController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
         $product = Product::where("uuid", $uuid)->firstOrFail();
-        $product_entries = $product->product_entries()->orderBy('created_at', 'desc')->get();
+
+        $product_entries = $product->activities()
+            ->where('event', 'updated')
+            ->whereRaw("JSON_EXTRACT(properties, '$.attributes.quantity') IS NOT NULL")
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($activity) {
+                $properties = json_decode($activity->properties);
+                $oldQuantity = $properties->old->quantity ?? null;
+                $newQuantity = $properties->attributes->quantity;
+                $difference = $oldQuantity !== null ? $newQuantity - $oldQuantity : 0;
+
+                return [
+                    'date' => $activity->created_at->format('Y-m-d H:i:s'),
+                    'old_quantity' => $oldQuantity,
+                    'new_quantity' => $newQuantity,
+                    'difference' => $difference,
+                    'user' => $activity->causer->name ?? 'Unknown',
+                ];
+            });
 
         // Generate a barcode
         $generator = new BarcodeGeneratorHTML();

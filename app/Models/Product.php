@@ -3,15 +3,14 @@
 namespace App\Models;
 
 use App\Enums\TaxType;
-use App\Observers\ProductObserver;
 use App\Traits\HasActivityLogs;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\Activitylog\Models\Activity;
 
-#[ObservedBy([ProductObserver::class])]
 class Product extends Model
 {
     use HasFactory, HasActivityLogs;
@@ -50,9 +49,9 @@ class Product extends Model
         return 'slug';
     }
 
-    public function product_entries()
+    public function activities(): MorphMany
     {
-        return $this->hasMany(ProductEntry::class);
+        return $this->morphMany(Activity::class, 'subject');
     }
 
     public function category(): BelongsTo

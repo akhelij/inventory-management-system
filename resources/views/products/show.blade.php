@@ -53,15 +53,27 @@
                                 <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
                                     <thead>
                                     <tr>
-                                        <th>{{ __('Quantity') }}</th>
+                                        <th>{{ __('Old Quantity') }}</th>
+                                        <th>{{ __('New Quantity') }}</th>
+                                        <th>{{ __('Change') }}</th>
+                                        <th>{{ __('Author') }}</th>
                                         <th>{{ __('Date') }}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($product_entries as $entry)
                                         <tr>
-                                            <td>+{{ $entry->quantity_added }}</td>
-                                            <td>{{ $entry->created_at }}</td>
+                                            <td>{{ $entry['old_quantity'] }}</td>
+                                            <td>{{ $entry['new_quantity'] }}</td>
+                                            <td>
+                                                @if ($entry['difference'] > 0)
+                                                    +{{ $entry['difference'] }}
+                                                @else
+                                                    {{ $entry['difference'] }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $entry['user'] }}</td>
+                                            <td>{{ $entry['date'] }}</td>
                                         </tr>
                                     @endforeach
                                     </tbody>
