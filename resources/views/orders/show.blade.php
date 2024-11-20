@@ -113,7 +113,7 @@
                                     <th scope="col" class="align-middle text-center">No.</th>
                                     <th scope="col" class="align-middle text-center">Photo</th>
                                     <th scope="col" class="align-middle text-center">Product Name</th>
-                                    <th scope="col" class="align-middle text-center">Product Code</th>
+                                    <th scope="col" class="align-middle text-center">Inventory</th>
                                     <th scope="col" class="align-middle text-center">Quantity</th>
                                     <th scope="col" class="align-middle text-center">Price</th>
                                     <th scope="col" class="align-middle text-center">Total</th>
@@ -135,7 +135,7 @@
                                             {{ $item->product->name }}
                                         </td>
                                         <td class="align-middle text-center">
-                                            {{ $item->product->code }}
+                                            {{ $item->product->warehouse->name }}
                                         </td>
                                         <td class="align-middle text-center">
                                             {{ $item->quantity }}
