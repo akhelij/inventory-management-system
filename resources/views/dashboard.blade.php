@@ -169,6 +169,7 @@
                     </div>
                 </div>
 
+                @if(auth()->user()->hasRole('admin'))
                 <div class="col-sm-4 col-lg-4">
                     <div class="card">
                         <div class="card-body">
@@ -257,6 +258,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
 
 
 
