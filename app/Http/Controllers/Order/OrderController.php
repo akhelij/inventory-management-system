@@ -25,7 +25,7 @@ class OrderController extends Controller
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
         $query = Order::with('user');
         if (!auth()->user()->hasRole('admin')) {
-            $query->where("user_id", auth()->id())->whereIn("user_id", User::role('admin')->pluck('id'));
+            $query->where("user_id", auth()->id())->orWhereIn("user_id", User::role('admin')->pluck('id'));
         }
         return view('orders.index', [
             'orders' => $query->count()
