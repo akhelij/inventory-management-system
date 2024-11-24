@@ -166,7 +166,7 @@
                     <td class="align-middle text-center">
                         <x-button.show class="btn-icon" route="{{ route('orders.show', $order->uuid) }}" target="_blank"/>
                         @if($order->order_status === \App\Enums\OrderStatus::APPROVED)
-                            <x-button.print class="btn-icon" route="{{ route('order.downloadInvoice', $order->uuid) }}"/>
+                            <x-button.print class="btn-icon" route="{{ route('order.downloadInvoice', $order->uuid) }}"  target="_blank"/>
                         @endif
                         <x-button.delete class="btn-icon" route="{{ route('orders.destroy', $order->uuid) }}"  onclick="return confirm('Vous etes sure !')"/>
                     </td>
