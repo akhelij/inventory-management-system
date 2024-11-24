@@ -161,12 +161,12 @@
                             <td class="text-center">{{ Number::currency($item->total, 'MAD') }}</td>
                         </tr>
                     @endforeach
-                    <tr>
-                        <td colspan="3" class="text-end"><strong>Total HT</strong></td>
-                        <td class="text-center">
-                            <strong>{{ Number::currency($order->sub_total, 'MAD') }}</strong>
-                        </td>
-                    </tr>
+{{--                    <tr>--}}
+{{--                        <td colspan="3" class="text-end"><strong>Total HT</strong></td>--}}
+{{--                        <td class="text-center">--}}
+{{--                            <strong>{{ Number::currency($order->sub_total, 'MAD') }}</strong>--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
 {{--                    <tr>--}}
 {{--                        <td colspan="3" class="text-end"><strong>Tax</strong></td>--}}
 {{--                        <td class="text-center">--}}
