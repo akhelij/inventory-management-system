@@ -142,6 +142,8 @@
                                 <tr>
                                     <th>{{ __('Date') }} & {{ __('Ref') }}</th>
                                     <th>{{ __('Amount') }}</th>
+                                    <th>{{ __('Due') }}</th>
+                                    <th>{{ __('Paid') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -159,6 +161,8 @@
                                             <span>{{$order->created_at}}</span>
                                         </td>
                                         <td>{{ Number::currency($order->total, 'MAD') }}</td>
+                                        <td>{{ Number::currency($order->due, 'MAD') }}</td>
+                                        <td>{{ Number::currency($order->pay, 'MAD') }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
