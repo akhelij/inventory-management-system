@@ -99,5 +99,10 @@
     "Password": "Mot de passe",
     "Password confirmation": "Confirmation du mot de passe",
     "Bank name": "Banque",
-    "Stock history": "Historique du stock"
+    "Stock history": "Historique du stock",
+    "Orders total amount" : "Montant total des commandes",
+    "Purchases amount" : "Montant des achats",
+    "Due": "Reste à payer",
+    "Total Paid": "Total payé",
+    "Amount": "Montant"
 }

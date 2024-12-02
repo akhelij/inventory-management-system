@@ -131,8 +131,8 @@
                             <div class="card-actions">
                                 <x-status dot
                                           color="green"
-                                          class="text-uppercase btn">
-                                    {{ __('Total') }}: {{ $totalOrders }} MAD
+                                          class="btn">
+                                    {{ __('Purchases amount') }}: {{ $totalOrders }} MAD
                                 </x-status>
                             </div>
                         </div>
@@ -160,9 +160,9 @@
                                             </span>
                                             <span>{{$order->created_at}}</span>
                                         </td>
-                                        <td>{{ Number::currency($order->total, 'MAD') }}</td>
-                                        <td>{{ Number::currency($order->due, 'MAD') }}</td>
-                                        <td>{{ Number::currency($order->pay, 'MAD') }}</td>
+                                        <td style="font-size:12px">{{ Number::currency($order->total, 'Dhs') }}</td>
+                                        <td style="font-size:12px">{{ Number::currency($order->due, 'Dhs') }}</td>
+                                        <td style="font-size:12px">{{ Number::currency($order->pay, 'Dhs') }}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>
@@ -181,14 +181,14 @@
 
                             <div class="card-actions">
                                 <x-status dot
-                                          color="red"
-                                          class="text-uppercase btn">
-                                    {{ __('Reste') }}: {{ $totalOrders - $totalPayments }} MAD
+                                          color="green"
+                                          class="btn">
+                                    {{ __('Total Paid') }}: {{ $totalPayments }} MAD
                                 </x-status>
                                 <x-status dot
-                                          color="green"
-                                          class="text-uppercase btn">
-                                    {{ __('Total') }}: {{ $totalPayments }} MAD
+                                          color="red"
+                                          class="btn">
+                                    {{ __('Due') }}: {{ $totalOrders - $totalPayments }} MAD
                                 </x-status>
                                 <x-action.create route="{{ '/payments/'.$customer->id.'/create'}}"/>
                             </div>
@@ -208,7 +208,7 @@
                                 </thead>
                                 <tbody>
                                 @foreach($customer->payments as $payment)
-                                    <tr>
+                                    <tr style="font-size:12px">
                                         <td>{{$payment->date}}</td>
                                         <td>{{$payment->nature}}</td>
                                         <td>{{$payment->payment_type}}</td>
@@ -219,19 +219,19 @@
                                                 @if($payment->reported)
                                                     <x-status dot
                                                               color="red"
-                                                              class="text-uppercase btn">
+                                                              class="btn">
                                                         {{ __('Reported') }}
                                                     </x-status>
                                                 @elseif($payment->cashed_in)
                                                     <x-status dot
                                                               color="green"
-                                                              class="text-uppercase btn">
+                                                              class="btn">
                                                         {{ __('Cashed In') }}
                                                     </x-status>
                                                 @else
                                                     <x-status dot
                                                               color="orange"
-                                                              class="text-uppercase btn">
+                                                              class="btn">
                                                         {{ __('Pending') }}
                                                     </x-status>
                                                 @endif
