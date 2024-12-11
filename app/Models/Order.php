@@ -53,9 +53,8 @@ class Order extends Model
             OrderStatus::CANCELED => 'Canceled',
         ];
 
-        return $statuses[$this->order_status];
+        return $statuses[$this->order_status] ?? 'Unknown';
     }
-
 
     public function getStatusColorAttribute()
     {
@@ -65,7 +64,7 @@ class Order extends Model
             OrderStatus::CANCELED => 'red',
         ];
 
-        return $colors[$this->order_status];
+        return $colors[$this->order_status] ?? 'grey';
     }
 
     public function getIsUpdatableStatusAttribute(): bool

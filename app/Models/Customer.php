@@ -68,7 +68,7 @@ class Customer extends Model
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class)->where('order_status', 1)->orderBy('created_at', 'desc');
+        return $this->hasMany(Order::class)->orderBy('created_at', 'desc');
     }
 
     public function quotations(): HasMany

@@ -54,8 +54,7 @@ class CustomerController extends Controller
     public function show($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
-        $customer = Customer::where("uuid", $uuid)->firstOrFail();
-        $customer->loadMissing(['orders', 'payments'])->get();
+        $customer = Customer::where("uuid", $uuid)->with(['orders', 'payments'])->firstOrFail();
 
         $diff = $customer->total_orders - $customer->total_payments;
         $limit_reached = $diff > $customer->limit;

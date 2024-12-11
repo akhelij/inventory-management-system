@@ -148,6 +148,7 @@
                                 </thead>
                                 <tbody>
                                 @foreach($customer->orders as $order)
+                                    @if($order->due > 0)
                                     <tr>
                                         <td class="column_uuid">
                                             <span>
@@ -164,6 +165,7 @@
                                         <td style="font-size:12px">{{ Number::currency($order->due, 'Dhs') }}</td>
                                         <td style="font-size:12px">{{ Number::currency($order->pay, 'Dhs') }}</td>
                                     </tr>
+                                    @endif
                                 @endforeach
                                 </tbody>
                             </table>
