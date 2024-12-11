@@ -21,7 +21,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('auth.login');
     }
 
     /**
@@ -40,7 +40,7 @@ class RegisteredUserController extends Controller
         ]);
 
         $user = User::create([
-            "uuid"=>Str::uuid(),
+            "uuid"=> Str::uuid(),
             'username' => $request->username,
             'name' => $request->name,
             'email' => $request->email,
