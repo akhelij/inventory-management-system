@@ -159,7 +159,7 @@
                                             <td>{{ __('Tax') }}</td>
                                             <td>
                                                 <span class="badge bg-red-lt">
-                                                    {{ $product->tax }} %
+                                                    {{ $product->tax ?? 0 }} %
                                                 </span>
                                             </td>
                                         </tr>
