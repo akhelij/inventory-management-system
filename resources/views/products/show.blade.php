@@ -111,10 +111,17 @@
                                         </tr>
                                         <tr>
                                             <td>{{ __('Category') }}</td>
+
                                             <td>
-                                                <a href="{{ route('categories.show', $product->category) }}" class="badge bg-blue-lt">
-                                                    {{ $product->category->name }}
-                                                </a>
+                                                @if($product->category)
+                                                    <a href="{{ route('categories.show', $product->category) }}" class="badge bg-blue-lt">
+                                                        {{ $product->category->name }}
+                                                    </a>
+                                                @else
+                                                    <span class="badge bg-red-lt">
+                                                    {{ __('No category') }}
+                                                    </span>
+                                                @endif
                                             </td>
                                         </tr>
                                         <tr>
