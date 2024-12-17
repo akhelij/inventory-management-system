@@ -56,15 +56,15 @@ class CustomerController extends Controller
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
         $customer = Customer::where("uuid", $uuid)->with(['orders', 'payments'])->firstOrFail();
         $totalOrders = $customer->total_orders;
-        $totalOrdersPaid = $customer->total_orders_paid;
+//        $totalOrdersPaid = $customer->total_orders_paid;
         $due = $totalOrders - $customer->total_payments;
-        $diff = $customer->total_orders_not_paid;
+        $diff = $due;
         $amountPendingPayments = $customer->total_pending_payments;
         $limit_reached = $diff > $customer->limit;
         return view('customers.show', [
             'customer' => $customer,
             'totalOrders' => $totalOrders,
-            'totalOrdersPaid' => $totalOrdersPaid,
+//            'totalOrdersPaid' => $totalOrdersPaid,
             'due' => $due,
             'amountPendingPayments' => $amountPendingPayments,
             'diff' => $diff,

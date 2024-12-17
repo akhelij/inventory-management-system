@@ -41,8 +41,8 @@ class Customer extends Model
 
     protected $appends = [
         'total_orders',
-        'total_orders_paid',
-        'total_orders_not_paid',
+//        'total_orders_paid',
+//        'total_orders_not_paid',
         'total_payments',
         'is_out_of_limit',
         'have_unpaid_checks',
@@ -63,15 +63,15 @@ class Customer extends Model
         return $this->orders->where('order_status', true)->sum('total');
     }
 
-    public function getTotalOrdersPaidAttribute(): float
-    {
-        return $this->orders->where('order_status', true)->where('due', 0)->sum('total');
-    }
-
-    public function getTotalOrdersNotPaidAttribute(): float
-    {
-        return $this->orders->where('order_status', true)->where('due', '<>', 0)->sum('due');
-    }
+//    public function getTotalOrdersPaidAttribute(): float
+//    {
+//        return $this->orders->where('order_status', true)->where('due', 0)->sum('total');
+//    }
+//
+//    public function getTotalOrdersNotPaidAttribute(): float
+//    {
+//        return $this->orders->where('order_status', true)->where('due', '<>', 0)->sum('due');
+//    }
 
     public function getTotalPaymentsAttribute(): float
     {
