@@ -183,9 +183,9 @@
 
                             <div class="card-actions">
                                 <x-status dot
-                                          color="green"
+                                          color="orange"
                                           class="btn">
-                                    {{ __('Total Paid') }}: {{ $amountPendingPayments }} MAD
+                                    {{ __('Total Pending') }}: {{ $amountPendingPayments }} MAD
                                 </x-status>
                                 <x-status dot
                                           color="red"
