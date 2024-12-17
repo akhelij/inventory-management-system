@@ -132,7 +132,7 @@
                                 <x-status dot
                                           color="green"
                                           class="btn">
-                                    {{ __('Purchases amount') }}: {{ $totalOrdersPaid }} MAD
+                                    {{ __('Purchases amount') }}: {{ $totalOrders }} MAD
                                 </x-status>
                             </div>
                         </div>
@@ -142,8 +142,8 @@
                                 <tr>
                                     <th>{{ __('Date') }} & {{ __('Ref') }}</th>
                                     <th>{{ __('Amount') }}</th>
-                                    <th>{{ __('Due') }}</th>
-                                    <th>{{ __('Paid') }}</th>
+{{--                                    <th>{{ __('Due') }}</th>--}}
+{{--                                    <th>{{ __('Paid') }}</th>--}}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -162,8 +162,8 @@
                                             <span>{{$order->created_at}}</span>
                                         </td>
                                         <td style="font-size:12px">{{ Number::currency($order->total, 'Dhs') }}</td>
-                                        <td style="font-size:12px">{{ Number::currency($order->due, 'Dhs') }}</td>
-                                        <td style="font-size:12px">{{ Number::currency($order->pay, 'Dhs') }}</td>
+{{--                                        <td style="font-size:12px">{{ Number::currency($order->due, 'Dhs') }}</td>--}}
+{{--                                        <td style="font-size:12px">{{ Number::currency($order->pay, 'Dhs') }}</td>--}}
                                     </tr>
 {{--                                    @endif--}}
                                 @endforeach
@@ -190,7 +190,7 @@
                                 <x-status dot
                                           color="red"
                                           class="btn">
-                                    {{ __('Due') }}: {{ $totalOrdersNotPaid }} MAD
+                                    {{ __('Due') }}: {{ $due }} MAD
                                 </x-status>
                                 <x-action.create route="{{ '/payments/'.$customer->id.'/create'}}"/>
                             </div>
