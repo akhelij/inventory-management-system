@@ -132,7 +132,7 @@
                                 <x-status dot
                                           color="green"
                                           class="btn">
-                                    {{ __('Purchases amount') }}: {{ $totalOrders }} MAD
+                                    {{ __('Purchases amount') }}: {{ $totalOrdersPaid }} MAD
                                 </x-status>
                             </div>
                         </div>
@@ -185,12 +185,12 @@
                                 <x-status dot
                                           color="green"
                                           class="btn">
-                                    {{ __('Total Paid') }}: {{ $totalPayments }} MAD
+                                    {{ __('Total Paid') }}: {{ $amountPendingPayments }} MAD
                                 </x-status>
                                 <x-status dot
                                           color="red"
                                           class="btn">
-                                    {{ __('Due') }}: {{ $totalOrders - $totalPayments }} MAD
+                                    {{ __('Due') }}: {{ $totalOrdersNotPaid }} MAD
                                 </x-status>
                                 <x-action.create route="{{ '/payments/'.$customer->id.'/create'}}"/>
                             </div>

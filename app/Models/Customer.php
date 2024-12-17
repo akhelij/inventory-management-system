@@ -40,7 +40,8 @@ class Customer extends Model
     ];
 
     protected $appends = [
-        'total_orders',
+        'total_orders_paid',
+        'total_orders_not_paid',
         'total_payments',
         'is_out_of_limit',
         'have_unpaid_checks',
@@ -56,14 +57,25 @@ class Customer extends Model
         return $this->email === self::ALAMI ? false : ($this->total_orders - $this->total_payments > 0);
     }
 
-    public function getTotalOrdersAttribute(): float
+    public function getTotalOrdersPaidAttribute(): float
     {
-        return $this->orders->where('order_status', true)->sum('total');
+        return $this->orders->where('order_status', true)->where('due', 0)->sum('total');
+    }
+
+    public function getTotalOrdersNotPaidAttribute(): float
+    {
+        return $this->orders->where('order_status', true)->where('due', '<>', 0)->sum('total');
     }
 
     public function getTotalPaymentsAttribute(): float
     {
-            return $this->payments->sum('amount');
+        return $this->payments->sum('amount');
+    }
+
+
+    public function getTotalPendingPaymentsAttribute(): float
+    {
+        return $this->payments->where('cashed_in', 0)->sum('amount');
     }
 
     public function orders(): HasMany
