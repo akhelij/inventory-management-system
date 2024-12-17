@@ -60,7 +60,7 @@ class Customer extends Model
 
     public function getTotalOrdersAttribute(): float
     {
-        return $this->orders->where('order_status', true)->where('due', 0)->sum('total');
+        return $this->orders->where('order_status', true)->sum('total');
     }
 
     public function getTotalOrdersPaidAttribute(): float
@@ -70,7 +70,7 @@ class Customer extends Model
 
     public function getTotalOrdersNotPaidAttribute(): float
     {
-        return $this->orders->where('order_status', true)->where('due', '<>', 0)->sum('total');
+        return $this->orders->where('order_status', true)->where('due', '<>', 0)->sum('due');
     }
 
     public function getTotalPaymentsAttribute(): float
