@@ -58,6 +58,7 @@ class CustomerController extends Controller
         $totalOrders = $customer->total_orders;
 //        $totalOrdersPaid = $customer->total_orders_paid;
         $due = $totalOrders - $customer->total_payments;
+        $totalPayments = $customer->total_payments;
         $diff = $due;
         $amountPendingPayments = $customer->total_pending_payments;
         $limit_reached = $diff > $customer->limit;
@@ -65,6 +66,7 @@ class CustomerController extends Controller
             'customer' => $customer,
             'totalOrders' => $totalOrders,
 //            'totalOrdersPaid' => $totalOrdersPaid,
+            'totalPayments' => $totalPayments,
             'due' => $due,
             'amountPendingPayments' => $amountPendingPayments,
             'diff' => $diff,

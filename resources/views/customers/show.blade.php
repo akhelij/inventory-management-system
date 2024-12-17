@@ -183,6 +183,11 @@
 
                             <div class="card-actions">
                                 <x-status dot
+                                          color="green"
+                                          class="btn">
+                                    {{ __('Total Payments') }}: {{ $totalPayments }} MAD
+                                </x-status>
+                                <x-status dot
                                           color="orange"
                                           class="btn">
                                     {{ __('Total Pending') }}: {{ $amountPendingPayments }} MAD
