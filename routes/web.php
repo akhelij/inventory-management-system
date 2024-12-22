@@ -94,6 +94,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.store');
 
     Route::get('/payments/{customer_id}/create', [PaymentController::class, 'create'])->name('payments.create');
+    Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
     Route::post('/payments/{customer}', [PaymentController::class, 'store'])->name('payments.store');
     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.delete');
     Route::post('/payments/{payment}/cash-in', [PaymentController::class, 'cash_in'])->name('payments.cash_in');

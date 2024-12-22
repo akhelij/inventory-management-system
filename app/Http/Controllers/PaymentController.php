@@ -56,7 +56,8 @@ class PaymentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $payment = Payment::find($id);
+        return CustomerController::show($payment->customer->uuid);
     }
 
     /**
