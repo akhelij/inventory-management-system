@@ -5,6 +5,9 @@
         <div class="container-xl">
             <div class="row g-2 align-items-center mb-3">
                 <div class="col">
+                    <img style="width: 90px;" id="image-preview"
+                         src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
+                         alt="" class="img-account-profile mb-2">
                     <h2 class="page-title">
                         {{ $product->name }}
                     </h2>
@@ -36,51 +39,7 @@
             <div class="row row-cards">
                 <div class="row">
                     <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title">
-                                    {{ __('Product Image') }}
-                                </h3>
-
-                                <img style="width: 90px;" id="image-preview"
-                                    src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
-                                    alt="" class="img-account-profile mb-2">
-                            </div>
-                            <div class="table-responsive">
-                                <h3 class="card-title ms-3">
-                                    {{ __('Stock history') }}
-                                </h3>
-                                <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
-                                    <thead>
-                                    <tr>
-                                        <th>{{ __('Old Quantity') }}</th>
-                                        <th>{{ __('New Quantity') }}</th>
-                                        <th>{{ __('Change') }}</th>
-                                        <th>{{ __('Author') }}</th>
-                                        <th>{{ __('Date') }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($product_entries as $entry)
-                                        <tr>
-                                            <td>{{ $entry['old_quantity'] }}</td>
-                                            <td>{{ $entry['new_quantity'] }}</td>
-                                            <td>
-                                                @if ($entry['difference'] > 0)
-                                                    +{{ $entry['difference'] }}
-                                                @else
-                                                    {{ $entry['difference'] }}
-                                                @endif
-                                            </td>
-                                            <td>{{ $entry['user'] }}</td>
-                                            <td>{{ $entry['date'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
+                        <livewire:tables.product-history :product="$product" />
                     </div>
 
                     <div class="col-lg-8">
