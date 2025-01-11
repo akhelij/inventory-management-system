@@ -216,13 +216,13 @@
                                         />
                                     </div>
 
-                                    <div class="col-sm-6 col-md-6">
+                                    <div class="col-sm-6 col-md-6" hidden>
                                         <x-input type="number"
                                                  label="Quantity Alert"
                                                  name="quantity_alert"
                                                  id="quantity_alert"
                                                  placeholder="0"
-                                                 value="{{ old('quantity_alert') }}"
+                                                 value="1"
                                         />
                                     </div>
 
@@ -233,7 +233,7 @@
                                                  id="tax"
                                                  value="0"
                                                  placeholder="0"
-                                                 value="{{ old('tax') }}"
+                                                 value="0"
                                         />
                                     </div>
 

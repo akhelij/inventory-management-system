@@ -104,5 +104,10 @@
     "Purchases amount" : "Montant des achats",
     "Due": "Reste à payer",
     "Total Paid": "Total payé",
-    "Amount": "Montant"
+    "Amount": "Montant",
+    "Refill Stock": "Réapprovisionner le stock",
+    "Current Stock": "Stock actuel",
+    "Refill Quantity": "Quantité à ajouter",
+    "Close": "Fermer",
+    "Stock has been refilled successfully.": "Le stock a été réapprovisionné avec succès."
 }

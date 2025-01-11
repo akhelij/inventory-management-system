@@ -202,28 +202,9 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-6 col-md-6">
-                                            <div class="mb-3">
-                                                <label for="quantity" class="form-label">
-                                                    {{ __('Quantity') }}
-                                                    <span class="text-danger">*</span>
-                                                </label>
+                                        <x-product-quantity-input :product="$product" />
 
-                                                <input type="number" id="quantity" name="quantity"
-                                                       class="form-control @error('quantity') is-invalid @enderror"
-                                                       min="0"
-                                                       value="{{ old('quantity', $product->quantity) }}"
-                                                       placeholder="0">
-
-                                                @error('quantity')
-                                                <div class="invalid-feedback">
-                                                    {{ $message }}
-                                                </div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-6 col-md-6">
+                                        <div class="col-sm-6 col-md-6" hidden>
                                             <div class="mb-3">
                                                 <label for="quantity_alert" class="form-label">
                                                     {{ __('Quantity Alert') }}
@@ -232,8 +213,8 @@
 
                                                 <input type="number" id="quantity_alert"
                                                        name="quantity_alert"
-                                                       class="form-control @error('quantity_alert') is-invalid @enderror"
-                                                       min="0" placeholder="0"
+                                                       class=form-control @error('quantity_alert') is-invalid @enderror"
+                                                       min="1" placeholder="0"
                                                        value="{{ old('quantity_alert', $product->quantity_alert) }}">
 
                                                 @error('quantity_alert')
