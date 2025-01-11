@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasActivityLogs;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -62,5 +63,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getRouteKeyName(): string
     {
         return 'name';
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

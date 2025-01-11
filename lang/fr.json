@@ -109,5 +109,10 @@
     "Current Stock": "Stock actuel",
     "Refill Quantity": "Quantité à ajouter",
     "Close": "Fermer",
-    "Stock has been refilled successfully.": "Le stock a été réapprovisionné avec succès."
+    "Stock has been refilled successfully.": "Le stock a été réapprovisionné avec succès.",
+    "Profile Statistics": "Statistiques",
+    "Total Sales": "Ventes totales",
+    "Approved Sales": "Ventes approuvées",
+    "Pending Sales": "Ventes en attente",
+    "Canceled Sales": "Ventes annulées"
 }

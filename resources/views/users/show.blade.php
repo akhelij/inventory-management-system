@@ -21,22 +21,19 @@
 
                 <div class="row">
                     <div class="col-lg-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <h3 class="card-title">
-                                    {{ __('Profile Image') }}
-                                </h3>
+{{--                        <div class="card">--}}
+{{--                            <div class="card-body">--}}
+{{--                                <h3 class="card-title">--}}
+{{--                                    {{ __('Profile Image') }}--}}
+{{--                                </h3>--}}
 
-                                <img id="image-preview"
-                                     class="img-account-profile mb-2"
-                                     src="{{ asset('assets/img/demo/user-placeholder.svg') }}"
-                                     alt=""
-                                >
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-8">
+{{--                                <img id="image-preview"--}}
+{{--                                     class="img-account-profile mb-2"--}}
+{{--                                     src="{{ asset('assets/img/demo/user-placeholder.svg') }}"--}}
+{{--                                     alt=""--}}
+{{--                                >--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                         <div class="card">
                             <div class="card-header">
                                 <h3 class="card-title">
@@ -74,6 +71,10 @@
                                 </a>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        @livewire('profile-stats', ['user' => $user])
                     </div>
                 </div>
             </div>
