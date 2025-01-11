@@ -41,8 +41,8 @@
             <thead>
             <tr>
                 <th>{{ __('Old Qty') }}</th>
-                <th>{{ __('New Qty') }}</th>
                 <th>{{ __('Change') }}</th>
+                <th>{{ __('New Qty') }}</th>
                 <th>{{ __('Author') }}</th>
                 <th>{{ __('Date') }}</th>
             </tr>
@@ -51,7 +51,6 @@
             @foreach($entries as $entry)
                 <tr>
                     <td>{{ $entry['old_quantity'] }}</td>
-                    <td>{{ $entry['new_quantity'] }}</td>
                     <td>
                         @if ($entry['difference'] > 0)
                             +{{ $entry['difference'] }}
@@ -59,6 +58,7 @@
                             {{ $entry['difference'] }}
                         @endif
                     </td>
+                    <td>{{ $entry['new_quantity'] }}</td>
                     <td>{{ $entry['user'] }}</td>
                     <td>{{ $entry['date'] }}</td>
                 </tr>
