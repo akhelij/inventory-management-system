@@ -1,5 +1,4 @@
 <div>
-    <div class="col-sm-6 col-md-6">
         <div class="mb-3">
             <label for="quantity" class="form-label">
                 {{ __('Quantity') }}
@@ -34,5 +33,4 @@
         </div>
 
         @livewire('product-refill', ['product' => $product])
-    </div>
 </div>
