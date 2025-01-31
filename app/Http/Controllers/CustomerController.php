@@ -6,13 +6,11 @@ use App\Enums\PermissionEnum;
 use App\Models\Customer;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
-use App\Models\Payment;
-use Illuminate\Http\Request;
-use Str;
+use Illuminate\Support\Str;
 
 class CustomerController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
 
@@ -55,17 +53,15 @@ class CustomerController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
         $customer = Customer::where("uuid", $uuid)->with(['orders', 'payments'])->firstOrFail();
-        $totalOrders = $customer->total_orders;
-//        $totalOrdersPaid = $customer->total_orders_paid;
-        $due = $totalOrders - $customer->total_payments;
+
+        $due = $customer->total_orders - $customer->total_payments;
         $totalPayments = $customer->total_payments;
         $diff = $due;
         $amountPendingPayments = $customer->total_pending_payments;
         $limit_reached = $diff > $customer->limit;
         return view('customers.show', [
             'customer' => $customer,
-            'totalOrders' => $totalOrders,
-//            'totalOrdersPaid' => $totalOrdersPaid,
+            'totalOrders' => $customer->total_orders,
             'totalPayments' => $totalPayments,
             'due' => $due,
             'amountPendingPayments' => $amountPendingPayments,
