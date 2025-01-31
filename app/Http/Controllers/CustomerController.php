@@ -58,7 +58,6 @@ class CustomerController extends Controller
         $totalPayments = $customer->total_payments;
         $diff = $due;
         $amountPendingPayments = $customer->total_pending_payments;
-        $limit_reached = $diff > $customer->limit;
         return view('customers.show', [
             'customer' => $customer,
             'totalOrders' => $customer->total_orders,
@@ -66,7 +65,7 @@ class CustomerController extends Controller
             'due' => $due,
             'amountPendingPayments' => $amountPendingPayments,
             'diff' => $diff,
-            'limit_reached' => $limit_reached
+            'limit_reached' => $customer->is_out_of_limit,
         ]);
     }
 
