@@ -9,14 +9,6 @@ use Illuminate\Http\Request;
 class PaymentController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
-    {
-        //
-    }
-
-    /**
      * Show the form for creating a new resource.
      */
     public function create($customer_id)
@@ -58,22 +50,6 @@ class PaymentController extends Controller
     {
         $payment = Payment::find($id);
         return CustomerController::show($payment->customer->uuid);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
     }
 
     public function cash_in(Payment $payment)
