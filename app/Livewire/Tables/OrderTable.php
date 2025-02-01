@@ -3,6 +3,7 @@
 namespace App\Livewire\Tables;
 
 use App\Models\Order;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -51,7 +52,7 @@ class OrderTable extends Component
         $query = Order::query();
         if(!auth()->user()->hasRole('admin'))
         {
-            $query->where("user_id", auth()->id());
+            $query->where("user_id", auth()->id())->orWhereIn("user_id", User::role('admin')->pluck('id'));
         }
 
         if($this->startDate && $this->endDate)

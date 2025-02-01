@@ -23,12 +23,9 @@ class OrderController extends Controller
     public function index()
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
-        $query = Order::with('user');
-        if (!auth()->user()->hasRole('admin')) {
-            $query->where("user_id", auth()->id())->orWhereIn("user_id", User::role('admin')->pluck('id'));
-        }
+
         return view('orders.index', [
-            'orders' => $query->count()
+            'orders' => 1
         ]);
     }
 
@@ -38,14 +35,14 @@ class OrderController extends Controller
             DB::beginTransaction();
             abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
             $customer = Customer::find($request->customer_id);
-            $is_out_of_limit = $customer->email === Customer::ALAMI ? true : (($customer->total_orders + Cart::subtotal()) - $customer->total_payments > $customer->limit);
+            $approve_automatically = $customer->email === Customer::ALAMI;
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'payment_type' => $request->payment_type,
                 'pay' => $request->pay ?? 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
-                'order_status' => $is_out_of_limit ? OrderStatus::PENDING : OrderStatus::APPROVED,
+                'order_status' => $approve_automatically ? OrderStatus::APPROVED : OrderStatus::PENDING,
                 'total_products' => Cart::count(),
                 'sub_total' => Cart::subtotal(),
                 'vat' => Cart::tax(),
@@ -82,7 +79,7 @@ class OrderController extends Controller
                 ->back()
                 ->with('error', $e->getMessage());
         }
-        // Delete Cart Sopping History
+
         Cart::destroy();
 
         return redirect()
@@ -137,6 +134,13 @@ class OrderController extends Controller
 
     public function update_status(Order $order, int $order_status, Request $request)
     {
+        $customer = Customer::find($order->customer_id);
+
+        if ($order_status == OrderStatus::APPROVED && $customer->is_out_of_limit) {
+            abort(403, 'Customer is out of limit');
+        }
+
+
         $order->update([
             'order_status' => $order_status,
             'reason' => $request->reason
