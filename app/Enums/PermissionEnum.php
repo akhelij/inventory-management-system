@@ -34,6 +34,11 @@ enum PermissionEnum
     const UPDATE_CUSTOMERS = 'update customers';
     const DELETE_CUSTOMERS = 'delete customers';
 
+    public const READ_REPAIRS = 'read repairtickets';
+    public const CREATE_REPAIRS = 'create repairtickets';
+    public const UPDATE_REPAIRS = 'update repairtickets';
+    public const DELETE_REPAIRS = 'delete repairtickets';
+
     const ACTIVITY_LOGS = 'activity logs';
     const UPDATE_ORDERS_STATUS = 'update orders status';
 }

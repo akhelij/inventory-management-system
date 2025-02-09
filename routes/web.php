@@ -17,6 +17,7 @@ use App\Http\Controllers\Product\ProductImportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Purchase\PurchaseController;
 use App\Http\Controllers\Quotation\QuotationController;
+use App\Http\Controllers\RepairTicketController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
@@ -140,6 +141,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/purchases/delete/{purchase}', [PurchaseController::class, 'destroy'])->name('purchases.delete');
 
     Route::get('/activity-logs', [UserController::class, 'activityLogs'])->name('activity-logs');
+
+    Route::resource('repair-tickets', RepairTicketController::class);
+    Route::patch('repair-tickets/{repairTicket}/status', [RepairTicketController::class, 'updateStatus'])
+        ->name('repair-tickets.update-status');
 
     Route::get('/lang/{lang}', function ($lang) {
         // Validate the language

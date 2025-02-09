@@ -13,7 +13,7 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $models = ['Users', 'Roles & Permissions', 'Products', 'Orders', 'Categories',  'Customers'];
+        $models = ['Users', 'Roles & Permissions', 'Products', 'Orders', 'Categories',  'Customers', 'RepairTickets'];
         foreach ($models as $model) {
             Permission::insert([
                 ['name' => 'read ' . strtolower($model), 'guard_name' => 'web'],
