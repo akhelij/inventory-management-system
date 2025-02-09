@@ -47,9 +47,8 @@ class PaymentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Payment $payment)
     {
-        $payment = Payment::find($id);
         return (new CustomerController)->show($payment->customer->uuid);
     }
 
