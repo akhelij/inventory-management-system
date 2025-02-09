@@ -36,6 +36,7 @@ class PaymentController extends Controller
             ],
             'echeance' => 'required|date',
             'amount' => 'required|numeric',
+            'description' => 'nullable|string|max:1000',
         ]);
 
         Payment::create($request->all());

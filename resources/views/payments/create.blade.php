@@ -105,6 +105,14 @@
                                        required
                                 >
                             </div>
+                            <div class="col-12">
+                                <label for="description" class="small my-1">
+                                    {{ __('Description') }}
+                                </label>
+                                <textarea name="description" id="description"
+                                          class="form-control @error('description') is-invalid @enderror"
+                                          rows="3">{{ old('description') }}</textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer text-end">

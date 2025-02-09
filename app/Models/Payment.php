@@ -14,19 +14,7 @@ class Payment extends Model
     use HasFactory;
     use HasActivityLogs;
 
-    protected $fillable =[
-        'user_id',
-        'customer_id',
-        'date',
-        'nature',
-        'bank',
-        'payment_type',
-        'echeance',
-        'amount',
-        'reported',
-        'cashed_in',
-        'cashed_in_at',
-    ];
+    protected $guarded =[];
 
     protected $with = [
         'customer',
