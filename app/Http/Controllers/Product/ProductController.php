@@ -61,13 +61,7 @@ class ProductController extends Controller
         }
 
         Product::create([
-            "code" => IdGenerator::generate([
-                'table' => 'products',
-                'field' => 'code',
-                'length' => 4,
-                'prefix' => 'PC'
-            ]),
-
+            "code"              => $this->generateProductCode(),
             'product_image'     => $image,
             'name'              => $request->name,
             'category_id'       => $request->category_id,
@@ -87,6 +81,33 @@ class ProductController extends Controller
 
 
         return to_route('products.index')->with('success', 'Product has been created!');
+    }
+
+    /**
+     * Generate unique random product code between 5 to 12 characters
+     *
+     * @return string
+     */
+    private function generateProductCode(): string
+    {
+        do {
+            // Generate random length between 5 and 12
+            $length = rand(5, 12);
+
+            // Define characters that can be used in the code
+            $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+            // Generate random string
+            $code = '';
+            for ($i = 0; $i < $length; $i++) {
+                $code .= $characters[rand(0, strlen($characters) - 1)];
+            }
+
+            // Check if the code already exists
+            $exists = Product::where('code', $code)->exists();
+        } while ($exists);
+
+        return $code;
     }
 
     public function show($uuid)

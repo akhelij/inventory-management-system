@@ -71,16 +71,22 @@
         <table wire:loading.remove class="table table-bordered card-table table-vcenter text-nowrap datatable">
             <thead class="thead-light">
                 <tr>
+                    <th class="align-middle text-center w-1">
+                        {{ __('No') }}
+                    </th>
                     <th scope="col" class="align-middle text-center">
                         {{ __('Image') }}
-                    </th>
-                    <th class="align-middle text-center w-1">
-                        {{ __('Ref') }}
                     </th>
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('name')" href="#" role="button">
                             {{ __('Name') }}
                             @include('inclues._sort-icon', ['field' => 'name'])
+                        </a>
+                    </th>
+                    <th scope="col" class="align-middle text-center">
+                        <a wire:click.prevent="sortBy('code')" href="#" role="button">
+                            {{ __('Code') }}
+                            @include('inclues._sort-icon', ['field' => 'code'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
@@ -110,15 +116,18 @@
                 @forelse ($products as $product)
                     <tr>
                         <td class="align-middle text-center">
-                            <img style="width: 90px;"
-                                 src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
-                                 alt="">
+                            {{ $loop->iteration }}
                         </td>
                         <td class="align-middle text-center">
-                            {{ $product->code }}
+                            <img style="width: 90px;"
+                                src="{{ $product->product_image ? asset('storage/' . $product->product_image) : asset('assets/img/products/default.webp') }}"
+                                alt="">
                         </td>
                         <td class="align-middle text-center">
                             {{ $product->name }}
+                        </td>
+                        <td class="align-middle text-center">
+                            {{ $product->code }}
                         </td>
                         <td class="align-middle text-center">
                             {{ $product->category ? $product->category->name : '--' }}
