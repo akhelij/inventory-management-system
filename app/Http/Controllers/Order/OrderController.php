@@ -34,15 +34,15 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
-            $customer = Customer::find($request->customer_id);
-            $approve_automatically = $customer->email === Customer::ALAMI;
+//            $customer = Customer::find($request->customer_id);
+//            $approve_automatically = $customer->email === Customer::ALAMI;
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'payment_type' => $request->payment_type,
                 'pay' => $request->pay ?? 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
-                'order_status' => $approve_automatically ? OrderStatus::APPROVED : OrderStatus::PENDING,
+                'order_status' => OrderStatus::PENDING,//$approve_automatically ? OrderStatus::APPROVED : OrderStatus::PENDING,
                 'total_products' => Cart::count(),
                 'sub_total' => Cart::subtotal(),
                 'vat' => Cart::tax(),

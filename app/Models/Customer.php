@@ -12,7 +12,7 @@ class Customer extends Model
 {
     use HasFactory, HasActivityLogs;
 
-    const ALAMI = "electro@alami.com";
+//    const ALAMI = "electro@alami.com";
 
     protected $guarded = [
         'id',
