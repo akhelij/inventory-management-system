@@ -16,7 +16,7 @@ class RepairTicketController extends Controller
 {
     public function index()
     {
-        $tickets = RepairTicket::with(['customer', 'product', 'technician'])
+        $tickets = RepairTicket::with(['customer', 'product', 'user'])
             ->latest()
             ->paginate(10);
 
@@ -27,7 +27,7 @@ class RepairTicketController extends Controller
     {
         $customers = Customer::all();
         $products = Product::all();
-        $technicians = User::role('technician')->get(); // Assuming you're using Spatie Permission
+        $technicians = User::all();
 
         return view('repair-tickets.create', compact('customers', 'products', 'technicians'));
     }
