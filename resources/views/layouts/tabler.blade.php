@@ -252,62 +252,62 @@
                                 </a>
                             </li>
                         @endcan
-                        @can(PermissionEnum::READ_CATEGORIES)
-                        <li class="nav-item {{ request()->is('categories*') ? 'active' : null }}">
-                            <a class="nav-link" href="{{ route('categories.index') }}">
-                                    <span
-                                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+{{--                        @can(PermissionEnum::READ_CATEGORIES)--}}
+{{--                        <li class="nav-item {{ request()->is('categories*') ? 'active' : null }}">--}}
+{{--                            <a class="nav-link" href="{{ route('categories.index') }}">--}}
+{{--                                    <span--}}
+{{--                                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->--}}
 
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                             stroke-width="1.5" stroke="currentColor">
-                                          <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/>
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z"/>
-                                        </svg>
-                                    </span>
-                                <span class="nav-link-title">
-                                        {{ __('Categories') }}
-                                    </span>
-                            </a>
-                        </li>
+{{--                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"--}}
+{{--                                             stroke-width="1.5" stroke="currentColor">--}}
+{{--                                          <path stroke-linecap="round" stroke-linejoin="round"--}}
+{{--                                                d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/>--}}
+{{--                                          <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z"/>--}}
+{{--                                        </svg>--}}
+{{--                                    </span>--}}
+{{--                                <span class="nav-link-title">--}}
+{{--                                        {{ __('Categories') }}--}}
+{{--                                    </span>--}}
+{{--                            </a>--}}
+{{--                        </li>--}}
 
-                            <li class="nav-item {{ request()->is('warehouses*') ? 'active' : null }}">
-                                <a class="nav-link" href="{{ route('warehouses.index') }}">
-                                    <span
-                                        class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+{{--                            <li class="nav-item {{ request()->is('warehouses*') ? 'active' : null }}">--}}
+{{--                                <a class="nav-link" href="{{ route('warehouses.index') }}">--}}
+{{--                                    <span--}}
+{{--                                        class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->--}}
 
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />
-                                        </svg>
+{{--                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">--}}
+{{--                                          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21V9.349m0 0a3.001 3.001 0 0 0 3.75-.615A2.993 2.993 0 0 0 9.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 0 0 2.25 1.016c.896 0 1.7-.393 2.25-1.015a3.001 3.001 0 0 0 3.75.614m-16.5 0a3.004 3.004 0 0 1-.621-4.72l1.189-1.19A1.5 1.5 0 0 1 5.378 3h13.243a1.5 1.5 0 0 1 1.06.44l1.19 1.189a3 3 0 0 1-.621 4.72M6.75 18h3.75a.75.75 0 0 0 .75-.75V13.5a.75.75 0 0 0-.75-.75H6.75a.75.75 0 0 0-.75.75v3.75c0 .414.336.75.75.75Z" />--}}
+{{--                                        </svg>--}}
 
-                                    </span>
-                                    <span class="nav-link-title">
-                                        {{ __('Warehouses') }}
-                                    </span>
-                                </a>
-                            </li>
-                        @endcan
+{{--                                    </span>--}}
+{{--                                    <span class="nav-link-title">--}}
+{{--                                        {{ __('Warehouses') }}--}}
+{{--                                    </span>--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
+{{--                        @endcan--}}
                         @can(PermissionEnum::READ_REPAIRS)
                             <li class="nav-item {{ request()->is('repair-tickets*') ? 'active' : null }}">
                                 <a class="nav-link" href="{{ route('repair-tickets.index') }}">
-        <span class="nav-link-icon d-md-none d-lg-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 class="icon icon-tabler"
-                 width="24"
-                 height="24"
-                 viewBox="0 0 24 24"
-                 stroke-width="2"
-                 stroke="currentColor"
-                 fill="none"
-                 stroke-linecap="round"
-                 stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5" />
-            </svg>
-        </span>
-                                    <span class="nav-link-title">
-            {{ __('Repair Tickets') }}
-        </span>
+                                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             class="icon icon-tabler"
+                                             width="24"
+                                             height="24"
+                                             viewBox="0 0 24 24"
+                                             stroke-width="2"
+                                             stroke="currentColor"
+                                             fill="none"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M7 10h3v-3l-3.5 -3.5a6 6 0 0 1 8 8l6 6a2 2 0 0 1 -3 3l-6 -6a6 6 0 0 1 -8 -8l3.5 3.5" />
+                                        </svg>
+                                    </span>
+                                                                <span class="nav-link-title">
+                                        {{ __('Repair Tickets') }}
+                                    </span>
                                 </a>
                             </li>
                         @endcan
@@ -380,6 +380,15 @@
     </header>
 
     <div class="page-wrapper">
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">{{ config('app.name') }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body"></div>
+            </div>
+        </div>
         <div>
             @yield('content')
         </div>
@@ -392,9 +401,47 @@
 <!-- Tabler Core -->
 <script src="{{ asset('dist/js/tabler.min.js') }}" defer></script>
 <script src="{{ asset('dist/js/demo.min.js') }}" defer></script>
+<style>
+    /* Add to your CSS */
+    .form-select.bg-success-lt {
+        background-color: rgba(74, 222, 128, 0.1);
+    }
+    .form-select.bg-danger-lt {
+        background-color: rgba(248, 113, 113, 0.1);
+    }
+    .form-select.bg-warning-lt {
+        background-color: rgba(250, 204, 21, 0.1);
+    }
+    .form-select.bg-info-lt {
+        background-color: rgba(147, 197, 253, 0.1);
+    }
+    .form-select.bg-primary-lt {
+        background-color: rgba(59, 130, 246, 0.1);
+    }
+</style>
 {{-- - Page Scripts - --}}
 @stack('page-scripts')
 
+@push('page-scripts')
+    <script>
+        // Listen for notify events
+        Livewire.on('notify', params => {
+            // You can use any notification library here
+            // Example with Tabler's built-in notifications:
+            var color = params.type === 'success' ? 'success' : 'danger';
+            var message = params.message;
+
+            // Show notification
+            var notify = document.querySelector('.toast');
+            if (notify) {
+                notify.querySelector('.toast-body').textContent = message;
+                notify.classList.add('bg-' + color);
+                var toast = new bootstrap.Toast(notify);
+                toast.show();
+            }
+        });
+    </script>
+@endpush
 @livewireScripts
 </body>
 

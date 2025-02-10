@@ -14,6 +14,9 @@ class RepairTicketTable extends Component
     public $search = '';
     public $sortField = 'id';
     public $sortAsc = false;
+    public $statusComment = '';
+
+    protected $listeners = ['refreshComponent' => '$refresh'];
 
     public function sortBy($field): void
     {
@@ -24,6 +27,31 @@ class RepairTicketTable extends Component
         }
 
         $this->sortField = $field;
+    }
+
+    public function updateStatus($status, $ticketId)
+    {
+        try {
+            $ticket = RepairTicket::findOrFail($ticketId);
+
+            // Update status
+            $ticket->update([
+                'status' => $status
+            ]);
+
+            // Show success message
+            $this->dispatch('notify', [
+                'type' => 'success',
+                'message' => __('Status updated successfully')
+            ]);
+
+        } catch (\Exception $e) {
+            // Show error message
+            $this->dispatch('notify', [
+                'type' => 'error',
+                'message' => __('Error updating status')
+            ]);
+        }
     }
 
     public function render()

@@ -2,17 +2,12 @@
 
 @section('content')
     <div class="page-body">
-        @if (!$tickets->count())
-            <x-empty
-                title="No repair tickets found"
-                message="Try adjusting your search or filter to find what you're looking for."
-                button_label="{{ __('Create Repair Ticket') }}"
-                button_route="{{ route('repair-tickets.create') }}"
-            />
+        @if (!$orders)
+            <x-empty title="No orders found" message="Try adjusting your search or filter to find what you're looking for."
+                button_label="{{ __('Add your first Order') }}" button_route="{{ route('orders.create') }}" />
         @else
             <div class="container-xl">
-                <x-alert />
-                @livewire('tables.repair-ticket-table')
+                <livewire:tables.order-table />
             </div>
         @endif
     </div>

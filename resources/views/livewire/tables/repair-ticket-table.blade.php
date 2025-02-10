@@ -39,11 +39,11 @@
                 <tr>
                     <th wire:click="sortBy('ticket_number')" class="cursor-pointer">
                         {{ __('Ticket') }}
-                        @include('includes._sort-icon', ['field' => 'ticket_number'])
+{{--                        @include('includes._sort-icon', ['field' => 'ticket_number'])--}}
                     </th>
                     <th wire:click="sortBy('customer_id')" class="cursor-pointer">
                         {{ __('Customer') }}
-                        @include('includes._sort-icon', ['field' => 'customer_id'])
+{{--                        @include('includes._sort-icon', ['field' => 'customer_id'])--}}
                     </th>
                     <th>{{ __('Product') }}</th>
                     <th>{{ __('Status') }}</th>
@@ -59,16 +59,25 @@
                         <td>{{ $ticket->customer->name }}</td>
                         <td>{{ $ticket->product->name }}</td>
                         <td>
-                                <span @class([
-                                    'badge',
-                                    'bg-success' => $ticket->status === 'REPAIRED',
-                                    'bg-danger' => $ticket->status === 'UNREPAIRABLE',
-                                    'bg-warning' => $ticket->status === 'IN_PROGRESS',
-                                    'bg-info' => $ticket->status === 'RECEIVED',
-                                    'bg-primary' => $ticket->status === 'DELIVERED',
-                                ])>
-                                    {{ $ticket->status }}
-                                </span>
+                            <div class="d-flex align-items-center gap-2">
+                                <select wire:change="updateStatus('{{ $ticket->status }}', {{ $ticket->id }})"
+                                        class="form-select form-select-sm"
+                                    @class([
+                                        'form-select form-select-sm',
+                                        'bg-success-lt' => $ticket->status === 'REPAIRED',
+                                        'bg-danger-lt' => $ticket->status === 'UNREPAIRABLE',
+                                        'bg-warning-lt' => $ticket->status === 'IN_PROGRESS',
+                                        'bg-info-lt' => $ticket->status === 'RECEIVED',
+                                        'bg-primary-lt' => $ticket->status === 'DELIVERED',
+                                    ])>
+                                    @foreach(['RECEIVED', 'IN_PROGRESS', 'REPAIRED', 'UNREPAIRABLE', 'DELIVERED'] as $status)
+                                        <option value="{{ $status }}"
+                                            @selected($ticket->status === $status)>
+                                            {{ $status }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </td>
                         <td>{{ $ticket->technician?->name ?? '-' }}</td>
                         <td>{{ $ticket->created_at->format('d M Y H:i') }}</td>
@@ -87,6 +96,7 @@
                 @endforelse
                 </tbody>
             </table>
+            <livewire:modals.status-update-modal />
         </div>
 
         <div class="card-footer d-flex align-items-center">

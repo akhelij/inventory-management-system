@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Observers\RepairTicketObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy([RepairTicketObserver::class])]
 class RepairTicket extends Model
 {
     use HasFactory;
@@ -48,5 +51,30 @@ class RepairTicket extends Model
     public function statusHistories()
     {
         return $this->hasMany(RepairStatusHistory::class);
+    }
+
+    public function scopeSearch($query, $term = null)
+    {
+        if ($term) {
+            return $query->where(function($query) use ($term) {
+                $query->where('ticket_number', 'like', "%{$term}%")
+                    ->orWhere('serial_number', 'like', "%{$term}%")
+                    ->orWhere('problem_description', 'like', "%{$term}%")
+                    ->orWhere('status', 'like', "%{$term}%")
+                    ->orWhereHas('customer', function($query) use ($term) {
+                        $query->where('name', 'like', "%{$term}%")
+                            ->orWhere('phone', 'like', "%{$term}%");
+                    })
+                    ->orWhereHas('product', function($query) use ($term) {
+                        $query->where('name', 'like', "%{$term}%")
+                            ->orWhere('model', 'like', "%{$term}%");
+                    })
+                    ->orWhereHas('technician', function($query) use ($term) {
+                        $query->where('name', 'like', "%{$term}%");
+                    });
+            });
+        }
+
+        return $query;
     }
 }

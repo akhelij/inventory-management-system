@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RepairTicket\StoreRequest;
-use App\Http\Requests\RepairTicket\UpdateRequest;
+use App\Models\RepairTicket;
 use App\Models\Customer;
 use App\Models\Product;
-use App\Models\RepairTicket;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\RepairTicket\StoreRequest;
+use App\Http\Requests\RepairTicket\UpdateRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-
 
 class RepairTicketController extends Controller
 {
@@ -27,28 +27,28 @@ class RepairTicketController extends Controller
     {
         $customers = Customer::all();
         $products = Product::all();
-        $technicians = User::where('role', 'technician')->get();
+        $technicians = User::role('technician')->get(); // Assuming you're using Spatie Permission
 
         return view('repair-tickets.create', compact('customers', 'products', 'technicians'));
     }
 
     public function store(StoreRequest $request)
     {
-        $validated = $request->validated();
+        DB::beginTransaction();
 
-        DB::transaction(function () use ($validated, $request) {
-            // Generate ticket number
-            $ticketNumber = 'RT-' . date('Ymd') . '-' . str_pad(random_int(1, 999), 3, '0', STR_PAD_LEFT);
+        try {
+            // Generate ticket number (you might want to customize this format)
+            $ticketNumber = 'RT-' . date('Ymd') . '-' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
 
             // Create repair ticket
-            $ticket = RepairTicket::create([
+            $repairTicket = RepairTicket::create([
                 'ticket_number' => $ticketNumber,
-                'customer_id' => $validated['customer_id'],
-                'product_id' => $validated['product_id'],
+                'customer_id' => $request->customer_id,
+                'product_id' => $request->product_id,
                 'created_by' => auth()->id(),
-                'technician_id' => $validated['technician_id'] ?? null,
-                'serial_number' => $validated['serial_number'] ?? null,
-                'problem_description' => $validated['problem_description'],
+                'technician_id' => $request->technician_id,
+                'serial_number' => $request->serial_number,
+                'problem_description' => $request->problem_description,
                 'status' => 'RECEIVED'
             ]);
 
@@ -56,30 +56,123 @@ class RepairTicketController extends Controller
             if ($request->hasFile('photos')) {
                 foreach ($request->file('photos') as $photo) {
                     $path = $photo->store('repair-photos', 'public');
-                    $ticket->photos()->create(['photo_path' => $path]);
+                    $repairTicket->photos()->create([
+                        'photo_path' => $path
+                    ]);
                 }
             }
 
-            return $ticket;
-        });
+            DB::commit();
 
-        return redirect()
-            ->route('repair-tickets.index')
-            ->with('success', 'Repair ticket created successfully');
+            return redirect()
+                ->route('repair-tickets.show', $repairTicket)
+                ->with('success', __('Repair ticket created successfully'));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()
+                ->back()
+                ->with('error', __('Error creating repair ticket'))
+                ->withInput();
+        }
     }
 
-    public function updateStatus(RepairTicket $repairTicket, UpdateRequest $request)
+    public function show(RepairTicket $repairTicket)
     {
-        $validated = $request->validated();
+        $repairTicket->load(['customer', 'product', 'technician', 'creator', 'photos', 'statusHistories.user']);
 
-        // Status will be tracked by observer
-        $repairTicket->update([
-            'status' => $validated['status'],
-            'technician_id' => $validated['technician_id'] ?? $repairTicket->technician_id
+        return view('repair-tickets.show', compact('repairTicket'));
+    }
+
+    public function edit(RepairTicket $repairTicket)
+    {
+        $customers = Customer::all();
+        $products = Product::all();
+        $technicians = User::all();
+
+        return view('repair-tickets.edit', compact('repairTicket', 'customers', 'products', 'technicians'));
+    }
+
+    public function update(UpdateRequest $request, RepairTicket $repairTicket)
+    {
+        DB::beginTransaction();
+
+        try {
+            $repairTicket->update([
+                'customer_id' => $request->customer_id,
+                'product_id' => $request->product_id,
+                'technician_id' => $request->technician_id,
+                'serial_number' => $request->serial_number,
+                'problem_description' => $request->problem_description,
+                'status' => $request->status
+            ]);
+
+            // Handle new photo uploads
+            if ($request->hasFile('photos')) {
+                foreach ($request->file('photos') as $photo) {
+                    $path = $photo->store('repair-photos', 'public');
+                    $repairTicket->photos()->create([
+                        'photo_path' => $path
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->route('repair-tickets.show', $repairTicket)
+                ->with('success', __('Repair ticket updated successfully'));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()
+                ->back()
+                ->with('error', __('Error updating repair ticket'))
+                ->withInput();
+        }
+    }
+
+    public function updateStatus(Request $request, RepairTicket $repairTicket)
+    {
+        $validated = $request->validate([
+            'status' => ['required', 'in:RECEIVED,IN_PROGRESS,REPAIRED,UNREPAIRABLE,DELIVERED'],
+            'status_comment' => ['nullable', 'string', 'max:255'],
         ]);
 
-        return redirect()
-            ->back()
-            ->with('success', 'Status updated successfully');
+        try {
+            $repairTicket->update([
+                'status' => $validated['status']
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('success', __('Status updated successfully'));
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', __('Error updating status'));
+        }
+    }
+
+    public function destroy(RepairTicket $repairTicket)
+    {
+        try {
+            // Delete associated photos from storage
+            foreach ($repairTicket->photos as $photo) {
+                Storage::disk('public')->delete($photo->photo_path);
+            }
+
+            $repairTicket->delete();
+
+            return redirect()
+                ->route('repair-tickets.index')
+                ->with('success', __('Repair ticket deleted successfully'));
+
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', __('Error deleting repair ticket'));
+        }
     }
 }

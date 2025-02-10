@@ -44,8 +44,6 @@
 
                                     <div class="mb-3">
                                         <label class="form-label">{{ __('Status Comment') }}</label>
-                                        I'll continue with the edit view:
-                                        phpCopy// resources/views/repair-tickets/edit.blade.php (continued)
                                         <textarea name="status_comment"
                                                   rows="3"
                                                   class="form-control @error('status_comment') is-invalid @enderror"

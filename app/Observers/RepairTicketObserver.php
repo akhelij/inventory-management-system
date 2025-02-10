@@ -14,7 +14,7 @@ class RepairTicketObserver
                 'user_id' => auth()->id(),
                 'from_status' => $repairTicket->getOriginal('status'),
                 'to_status' => $repairTicket->status,
-                'comment' => request('status_comment') // We'll pass this from the controller
+                'comment' => request('status_comment') ?? 'Status updated'
             ]);
         }
     }
