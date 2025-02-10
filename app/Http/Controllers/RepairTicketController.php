@@ -16,7 +16,7 @@ class RepairTicketController extends Controller
 {
     public function index()
     {
-        $tickets = RepairTicket::with(['customer', 'product', 'user'])
+        $tickets = RepairTicket::with(['customer', 'product', 'technician'])
             ->latest()
             ->paginate(10);
 
