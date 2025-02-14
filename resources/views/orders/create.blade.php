@@ -79,18 +79,25 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label class="small mb-1" for="payment_type">
-                                            {{ __('Payment') }}
-                                            <span class="text-danger">*</span>
+                                        <label class="small mb-1" for="customer_id">
+                                            {{ __('User') }}
                                         </label>
-                                        <select class="form-control @error('payment_type') is-invalid @enderror"
-                                                id="payment_type" name="payment_type">
-                                            <option disabled="">Select a payment:</option>
-                                            <option value="HandCash" selected="">Cash</option>
-                                            <option value="Cheque">Cheque</option>
+
+                                        <select
+                                            class="form-select form-control-solid @error('user_id') is-invalid @enderror"
+                                            id="user_id" name="user_id">
+                                            <option selected="" disabled="">
+                                                Select a customer:
+                                            </option>
+                                            @foreach ($users as $user)
+                                                <option
+                                                    value="{{ $user->id }}" @selected( old('user_id') == $user->id)>
+                                                    {{ $user->name }}
+                                                </option>
+                                            @endforeach
                                         </select>
 
-                                        @error('payment_type')
+                                        @error('user_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>

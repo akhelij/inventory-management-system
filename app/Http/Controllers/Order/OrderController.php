@@ -54,7 +54,7 @@ class OrderController extends Controller
                     'prefix' => 'INV-'
                 ]),
                 'due' => (Cart::total() - $request->pay),
-                "user_id" => auth()->id(),
+                "user_id" => $request->author_id ?? auth()->id(),
                 "uuid" => Str::uuid(),
             ]);
 
@@ -94,6 +94,7 @@ class OrderController extends Controller
         return view('orders.create', [
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::ofAuth()->get(['id', 'name']),
+            'users' => User::query()->get(['id', 'name']),
             'carts' => Cart::content(),
         ]);
     }
