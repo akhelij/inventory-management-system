@@ -79,25 +79,25 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label class="small mb-1" for="customer_id">
-                                            {{ __('User') }}
+                                        <label class="small mb-1" for="author_id">
+                                            {{ __('Author') }}
                                         </label>
 
                                         <select
-                                            class="form-select form-control-solid @error('user_id') is-invalid @enderror"
-                                            id="user_id" name="user_id">
+                                            class="form-select form-control-solid @error('author_id') is-invalid @enderror"
+                                            id="author_id" name="author_id">
                                             <option selected="" disabled="">
-                                                Select a customer:
+                                                Select a user:
                                             </option>
                                             @foreach ($users as $user)
                                                 <option
-                                                    value="{{ $user->id }}" @selected( old('user_id') == $user->id)>
+                                                    value="{{ $user->id }}" @selected( old('author_id') == $user->id)>
                                                     {{ $user->name }}
                                                 </option>
                                             @endforeach
                                         </select>
 
-                                        @error('user_id')
+                                        @error('author_id')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
