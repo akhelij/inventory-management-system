@@ -27,7 +27,7 @@ class RepairTicketController extends Controller
     {
         $customers = Customer::all();
         $products = Product::all();
-        $technicians = User::all();
+        $technicians = User::role('technicien')->get();
 
         return view('repair-tickets.create', compact('customers', 'products', 'technicians'));
     }
@@ -35,10 +35,9 @@ class RepairTicketController extends Controller
     public function store(StoreRequest $request)
     {
         DB::beginTransaction();
-
         try {
             // Generate ticket number (you might want to customize this format)
-            $ticketNumber = 'RT-' . date('Ymd') . '-' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
+            $ticketNumber = $request->ticket_number ?? 'RT-' . date('Ymd') . '-' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
 
             // Create repair ticket
             $repairTicket = RepairTicket::create([
@@ -51,7 +50,6 @@ class RepairTicketController extends Controller
                 'problem_description' => $request->problem_description,
                 'status' => 'RECEIVED'
             ]);
-
             // Handle photo uploads
             if ($request->hasFile('photos')) {
                 foreach ($request->file('photos') as $photo) {
@@ -69,6 +67,7 @@ class RepairTicketController extends Controller
                 ->with('success', __('Repair ticket created successfully'));
 
         } catch (\Exception $e) {
+            throw $e;
             DB::rollBack();
             return redirect()
                 ->back()
@@ -88,7 +87,7 @@ class RepairTicketController extends Controller
     {
         $customers = Customer::all();
         $products = Product::all();
-        $technicians = User::all();
+        $technicians = User::role('technicien')->get();
 
         return view('repair-tickets.edit', compact('repairTicket', 'customers', 'products', 'technicians'));
     }

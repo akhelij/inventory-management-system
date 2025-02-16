@@ -17,6 +17,7 @@ class StoreRequest extends FormRequest
             'customer_id' => ['required', 'exists:customers,id'],
             'product_id' => ['required', 'exists:products,id'],
             'technician_id' => ['nullable', 'exists:users,id'],
+            'ticket_number' => ['nullable', 'string', 'max:255'],
             'serial_number' => ['nullable', 'string', 'max:255'],
             'problem_description' => ['required', 'string'],
             'photos' => ['nullable', 'array', 'max:3'],

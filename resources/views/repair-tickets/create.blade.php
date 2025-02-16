@@ -39,6 +39,20 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row row-cards">
+                                        <div class="col-sm-12">
+                                            <div class="mb-3">
+                                                <label class="form-label">{{ __('Numéro de bon de commande') }}</label>
+                                                <input type="text"
+                                                       name="ticket_number"
+                                                       class="form-control @error('ticket_number') is-invalid @enderror"
+                                                       value="{{ old('ticket_number') }}"
+                                                       placeholder="{{ __('Entrer numéro de bon de commande') }}">
+                                                @error('ticket_number')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
                                         <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label required">{{ __('Customer') }}</label>
@@ -51,6 +65,23 @@
                                                     @endforeach
                                                 </select>
                                                 @error('customer_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">{{ __('Technician') }}</label>
+                                                <select name="technician_id" class="form-select @error('technician_id') is-invalid @enderror">
+                                                    <option value="">{{ __('Select Technician') }}</option>
+                                                    @foreach($technicians as $technician)
+                                                        <option value="{{ $technician->id }}" @selected(old('technician_id') == $technician->id)>
+                                                            {{ $technician->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('technician_id')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -73,32 +104,17 @@
                                             </div>
                                         </div>
 
+
+
                                         <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
-                                                <label class="form-label">{{ __('Serial Number') }}</label>
+                                                <label class="form-label">{{ __('Numéro de série') }}</label>
                                                 <input type="text"
                                                        name="serial_number"
                                                        class="form-control @error('serial_number') is-invalid @enderror"
                                                        value="{{ old('serial_number') }}"
-                                                       placeholder="{{ __('Enter Serial Number') }}">
+                                                       placeholder="{{ __('Enter serial Number') }}">
                                                 @error('serial_number')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="col-sm-6 col-md-6">
-                                            <div class="mb-3">
-                                                <label class="form-label">{{ __('Technician') }}</label>
-                                                <select name="technician_id" class="form-select @error('technician_id') is-invalid @enderror">
-                                                    <option value="">{{ __('Select Technician') }}</option>
-                                                    @foreach($technicians as $technician)
-                                                        <option value="{{ $technician->id }}" @selected(old('technician_id') == $technician->id)>
-                                                            {{ $technician->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                @error('technician_id')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
