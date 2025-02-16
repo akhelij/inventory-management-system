@@ -71,28 +71,21 @@
         <table wire:loading.remove class="table table-bordered card-table table-vcenter text-nowrap datatable">
             <thead class="thead-light">
                 <tr>
-                    <th class="align-middle text-center w-1">
-                        {{ __('No') }}
-                    </th>
                     <th scope="col" class="align-middle text-center">
                         {{ __('Image') }}
                     </th>
-                    <th scope="col" class="align-middle text-center">
-                        <a wire:click.prevent="sortBy('name')" href="#" role="button">
-                            {{ __('Name') }}
-                            @include('inclues._sort-icon', ['field' => 'name'])
-                        </a>
-                    </th>
+
                     <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('code')" href="#" role="button">
                             {{ __('Code') }}
                             @include('inclues._sort-icon', ['field' => 'code'])
                         </a>
                     </th>
+
                     <th scope="col" class="align-middle text-center">
-                        <a wire:click.prevent="sortBy('category_id')" href="#" role="button">
-                            {{ __('Category') }}
-                            @include('inclues._sort-icon', ['field' => 'category_id'])
+                        <a wire:click.prevent="sortBy('name')" href="#" role="button">
+                            {{ __('Name') }}
+                            @include('inclues._sort-icon', ['field' => 'name'])
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
@@ -115,8 +108,9 @@
             <tbody>
                 @forelse ($products as $product)
                     <tr>
+
                         <td class="align-middle text-center">
-                            {{ $loop->iteration }}
+                            {{ $product->code }}
                         </td>
                         <td class="align-middle text-center">
                             <img style="width: 90px;"
@@ -125,12 +119,6 @@
                         </td>
                         <td class="align-middle text-center">
                             {{ $product->name }}
-                        </td>
-                        <td class="align-middle text-center">
-                            {{ $product->code }}
-                        </td>
-                        <td class="align-middle text-center">
-                            {{ $product->category ? $product->category->name : '--' }}
                         </td>
                         <td class="align-middle text-center">
                             {{ $product->warehouse ? $product->warehouse->name : '--' }}

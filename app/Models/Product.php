@@ -29,7 +29,6 @@ class Product extends Model
         'tax_type',
         'notes',
         'product_image',
-        'category_id',
         'unit_id',
         'created_at',
         'updated_at',

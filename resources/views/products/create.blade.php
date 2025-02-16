@@ -110,48 +110,6 @@
 
                                     <div class="col-sm-6 col-md-6">
                                         <div class="mb-3">
-                                            <label for="category_id" class="form-label">
-                                                {{ __('Category') }}
-                                                <span class="text-danger">*</span>
-                                            </label>
-
-                                            @if ($categories->count() === 1)
-                                                <select name="category_id" id="category_id"
-                                                        class="form-select @error('category_id') is-invalid @enderror"
-                                                        readonly
-                                                >
-                                                    @foreach ($categories as $category)
-                                                        <option value="{{ $category->id }}" selected>
-                                                            {{ $category->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            @else
-                                                <select name="category_id" id="category_id"
-                                                        class="form-select @error('category_id') is-invalid @enderror"
-                                                >
-                                                    <option selected="" disabled="">
-                                                        {{ __('Select category') }}
-                                                    </option>
-
-                                                    @foreach ($categories as $category)
-                                                        <option value="{{ $category->id }}" @if(old('category_id') == $category->id) selected="selected" @endif>
-                                                            {{ $category->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            @endif
-
-                                            @error('category_id')
-                                            <div class="invalid-feedback">
-                                                {{ $message }}
-                                            </div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6">
-                                        <div class="mb-3">
                                             <label class="form-label" for="unit_id">
                                                 {{ __('Unit') }}
                                                 <span class="text-danger">*</span>

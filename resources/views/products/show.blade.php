@@ -69,21 +69,6 @@
                                             <td>{!! $barcode !!}</td>
                                         </tr>
                                         <tr>
-                                            <td>{{ __('Category') }}</td>
-
-                                            <td>
-                                                @if($product->category)
-                                                    <a href="{{ route('categories.show', $product->category) }}" class="badge bg-blue-lt">
-                                                        {{ $product->category->name }}
-                                                    </a>
-                                                @else
-                                                    <span class="badge bg-red-lt">
-                                                    {{ __('No category') }}
-                                                    </span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                        <tr>
                                             <td>{{ __('Unit') }}</td>
                                             <td>
                                                 <a href="{{ route('categories.show', $product->unit) }}" class="badge bg-blue-lt">

@@ -26,7 +26,7 @@ class UpdateProductRequest extends FormRequest
         return [
             'product_image'     => 'nullable|image|file|max:2048',
             'name'              => 'required|string',
-            'category_id'       => 'required|integer|exists:categories,id',
+            'category_id'       => 'nullable|integer|exists:categories,id',
             'warehouse_id'      => 'required|integer|exists:warehouses,id',
             'unit_id'           => 'required|integer',
             'quantity'          => 'required|integer',
