@@ -389,6 +389,7 @@
                 <div class="toast-body"></div>
             </div>
         </div>
+        <x-notification />
         <div>
             @yield('content')
         </div>
@@ -401,6 +402,7 @@
 <!-- Tabler Core -->
 <script src="{{ asset('dist/js/tabler.min.js') }}" defer></script>
 <script src="{{ asset('dist/js/demo.min.js') }}" defer></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <style>
     /* Add to your CSS */
     .form-select.bg-success-lt {

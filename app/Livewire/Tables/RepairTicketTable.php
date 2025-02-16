@@ -34,6 +34,17 @@ class RepairTicketTable extends Component
         try {
             $ticket = RepairTicket::findOrFail($ticketId);
 
+            // Validate the status is one of the allowed values
+            if (!in_array($status, [
+                'RECEIVED',
+                'IN_PROGRESS',
+                'REPAIRED',
+                'UNREPAIRABLE',
+                'DELIVERED'
+            ])) {
+                throw new \Exception('Invalid status');
+            }
+
             // Update status
             $ticket->update([
                 'status' => $status
@@ -42,15 +53,15 @@ class RepairTicketTable extends Component
             // Show success message
             $this->dispatch('notify', [
                 'type' => 'success',
-                'message' => __('Status updated successfully')
-            ]);
+                'message' => 'Status updated successfully'
+            ])->to(null);
 
         } catch (\Exception $e) {
             // Show error message
             $this->dispatch('notify', [
                 'type' => 'error',
-                'message' => __('Error updating status')
-            ]);
+                'message' => 'Error updating status'
+            ])->to(null);
         }
     }
 

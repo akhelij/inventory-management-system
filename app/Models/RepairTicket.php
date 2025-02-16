@@ -20,8 +20,7 @@ class RepairTicket extends Model
         'technician_id',
         'serial_number',
         'problem_description',
-        'from_status',
-        'to_status',
+        'status',
     ];
 
     public function product()

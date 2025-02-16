@@ -8,10 +8,26 @@
                     <h2 class="page-title">
                         {{ __('Repair Ticket') }} #{{ $repairTicket->ticket_number }}
                     </h2>
+                    <span @class([
+                            'badge',
+                            'bg-success' => $repairTicket->status === 'REPAIRED',
+                            'bg-danger' => $repairTicket->status === 'UNREPAIRABLE',
+                            'bg-warning' => $repairTicket->status === 'IN_PROGRESS',
+                            'bg-info' => $repairTicket->status === 'RECEIVED',
+                            'bg-primary' => $repairTicket->status === 'DELIVERED',
+                        ])>
+                            {{ $repairTicket->status }}
+                        </span>
+                    <span class="text-muted">
+                            {{ __('Created by') }}: {{ $repairTicket->creator->name }}
+                        </span>
                 </div>
 
                 <div class="col-auto ms-auto d-print-none">
                     <div class="btn-list">
+                        <a href="{{ url()->previous() }}" class="btn btn-secondary d-none d-sm-inline-block">
+                            {{ __('Back') }}
+                        </a>
                         <a href="{{ route('repair-tickets.edit', $repairTicket) }}" class="btn btn-primary d-none d-sm-inline-block">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-pencil" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -78,12 +94,12 @@
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Repair Details') }}</h3>
+                            <h3 class="card-title">{{ __('Customer Information') }}</h3>
                         </div>
                         <div class="card-body">
                             <div class="datagrid">
                                 <div class="datagrid-item">
-                                    <div class="datagrid-title">{{ __('Customer') }}</div>
+                                    <div class="datagrid-title">{{ __('Name') }}</div>
                                     <div class="datagrid-content">
                                         <div class="d-flex align-items-center">
                                             <span class="avatar avatar-xs me-2 rounded">
@@ -95,51 +111,54 @@
                                 </div>
 
                                 <div class="datagrid-item">
-                                    <div class="datagrid-title">{{ __('Product') }}</div>
-                                    <div class="datagrid-content">{{ $repairTicket->product->name }}</div>
+                                    <div class="datagrid-title">{{ __('Phone') }}</div>
+                                    <div class="datagrid-content">{{ $repairTicket->customer->phone }}</div>
                                 </div>
 
                                 <div class="datagrid-item">
-                                    <div class="datagrid-title">{{ __('Serial Number') }}</div>
-                                    <div class="datagrid-content">{{ $repairTicket->serial_number ?? '-' }}</div>
+                                    <div class="datagrid-title">{{ __('Address') }}</div>
+                                    <div class="datagrid-content">{{ $repairTicket->customer->address ?? '-' }}</div>
                                 </div>
-
-                                <div class="datagrid-item">
-                                    <div class="datagrid-title">{{ __('Status') }}</div>
-                                    <div class="datagrid-content">
-                                        <span @class([
-                                            'badge',
-                                            'bg-success' => $repairTicket->status === 'REPAIRED',
-                                            'bg-danger' => $repairTicket->status === 'UNREPAIRABLE',
-                                            'bg-warning' => $repairTicket->status === 'IN_PROGRESS',
-                                            'bg-info' => $repairTicket->status === 'RECEIVED',
-                                            'bg-primary' => $repairTicket->status === 'DELIVERED',
-                                        ])>
-                                            {{ $repairTicket->status }}
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div class="datagrid-item">
-                                    <div class="datagrid-title">{{ __('Technician') }}</div>
-                                    <div class="datagrid-content">{{ $repairTicket->technician?->name ?? '-' }}</div>
-                                </div>
-
-                                <div class="datagrid-item">
-                                    <div class="datagrid-title">{{ __('Created By') }}</div>
-                                    <div class="datagrid-content">{{ $repairTicket->creator->name }}</div>
-                                </div>
-                            </div>
-
-                            <div class="mt-4">
-                                <div class="datagrid-title">{{ __('Problem Description') }}</div>
-                                <div class="datagrid-content">{{ $repairTicket->problem_description }}</div>
                             </div>
                         </div>
-                        <div class="card-footer text-end">
-                            <a href="{{ url()->previous() }}" class="btn btn-link">
-                                {{ __('Back') }}
-                            </a>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-header">
+                            <h3 class="card-title">{{ __('Product') . ' : ' . $repairTicket->product->name }}</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    @if($repairTicket->product->product_image)
+                                        <img src="{{ Storage::url($repairTicket->product->product_image) }}"
+                                             alt="{{ $repairTicket->product->name }}"
+                                             class="rounded"
+                                             style="max-width: 100px;">
+                                    @else
+                                        <span class="avatar avatar-lg">{{ strtoupper(substr($repairTicket->product->name, 0, 2)) }}</span>
+                                    @endif
+                                </div>
+                                <div class="col">
+                                    <div class="datagrid">
+
+                                        <div class="datagrid-item">
+                                            <div class="datagrid-title">{{ __('Reference') }}</div>
+                                            <div class="datagrid-content">{{ $repairTicket->product->code }}</div>
+                                        </div>
+
+                                        <div class="datagrid-item">
+                                            <div class="datagrid-title">{{ __('Serial Number') }}</div>
+                                            <div class="datagrid-content">{{ $repairTicket->serial_number ?? '-' }}</div>
+                                        </div>
+                                        <div class="datagrid-item w-100">
+                                            <div class="datagrid-title">{{ __('Problem Description') }}</div>
+                                            <div class="datagrid-content">{{ $repairTicket->problem_description ?? '--' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

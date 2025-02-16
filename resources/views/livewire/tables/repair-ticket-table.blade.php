@@ -60,7 +60,8 @@
                         <td>{{ $ticket->product->name }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                <select wire:change="updateStatus('{{ $ticket->status }}', {{ $ticket->id }})"
+                                <select wire:model.live="tickets.{{ $ticket->id }}.status"
+                                        wire:change="updateStatus($event.target.value, {{ $ticket->id }})"
                                         class="form-select form-select-sm"
                                     @class([
                                         'form-select form-select-sm',
