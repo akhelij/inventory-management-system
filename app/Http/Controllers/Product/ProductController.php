@@ -61,7 +61,7 @@ class ProductController extends Controller
         }
 
         Product::create([
-            "code"              => $this->generateProductCode(),
+            "code"              => strtoupper($request->code),
             'product_image'     => $image,
             'name'              => $request->name,
             'category_id'       => $request->category_id,

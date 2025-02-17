@@ -26,8 +26,9 @@ class StoreProductRequest extends FormRequest
         return [
             'product_image'     => 'image|file|max:2048',
             'name'              => 'required|string',
+            'code'              => 'required|string|unique:products,code',
             'category_id'       => 'nullable|integer|exists:categories,id',
-            'warehouse_id'       => 'required|integer|exists:warehouses,id',
+            'warehouse_id'      => 'required|integer|exists:warehouses,id',
             'unit_id'           => 'required|integer',
             'quantity'          => 'required|integer',
             'buying_price'      => 'required|integer',

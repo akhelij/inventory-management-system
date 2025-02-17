@@ -99,6 +99,7 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                     <div class="col-md-12">
 
                                         <x-input name="name"
@@ -108,7 +109,18 @@
                                         />
                                     </div>
 
-                                    <div class="col-sm-6 col-md-6">
+
+                                    <div class="col-md-12">
+
+                                        <x-input name="code"
+                                                 id="code"
+                                                 label="Référence"
+                                                 placeholder="{{ __('Référence') }}"
+                                                 value="{{ old('code') }}"
+                                        />
+                                    </div>
+
+                                    <div class="col-sm-6 col-md-6" hidden>
                                         <div class="mb-3">
                                             <label class="form-label" for="unit_id">
                                                 {{ __('Unit') }}
