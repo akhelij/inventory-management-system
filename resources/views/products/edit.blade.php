@@ -107,7 +107,27 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-6 col-md-6">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label for="code" class="form-label">
+                                                    {{ __('Référence') }}
+                                                    <span class="text-danger">*</span>
+                                                </label>
+
+                                                <input type="text" id="code" name="code"
+                                                       class="form-control @error('code') is-invalid @enderror"
+                                                       placeholder="{{ __('Référence') }}"
+                                                       value="{{ old('code', $product->code) }}">
+
+                                                @error('name')
+                                                <div class="invalid-feedback">
+                                                    {{ $message }}
+                                                </div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6" hidden>
                                             <div class="mb-3">
                                                 <label for="category_id" class="form-label">
                                                     {{ __('Product category') }}

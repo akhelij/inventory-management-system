@@ -106,8 +106,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/update_items', [OrderController::class, 'updateItems'])->name('orders.update_items');
     Route::put('/orders/update/{order}', [OrderController::class, 'update'])->name('orders.update');
-    Route::get('/orders/update_status/{order}/{order_status}', [OrderController::class, 'update_status']);
-    Route::post('/orders/update_status/{order}/{order_status}', [OrderController::class, 'update_status']);
+    Route::get('/orders/update_status/{order}/{order_status}', [OrderController::class, 'updateStatus']);
+    Route::post('/orders/update_status/{order}/{order_status}', [OrderController::class, 'updateStatus']);
     Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     // DUES

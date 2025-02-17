@@ -144,18 +144,16 @@
                                     <div class="dropdown-menu">
                                         <div class="dropdown-menu-columns">
                                             <div class="dropdown-menu-column ms-2 me-2">
-                                                <a href="{{'/orders/update_status/'. $order->id .'/'. 1}}">
-                                                    <x-status dot
-                                                              color="green"
-                                                              class="text-uppercase btn">
+                                                <a href="#" wire:click.prevent="initiateStatusUpdate({{ $order->id }}, 1)">
+                                                    <x-status dot color="green" class="text-uppercase btn">
                                                         {{ __('Approve') }}
                                                     </x-status>
                                                 </a>
-                                                <span class="status status-red"
-                                                      data-order-id={{$order->id }} id="cancelButton">
-                                                        <span class="status-dot"></span>
+                                                <a href="#" wire:click.prevent="initiateStatusUpdate({{ $order->id }}, 0)">
+                                                    <x-status dot color="red" class="text-uppercase btn">
                                                         {{ __('Cancel') }}
-                                                </span>
+                                                    </x-status>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -193,8 +191,43 @@
             {{ $orders->links() }}
         </ul>
     </div>
-</div>
 
+    @if($showWarningModal)
+        <div class="modal show" style="display: block;" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning">
+                        <h5 class="modal-title">Warning: Customer Over Limit</h5>
+                        <button type="button" class="btn-close" wire:click="cancelStatusUpdate"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            This customer is currently over their credit limit. Are you sure you want to approve this order?
+                        </p>
+                        @if($newStatus == 0)
+                            <div class="mb-3">
+                                <label for="statusReason" class="form-label">Reason for Cancellation</label>
+                                <textarea wire:model="statusReason" id="statusReason" class="form-control" rows="3"></textarea>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" wire:click="cancelStatusUpdate">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-warning" wire:click="forceApprove">
+                            Approve Anyway
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    @endif
+
+
+</div>
 <script>
     document.getElementById('cancelButton').addEventListener('click', function () {
         var reason = prompt('Raison : ');

@@ -33,6 +33,18 @@
                             <div class="card-body">
                                 <div class="row gx-3 mb-3">
                                     <div class="col-md-4">
+                                        <label class="small mb-1" for="customer_id">
+                                            {{ __('Payment') }}
+                                        </label>
+
+                                        <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type">
+                                            <option value="HandCash">Cash</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Exchange">Lettre de change</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-4">
                                         <label for="purchase_date" class="small my-1">
                                             {{ __('Date') }}
                                             <span class="text-danger">*</span>
@@ -102,18 +114,6 @@
                                             {{ $message }}
                                         </div>
                                         @enderror
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <label class="small mb-1" for="customer_id">
-                                            {{ __('Payment') }}
-                                        </label>
-
-                                        <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type">
-                                            <option value="HandCash">Cash</option>
-                                            <option value="Cheque">Cheque</option>
-                                            <option value="Exchange">Lettre de change</option>
-                                        </select>
                                     </div>
                                 </div>
 
