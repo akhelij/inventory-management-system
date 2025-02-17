@@ -17,16 +17,64 @@
                                         {{ __('Product Photos') }}
                                     </h3>
 
-                                    <div class="mb-3">
+                                    <div
+                                        x-data="{
+                                            previewUrls: [],
+                                            handleFiles(event) {
+                                                const files = Array.from(event.target.files);
+
+                                                if (files.length > 3) {
+                                                    alert('You can only upload up to 3 photos');
+                                                    event.target.value = '';
+                                                    return;
+                                                }
+
+                                                this.previewUrls = [];
+                                                files.forEach(file => {
+                                                    const reader = new FileReader();
+                                                    reader.onload = (e) => {
+                                                        this.previewUrls.push(e.target.result);
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                });
+                                            }
+                                        }"
+                                        class="mb-3"
+                                    >
                                         <div class="form-label">{{ __('Upload Photos (Max 3)') }}</div>
-                                        <input type="file"
-                                               class="form-control @error('photos.*') is-invalid @enderror"
-                                               name="photos[]"
-                                               accept="image/*"
-                                               multiple>
+                                        <input
+                                            type="file"
+                                            class="form-control @error('photos.*') is-invalid @enderror"
+                                            name="photos[]"
+                                            accept="image/*"
+                                            multiple
+                                            x-on:change="handleFiles"
+                                        >
                                         @error('photos.*')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
+
+                                        <!-- Preview Container -->
+                                        <div class="row g-2 mt-2">
+                                            <template x-for="(url, index) in previewUrls" :key="index">
+                                                <div class="col-6">
+                                                    <div class="position-relative">
+                                                        <img
+                                                            :src="url"
+                                                            class="img-fluid rounded"
+                                                            style="aspect-ratio: 1; object-fit: cover; width: 100%;"
+                                                        >
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                                                            x-on:click="previewUrls.splice(index, 1)"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -103,8 +151,6 @@
                                                 @enderror
                                             </div>
                                         </div>
-
-
 
                                         <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
