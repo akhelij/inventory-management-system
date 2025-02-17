@@ -39,7 +39,7 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
-                'payment_type' => 'cash',
+                'payment_type' => $request->payment_type,
                 'pay' => $request->pay ?? 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
                 'order_status' => OrderStatus::PENDING,//$approve_automatically ? OrderStatus::APPROVED : OrderStatus::PENDING,
@@ -133,7 +133,7 @@ class OrderController extends Controller
             ->with('success', 'Order items has been updated!');
     }
 
-    public function update_status(Order $order, int $order_status, Request $request)
+    public function updateStatus(Order $order, int $order_status, Request $request)
     {
         $customer = Customer::find($order->customer_id);
 

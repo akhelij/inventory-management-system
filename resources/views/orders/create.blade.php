@@ -103,6 +103,18 @@
                                         </div>
                                         @enderror
                                     </div>
+
+                                    <div class="col-md-4">
+                                        <label class="small mb-1" for="customer_id">
+                                            {{ __('Payment') }}
+                                        </label>
+
+                                        <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type">
+                                            <option value="HandCash">Cash</option>
+                                            <option value="Cheque">Cheque</option>
+                                            <option value="Exchange">Lettre de change</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="table-responsive">
