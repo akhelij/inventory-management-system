@@ -26,7 +26,11 @@ class UpdateProductRequest extends FormRequest
         return [
             'product_image'     => 'nullable|image|file|max:2048',
             'name'              => 'required|string',
-            'code'              => 'required|string|unique:products,code',
+            'code'              => [
+                'required',
+                'string',
+                Rule::unique('products', 'code')->ignore($this->route('product')),
+            ],
             'category_id'       => 'nullable|integer|exists:categories,id',
             'warehouse_id'      => 'required|integer|exists:warehouses,id',
             'unit_id'           => 'required|integer',
