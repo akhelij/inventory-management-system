@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrderDetails extends Model
 {
+    use HasActivityLogs;
+
     protected $guarded = [
         'id',
     ];

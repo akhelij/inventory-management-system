@@ -135,6 +135,9 @@ class OrderController extends Controller
 
     public function updateStatus(Order $order, int $order_status, Request $request)
     {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS_STATUS), 403);
+        abort_unless(in_array($order_status, [OrderStatus::APPROVED, OrderStatus::CANCELED]), 403);
+
         $customer = Customer::find($order->customer_id);
 
         if ($order_status == OrderStatus::APPROVED && $customer->is_out_of_limit) {
