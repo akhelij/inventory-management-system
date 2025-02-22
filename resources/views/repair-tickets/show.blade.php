@@ -94,7 +94,13 @@
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{ __('Customer Information') }}</h3>
+                            <h3 class="card-title">
+                                @if($repairTicket->brought_by === 'customer')
+                                    {{ __('Customer Information') }}
+                                @else
+                                    {{ __('Driver Information') }}
+                                @endif
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="datagrid">
@@ -102,23 +108,44 @@
                                     <div class="datagrid-title">{{ __('Name') }}</div>
                                     <div class="datagrid-content">
                                         <div class="d-flex align-items-center">
-                                            <span class="avatar avatar-xs me-2 rounded">
-                                                {{ strtoupper(substr($repairTicket->customer->name, 0, 2)) }}
-                                            </span>
-                                            {{ $repairTicket->customer->name }}
+                                            @if($repairTicket->brought_by === 'customer')
+                                                <span class="avatar avatar-xs me-2 rounded">
+                                                    {{ strtoupper(substr($repairTicket->customer?->name ?? '', 0, 2)) }}
+                                                </span>
+                                                {{ $repairTicket->customer?->name }}
+                                            @else
+                                                <span class="avatar avatar-xs me-2 rounded bg-blue">
+                                                    {{ strtoupper(substr($repairTicket->driver?->name ?? '', 0, 2)) }}
+                                                </span>
+                                                {{ $repairTicket->driver?->name }}
+                                                <span class="badge bg-blue ms-2">{{ __('Driver') }}</span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="datagrid-item">
                                     <div class="datagrid-title">{{ __('Phone') }}</div>
-                                    <div class="datagrid-content">{{ $repairTicket->customer->phone }}</div>
+                                    <div class="datagrid-content">
+                                        @if($repairTicket->brought_by === 'customer')
+                                            {{ $repairTicket->customer?->phone }}
+                                        @else
+                                            {{ $repairTicket->driver?->phone }}
+                                        @endif
+                                    </div>
                                 </div>
 
-                                <div class="datagrid-item">
-                                    <div class="datagrid-title">{{ __('Address') }}</div>
-                                    <div class="datagrid-content">{{ $repairTicket->customer->address ?? '-' }}</div>
-                                </div>
+                                @if($repairTicket->brought_by === 'customer')
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">{{ __('Address') }}</div>
+                                        <div class="datagrid-content">{{ $repairTicket->customer->address ?? '-' }}</div>
+                                    </div>
+                                @else
+                                    <div class="datagrid-item">
+                                        <div class="datagrid-title">{{ __('License Number') }}</div>
+                                        <div class="datagrid-content">{{ $repairTicket->driver->license_number ?? '-' }}</div>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Driver;
 use App\Models\RepairTicket;
 use App\Models\Customer;
 use App\Models\Product;
@@ -28,8 +29,9 @@ class RepairTicketController extends Controller
         $customers = Customer::all();
         $products = Product::all();
         $technicians = User::role('technicien')->get();
+        $drivers = Driver::all();
 
-        return view('repair-tickets.create', compact('customers', 'products', 'technicians'));
+        return view('repair-tickets.create', compact('customers', 'drivers', 'products', 'technicians'));
     }
 
     public function store(StoreRequest $request)
@@ -42,7 +44,9 @@ class RepairTicketController extends Controller
             // Create repair ticket
             $repairTicket = RepairTicket::create([
                 'ticket_number' => $ticketNumber,
-                'customer_id' => $request->customer_id,
+                'customer_id' => $request->brought_by === 'customer' ? $request->customer_id : null,
+                'driver_id' => $request->brought_by === 'driver' ? $request->driver_id : null,
+                'brought_by' => $request->brought_by,
                 'product_id' => $request->product_id,
                 'created_by' => auth()->id(),
                 'technician_id' => $request->technician_id,
@@ -88,8 +92,9 @@ class RepairTicketController extends Controller
         $customers = Customer::all();
         $products = Product::all();
         $technicians = User::role('technicien')->get();
+        $drivers = Driver::all();
 
-        return view('repair-tickets.edit', compact('repairTicket', 'customers', 'products', 'technicians'));
+        return view('repair-tickets.edit', compact('repairTicket', 'customers', 'products', 'technicians', 'drivers'));
     }
 
     public function update(UpdateRequest $request, RepairTicket $repairTicket)
@@ -98,8 +103,10 @@ class RepairTicketController extends Controller
 
         try {
             $repairTicket->update([
-                'customer_id' => $request->customer_id,
                 'product_id' => $request->product_id,
+                'customer_id' => $request->brought_by === 'customer' ? $request->customer_id : null,
+                'driver_id' => $request->brought_by === 'driver' ? $request->driver_id : null,
+                'brought_by' => $request->brought_by,
                 'technician_id' => $request->technician_id,
                 'serial_number' => $request->serial_number,
                 'problem_description' => $request->problem_description,

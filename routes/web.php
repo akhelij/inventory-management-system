@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Dashboards\DashboardController;
+use App\Http\Controllers\DriverController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\Order\DueOrderController;
 use App\Http\Controllers\Order\OrderCompleteController;
@@ -69,6 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('/suppliers', SupplierController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/warehouses', WarehouseController::class);
+    Route::resource('/drivers', DriverController::class);
     Route::resource('/units', UnitController::class);
 
     // Route Products

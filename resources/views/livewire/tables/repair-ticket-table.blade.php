@@ -42,7 +42,7 @@
 {{--                        @include('includes._sort-icon', ['field' => 'ticket_number'])--}}
                     </th>
                     <th wire:click="sortBy('customer_id')" class="cursor-pointer">
-                        {{ __('Customer') }}
+                        {{ __('Customer / Driver') }}
 {{--                        @include('includes._sort-icon', ['field' => 'customer_id'])--}}
                     </th>
                     <th>{{ __('Product') }}</th>
@@ -56,8 +56,16 @@
                 @forelse($tickets as $ticket)
                     <tr>
                         <td>{{ $ticket->ticket_number }}</td>
-                        <td>{{ $ticket->customer->name }}</td>
-                        <td>{{ $ticket->product->name }}</td>
+                        <td>
+                            @if($ticket->brought_by === 'customer')
+                                {{ $ticket->customer?->name }}
+                                <span class="badge bg-green-lt">{{ __('Customer') }}</span>
+                            @else
+                                {{ $ticket->driver?->name }}
+                                <span class="badge bg-blue-lt">{{ __('Driver') }}</span>
+                            @endif
+                        </td>
+                        <td>{{ $ticket->product?->name }}</td>
                         <td>
                             <div class="d-flex align-items-center gap-2">
                                 <select wire:model.live="tickets.{{ $ticket->id }}.status"

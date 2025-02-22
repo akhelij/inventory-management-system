@@ -6,6 +6,7 @@ use App\Observers\RepairTicketObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[ObservedBy([RepairTicketObserver::class])]
 class RepairTicket extends Model
@@ -15,6 +16,8 @@ class RepairTicket extends Model
     protected $fillable = [
         'ticket_number',
         'customer_id',
+        'driver_id',
+        'brought_by',
         'product_id',
         'created_by',
         'technician_id',
@@ -26,6 +29,11 @@ class RepairTicket extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(Driver::class);
     }
 
     public function customer()

@@ -6,7 +6,10 @@
             <x-alert/>
 
             <div class="row row-cards">
-                <form action="{{ route('repair-tickets.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('repair-tickets.store') }}" method="POST" enctype="multipart/form-data"
+                      x-data="{
+                            brought_by: '{{ old('brought_by', 'customer') }}'
+                        }">
                     @csrf
 
                     <div class="row">
@@ -101,7 +104,26 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-6 col-md-6">
+                                        <!-- Replace the existing customer selection with this code -->
+                                        <div class="col-sm-12 col-md-12 mb-3">
+                                            <label class="form-label required">{{ __('Brought By') }}</label>
+                                            <div class="form-selectgroup">
+                                                <label class="form-selectgroup-item">
+                                                    <input type="radio" name="brought_by" value="customer" class="form-selectgroup-input" checked
+                                                           x-on:change="brought_by = 'customer'"
+                                                        {{ old('brought_by') == 'customer' ? 'checked' : '' }}>
+                                                    <span class="form-selectgroup-label">{{ __('Customer') }}</span>
+                                                </label>
+                                                <label class="form-selectgroup-item">
+                                                    <input type="radio" name="brought_by" value="driver" class="form-selectgroup-input"
+                                                           x-on:change="brought_by = 'driver'"
+                                                        {{ old('brought_by') == 'driver' ? 'checked' : '' }}>
+                                                    <span class="form-selectgroup-label">{{ __('Driver') }}</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6" x-show="brought_by === 'customer'">
                                             <div class="mb-3">
                                                 <label class="form-label required">{{ __('Customer') }}</label>
                                                 <select name="customer_id" class="form-select @error('customer_id') is-invalid @enderror">
@@ -118,6 +140,22 @@
                                             </div>
                                         </div>
 
+                                        <div class="col-sm-6 col-md-6" x-show="brought_by === 'driver'">
+                                            <div class="mb-3">
+                                                <label class="form-label required">{{ __('Driver') }}</label>
+                                                <select name="driver_id" class="form-select @error('driver_id') is-invalid @enderror">
+                                                    <option value="">{{ __('Select Driver') }}</option>
+                                                    @foreach($drivers as $driver)
+                                                        <option value="{{ $driver->id }}" @selected(old('driver_id') == $driver->id)>
+                                                            {{ $driver->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @error('driver_id')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
                                         <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
                                                 <label class="form-label">{{ __('Technician') }}</label>
