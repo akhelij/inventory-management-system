@@ -17,7 +17,7 @@
     <x-spinner.loading-spinner/>
 
     <div class="table">
-        <table wire:loading.remove class="table table-bordered card-table table-vcenter text-nowrap datatable">
+        <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
             <thead class="thead-light">
             <tr>
                 <th scope="col" class="align-middle text-center">
@@ -42,9 +42,9 @@
                 </th>
             </tr>
             </thead>
-            <tbody>
+            <tbody wire:loading.remove>
             @forelse ($products as $product)
-                <tr>
+                <tr wire:key="product-{{$product->id}}">
                     <td class="text-truncate" style="max-width: 300px;">
                         <div class="d-flex align-items-center gap-2">
                             <img style="width: 50px; flex-shrink: 0;"
