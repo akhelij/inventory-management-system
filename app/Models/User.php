@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasActivityLogs;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -27,6 +28,7 @@ class User extends Authenticatable implements MustVerifyEmail
         "store_address",
         "store_phone",
         "store_email",
+        'warehouse_id'
     ];
 
     protected $hidden = [
@@ -68,5 +70,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function warehouse(): BelongsTo
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 }
