@@ -62,7 +62,21 @@
                                             <div class="col-md-12">
                                                 <x-input name="name" :value="old('name', $user->name)" required="true"/>
 
-                                                <x-input name="email" :value="old('name', $user->email)" label="{{ __('Email address') }}" required="true"/>
+                                                <x-input name="email" :value="old('email', $user->email)" label="{{ __('Email address') }}" required="true"/>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <label class="mb-1" for="tag">
+                                                    {{ __('Warehouse') }}
+                                                </label>
+                                                <select class="form-select @error('warehouse_id') is-invalid @enderror" name="warehouse_id" required>
+                                                    <option value="">{{ __('ALL') }}</option>
+                                                    @foreach($warehouses as $warehouse)
+                                                        <option value="{{ $warehouse->id }}" {{ old('warehouse_id', $user->warehouse_id) == $warehouse->id ? 'selected' : '' }}>
+                                                            {{ $warehouse->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                     </div>

@@ -31,17 +31,7 @@ class UpdateUserRequest extends FormRequest
                 'max:50',
                 Rule::unique('users', 'email')->ignore($this->user)
             ],
-            'role_id' => 'required|exists:roles,id'
-            /*
-            'username' => [
-                'required',
-                'min:4',
-                'max:25',
-                'alpha_dash:ascii',
-                //'unique:users,username,'.$user->id
-                Rule::unique('users', 'username')->ignore($this->user)
-            ],
-            */
+            'role_id' => 'exists:roles,id'
         ];
     }
 }

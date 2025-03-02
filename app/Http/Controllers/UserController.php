@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PermissionEnum;
 use App\Models\User;
+use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\User\StoreUserRequest;
@@ -73,7 +74,8 @@ class UserController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_USERS), 403);
         return view('users.edit', [
-            'user' => $user
+            'user' => $user,
+            'warehouses' => Warehouse::all(),
         ]);
     }
 
@@ -81,11 +83,8 @@ class UserController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_USERS), 403);
 
-//        if ($validatedData['email'] != $user->email) {
-//            $validatedData['email_verified_at'] = null;
-//        }
-
         $user->update($request->except('photo'));
+        $user->update(['warehouse_id' => $request->warehouse_id]);
 
         /**
          * Handle upload image with Storage.

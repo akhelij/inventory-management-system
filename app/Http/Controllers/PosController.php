@@ -27,7 +27,6 @@ class PosController extends Controller
     public function addCartItem (Request $request)
     {
         $request->all();
-        //dd($request);
 
         $rules = [
             'id' => 'required|numeric',
@@ -36,15 +35,6 @@ class PosController extends Controller
         ];
 
         $validatedData = $request->validate($rules);
-
-//        Cart::add([
-//            'id'        => $validatedData['id'],
-//            'name'      => $validatedData['name'],
-//            'qty'       => 1,
-//            'price'     => $validatedData['selling_price'],
-//            'weight'    => 1,
-//            //'options' => []
-//        ]);
 
         Cart::add($validatedData['id'],
             $validatedData['name'],

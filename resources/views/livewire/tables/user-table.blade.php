@@ -48,9 +48,6 @@
                     </a>
                 </th>
                 <th scope="col" class="align-middle text-center">
-                    {{ __('Photo') }}
-                </th>
-                <th scope="col" class="align-middle text-center">
                     <a wire:click.prevent="sortBy('name')" href="#" role="button">
                         {{ __('Name') }}
                         @include('inclues._sort-icon', ['field' => 'name'])
@@ -69,6 +66,9 @@
                     </a>
                 </th>
                 <th scope="col" class="align-middle text-center">
+                    {{ __('Warehouse') }}
+                </th>
+                <th scope="col" class="align-middle text-center">
                     {{ __('Action') }}
                 </th>
             </tr>
@@ -79,9 +79,6 @@
                     <td class="align-middle text-center" style="width: 10%">
                         {{ $user->id }}
                     </td>
-                    <td class="align-middle text-center d-none d-sm-table-cell">
-                        {{ $user->photo }}
-                    </td>
                     <td class="align-middle text-center">
                         {{ $user->name }}
                     </td>
@@ -90,6 +87,9 @@
                     </td>
                     <td class="align-middle text-center d-none d-sm-table-cell" style="width: 15%">
                         {{ $user->created_at->format('d-m-Y') }}
+                    </td>
+                    <td class="align-middle text-center d-none d-sm-table-cell">
+                        {{ $user->warehouse ? $user->warehouse->name : __('ALL') }}
                     </td>
                     <td class="align-middle text-center" style="width: 15%">
                         <x-button.show class="btn-icon" route="{{ route('users.show', $user) }}"/>
