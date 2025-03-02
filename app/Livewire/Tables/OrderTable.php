@@ -109,6 +109,11 @@ class OrderTable extends Component
     public function render()
     {
         $query = Order::query();
+
+        $query->when(auth()->user()->warehouse_id != null, function ($q) {
+            return $q->where('warehouse_id', auth()->user()->warehouse_id);
+        });
+
         if (!auth()->user()->hasRole('admin')) {
             $query->where("user_id", auth()->id())
                 ->orWhereIn("user_id", User::role('admin')->pluck('id'));

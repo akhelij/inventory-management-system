@@ -45,7 +45,7 @@
                 </div>
                 {{ __('Entries') }}
             </div>
-            @if ($warehouses->count() > 1)
+            @if ($warehouses->count() > 1 && auth()->user()->warehouse_id == null)
                 <select wire:change="filterByWarehouse($event.target.value)" name="warehouse_id" id="warehouse_id"  style="width:200px;margin-left: 20px;" class="ms-auto form-control form-control-sm selector">
                     <option value=""> Choose warehouse</option>
                     @foreach ($warehouses as $warehouse)

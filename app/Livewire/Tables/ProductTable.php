@@ -48,6 +48,9 @@ class ProductTable extends Component
                 ->when($this->warehouse_id, function($query) {
                     return $query->where('warehouse_id', $this->warehouse_id);
                 })
+                ->when(auth()->user()->warehouse_id != null, function ($q) {
+                    return $q->where('warehouse_id', auth()->user()->warehouse_id);
+                })
                 ->paginate($this->perPage)
         ]);
     }
