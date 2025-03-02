@@ -69,7 +69,7 @@
                                                 <label class="mb-1" for="tag">
                                                     {{ __('Warehouse') }}
                                                 </label>
-                                                <select class="form-select @error('warehouse_id') is-invalid @enderror" name="warehouse_id" required>
+                                                <select class="form-select @error('warehouse_id') is-invalid @enderror" name="warehouse_id">
                                                     <option value="">{{ __('ALL') }}</option>
                                                     @foreach($warehouses as $warehouse)
                                                         <option value="{{ $warehouse->id }}" {{ old('warehouse_id', $user->warehouse_id) == $warehouse->id ? 'selected' : '' }}>
