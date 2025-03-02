@@ -32,7 +32,7 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users', 'email')->ignore($this->user)
             ],
             'role_id' => 'exists:roles,id',
-            'warehouse_id' => 'exists:warehouses,id',
+            'warehouse_id' => 'nullable|exists:warehouses,id',
         ];
     }
 }
