@@ -115,6 +115,32 @@
                                         </div>
                                         @enderror
                                     </div>
+
+                                    <div class="col-md-4">
+                                        <label class="small mb-1" for="tag">
+                                            {{ __('Tag') }}
+                                        </label>
+
+                                        <select
+                                            class="form-select form-control-solid @error('tagged_user_id') is-invalid @enderror"
+                                            id="tagged_user_id" name="tagged_user_id">
+                                            <option selected="" disabled="">
+                                                Select a user:
+                                            </option>
+                                            @foreach ($users as $user)
+                                                <option
+                                                    value="{{ $user->id }}" @selected( old('tagged_user_id') == $user->id)>
+                                                    {{ $user->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
+                                        @error('author_id')
+                                        <div class="invalid-feedback">
+                                            {{ $message }}
+                                        </div>
+                                        @enderror
+                                    </div>
                                 </div>
 
                                 <div class="table-responsive">

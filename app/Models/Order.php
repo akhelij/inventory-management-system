@@ -34,6 +34,7 @@ class Order extends Model
         'pay',
         'due',
         'user_id',
+        'tagged_user_id',
         'uuid'
     ];
 
@@ -93,5 +94,10 @@ class Order extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function taggedUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'tagged_user_id');
     }
 }

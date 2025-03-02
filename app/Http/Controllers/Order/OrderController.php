@@ -55,6 +55,7 @@ class OrderController extends Controller
                 ]),
                 'due' => (Cart::total() - $request->pay),
                 "user_id" => $request->author_id ?? auth()->id(),
+                "tagged_user_id" => $request->tagged_user_id,
                 "uuid" => Str::uuid(),
             ]);
 
