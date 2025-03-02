@@ -111,7 +111,7 @@ class OrderTable extends Component
         $query = Order::query();
 
         $query->when(auth()->user()->warehouse_id != null, function ($q) {
-            return $q->where('warehouse_id', auth()->user()->warehouse_id);
+            return $q->where('user_id', auth()->id());
         });
 
         if (!auth()->user()->hasRole('admin')) {
