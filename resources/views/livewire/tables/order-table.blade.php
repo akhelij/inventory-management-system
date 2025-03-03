@@ -114,13 +114,13 @@
                     </td>
                     <td class="align-middle text-center">
                         {{ $order->invoice_no }}
-
-                        @if($order->tagged_user_id)
-                            <span class="badge bg-primary ms-2 text-white">{{ $order->taggedUser->name }}</span>
-                        @endif
                     </td>
                     <td class="align-middle text-center">
                         {{ $order->user->name }}
+                        <br/>
+                        @if($order->tagged_user_id)
+                            <span class="badge bg-primary ms-2 text-white">{{ $order->taggedUser->name }}</span>
+                        @endif
                     </td>
                     <td class="align-middle text-center">
                         {{ $order->customer->name }}

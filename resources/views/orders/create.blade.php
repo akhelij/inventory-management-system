@@ -90,6 +90,7 @@
                                         @enderror
                                     </div>
 
+                                    @if(auth()->user()->hasRole('admin'))
                                     <div class="col-md-4">
                                         <label class="small mb-1" for="author_id">
                                             {{ __('Author') }}
@@ -115,7 +116,7 @@
                                         </div>
                                         @enderror
                                     </div>
-
+                                    @endif
                                     <div class="col-md-4">
                                         <label class="small mb-1" for="tag">
                                             {{ __('Tag') }}
