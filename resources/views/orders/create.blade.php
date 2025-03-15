@@ -117,6 +117,7 @@
                                         @enderror
                                     </div>
                                     @endif
+                                    
                                     <div class="col-md-4">
                                         <label class="small mb-1" for="tag">
                                             {{ __('Tag') }}
