@@ -31,11 +31,14 @@ class Supplier extends Model
         'uuid',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'type' => SupplierType::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'type' => SupplierType::class,
+        ];
+    }
 
     public function purchases(): HasMany
     {

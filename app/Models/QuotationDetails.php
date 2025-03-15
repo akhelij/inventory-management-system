@@ -24,10 +24,13 @@ class QuotationDetails extends Model
 
     protected $with = ['product'];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 
     public function quotation(): BelongsTo
     {

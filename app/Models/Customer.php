@@ -34,17 +34,20 @@ class Customer extends Model
         'uuid',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
     protected $appends = [
         'total_orders',
         'total_payments',
         'is_out_of_limit',
         'have_unpaid_checks',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 
     public function getIsOutOfLimitAttribute(): bool
     {

@@ -38,13 +38,16 @@ class Order extends Model
         'uuid',
     ];
 
-    protected $casts = [
-        'order_date' => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
-
     protected $appends = ['status', 'status_color', 'is_updatable_status'];
+
+    protected function casts(): array
+    {
+        return [
+            'order_date' => 'date',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 
     public function getStatusAttribute()
     {

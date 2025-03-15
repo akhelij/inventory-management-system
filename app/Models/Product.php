@@ -37,11 +37,14 @@ class Product extends Model
         'uuid',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'tax_type' => TaxType::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'tax_type' => TaxType::class,
+        ];
+    }
 
     public function getRouteKeyName(): string
     {

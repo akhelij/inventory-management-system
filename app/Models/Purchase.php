@@ -28,12 +28,15 @@ class Purchase extends Model
         'uuid',
     ];
 
-    protected $casts = [
-        'date' => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'status' => PurchaseStatus::class,
-    ];
+    protected function casts(): array
+    {
+        return [
+            'date' => 'date',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'status' => PurchaseStatus::class,
+        ];
+    }
 
     public function supplier(): BelongsTo
     {

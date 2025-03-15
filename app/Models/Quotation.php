@@ -29,13 +29,6 @@ class Quotation extends Model
         'uuid',
     ];
 
-    protected $casts = [
-        'date' => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'status' => QuotationStatus::class,
-    ];
-
     public static function boot()
     {
         parent::boot();
@@ -44,6 +37,16 @@ class Quotation extends Model
             $number = Quotation::max('id') + 1;
             $model->reference = make_reference_id('QT', $number);
         });
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'date' => 'date',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'status' => QuotationStatus::class,
+        ];
     }
 
     public function quotationDetails(): HasMany
