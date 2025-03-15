@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Observers\PaymentObserver;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -20,12 +21,12 @@ class Payment extends Model
         'customer',
     ];
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }

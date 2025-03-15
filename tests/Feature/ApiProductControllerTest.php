@@ -12,7 +12,7 @@ class ApiProductControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_product_api_url()
+    public function test_product_api_url(): void
     {
         $this->withoutExceptionHandling();
 
@@ -25,7 +25,7 @@ class ApiProductControllerTest extends TestCase
         $response->assertDontSee('Test Product 2');
     }
 
-    public function test_product_url_with_query_string()
+    public function test_product_url_with_query_string(): void
     {
         $this->createProduct();
 

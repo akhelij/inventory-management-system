@@ -9,7 +9,7 @@ use Tests\TestCase;
 class OrderTableTest extends TestCase
 {
     /** @test */
-    public function renders_successfully()
+    public function renders_successfully(): void
     {
         Livewire::test(OrderTable::class)
             ->assertStatus(200);

@@ -9,7 +9,7 @@ class CategoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_unauthenticated_user_cant_has_access()
+    public function test_unauthenticated_user_cant_has_access(): void
     {
         $response = $this->get('categories/');
 
@@ -18,7 +18,7 @@ class CategoryTest extends TestCase
             ->assertRedirect('login/');
     }
 
-    public function test_logged_user_has_access_to_url()
+    public function test_logged_user_has_access_to_url(): void
     {
         $this->withoutExceptionHandling();
 
@@ -35,7 +35,7 @@ class CategoryTest extends TestCase
             ->assertViewIs('categories.index');
     }
 
-    public function test_user_can_use_create_view()
+    public function test_user_can_use_create_view(): void
     {
         $user = $this->createUser();
         $response = $this->actingAs($user)->get('categories/create');
@@ -43,7 +43,7 @@ class CategoryTest extends TestCase
         $response->assertViewIs('categories.create');
     }
 
-    public function test_user_can_see_edit_view()
+    public function test_user_can_see_edit_view(): void
     {
         $user = $this->createUser();
         $category = $this->createCategory();
@@ -55,7 +55,7 @@ class CategoryTest extends TestCase
             ->assertViewIs('categories.edit');
     }
 
-    public function test_user_can_see_show_view()
+    public function test_user_can_see_show_view(): void
     {
         $user = $this->createUser();
         $category = $this->createCategory();
@@ -67,7 +67,7 @@ class CategoryTest extends TestCase
             ->assertViewIs('categories.show');
     }
 
-    public function test_user_can_delete_category()
+    public function test_user_can_delete_category(): void
     {
         // $this->withoutExceptionHandling();
 

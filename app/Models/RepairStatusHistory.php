@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,12 +18,12 @@ class RepairStatusHistory extends Model
         'comment',
     ];
 
-    public function repairTicket()
+    public function repairTicket(): BelongsTo
     {
         return $this->belongsTo(RepairTicket::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

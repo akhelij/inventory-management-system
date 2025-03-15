@@ -19,7 +19,7 @@ class RepairTicketObserver
         }
     }
 
-    public function created(RepairTicket $repairTicket)
+    public function created(RepairTicket $repairTicket): void
     {
         //
     }

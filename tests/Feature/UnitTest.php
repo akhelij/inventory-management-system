@@ -10,7 +10,7 @@ class UnitTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_unauthenticated_user_cant_has_access()
+    public function test_unauthenticated_user_cant_has_access(): void
     {
         $response = $this->get('units/');
 
@@ -19,7 +19,7 @@ class UnitTest extends TestCase
             ->assertRedirect('login/');
     }
 
-    public function test_logged_user_has_access_to_url()
+    public function test_logged_user_has_access_to_url(): void
     {
         $this->withoutExceptionHandling();
 
@@ -36,7 +36,7 @@ class UnitTest extends TestCase
             ->assertViewIs('units.index');
     }
 
-    public function test_create_new_unit()
+    public function test_create_new_unit(): void
     {
         $user = $this->createUser();
         $this->actingAs($user)->get('units/create');
@@ -50,7 +50,7 @@ class UnitTest extends TestCase
         $this->assertDatabaseHas('units', ['name' => 'Piece']);
     }
 
-    public function test_edit_unit()
+    public function test_edit_unit(): void
     {
         Unit::create([
             'name' => 'Piece',
@@ -69,7 +69,7 @@ class UnitTest extends TestCase
             ->assertSee('Edit Unit');
     }
 
-    public function test_user_can_store_unit()
+    public function test_user_can_store_unit(): void
     {
         $user = $this->createUser();
 
@@ -86,7 +86,7 @@ class UnitTest extends TestCase
         ]);
     }
 
-    public function test_show_unit()
+    public function test_show_unit(): void
     {
         $unit = Unit::create([
             'name' => 'Piece',
@@ -103,7 +103,7 @@ class UnitTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_update_unit_request_validation()
+    public function test_update_unit_request_validation(): void
     {
         // $this->withoutExceptionHandling();
 
@@ -120,7 +120,7 @@ class UnitTest extends TestCase
         $response->assertSessionHasErrors(['name', 'slug']);
     }
 
-    public function test_update_unit()
+    public function test_update_unit(): void
     {
         // $this->withoutExceptionHandling();
 
@@ -143,7 +143,7 @@ class UnitTest extends TestCase
         $response->assertRedirect();
     }
 
-    public function test_delete_unit()
+    public function test_delete_unit(): void
     {
         $this->withoutExceptionHandling();
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Observers\RepairTicketObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,7 +27,7 @@ class RepairTicket extends Model
         'status',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
@@ -36,27 +37,27 @@ class RepairTicket extends Model
         return $this->belongsTo(Driver::class);
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function technician()
+    public function technician(): BelongsTo
     {
         return $this->belongsTo(User::class, 'technician_id');
     }
 
-    public function photos()
+    public function photos(): HasMany
     {
         return $this->hasMany(RepairPhoto::class);
     }
 
-    public function statusHistories()
+    public function statusHistories(): HasMany
     {
         return $this->hasMany(RepairStatusHistory::class);
     }

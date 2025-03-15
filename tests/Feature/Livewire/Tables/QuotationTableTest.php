@@ -9,7 +9,7 @@ use Tests\TestCase;
 class QuotationTableTest extends TestCase
 {
     /** @test */
-    public function renders_successfully()
+    public function renders_successfully(): void
     {
         Livewire::test(QuotationTable::class)
             ->assertStatus(200);
