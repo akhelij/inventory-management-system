@@ -13,7 +13,7 @@ class WarehouseController extends Controller
     public function index()
     {
         return view('warehouses.index', [
-            'warehouses' => Warehouse::paginate(20)
+            'warehouses' => Warehouse::paginate(20),
         ]);
     }
 
@@ -31,7 +31,7 @@ class WarehouseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
         ]);
 
         Warehouse::create($request->all());
@@ -47,7 +47,7 @@ class WarehouseController extends Controller
     public function show(Warehouse $warehouse)
     {
         return view('warehouses.show', [
-            'warehouse' => $warehouse
+            'warehouse' => $warehouse,
         ]);
     }
 
@@ -57,7 +57,7 @@ class WarehouseController extends Controller
     public function edit(Warehouse $warehouse)
     {
         return view('warehouses.edit', [
-            'warehouse' => $warehouse
+            'warehouse' => $warehouse,
         ]);
     }
 
@@ -67,7 +67,7 @@ class WarehouseController extends Controller
     public function update(Request $request, Warehouse $warehouse)
     {
         $request->validate([
-            'name' => 'required|string|max:255'
+            'name' => 'required|string|max:255',
         ]);
 
         $warehouse->update($request->all());
@@ -83,6 +83,7 @@ class WarehouseController extends Controller
     public function destroy(Warehouse $warehouse)
     {
         $warehouse->delete();
+
         return redirect()
             ->route('warehouses.index')
             ->with('success', 'Warehouse has been deleted!');

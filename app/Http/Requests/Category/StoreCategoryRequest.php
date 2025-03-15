@@ -24,8 +24,8 @@ class StoreCategoryRequest extends FormRequest
         return [
             'name' => [
                 'required',
-                'unique:categories,name'
-            ]
+                'unique:categories,name',
+            ],
         ];
     }
 }

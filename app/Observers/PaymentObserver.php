@@ -15,7 +15,7 @@ class PaymentObserver
     {
         if ($payment->wasChanged('cashed_in') && $payment->cashed_in == 1) {
             $customer = $payment->customer;
-            $orders = $customer->orders()->where('due', ">", 0)->get();
+            $orders = $customer->orders()->where('due', '>', 0)->get();
             $paymentAmount = $payment->amount;
             foreach ($orders as $order) {
                 if ($paymentAmount > 0) {

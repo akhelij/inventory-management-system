@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class RepairStatusHistory extends Model
 {
@@ -14,15 +15,15 @@ class RepairStatusHistory extends Model
         'user_id',
         'from_status',
         'to_status',
-        'comment'
+        'comment',
     ];
 
-    public function repairTicket()
+    public function repairTicket(): BelongsTo
     {
         return $this->belongsTo(RepairTicket::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

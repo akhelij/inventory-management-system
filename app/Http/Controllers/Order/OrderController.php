@@ -25,7 +25,7 @@ class OrderController extends Controller
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
 
         return view('orders.index', [
-            'orders' => 1
+            'orders' => 1,
         ]);
     }
 
@@ -34,15 +34,15 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
-//            $customer = Customer::find($request->customer_id);
-//            $approve_automatically = $customer->email === Customer::ALAMI;
+            //            $customer = Customer::find($request->customer_id);
+            //            $approve_automatically = $customer->email === Customer::ALAMI;
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'payment_type' => $request->payment_type,
                 'pay' => $request->pay ?? 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
-                'order_status' => OrderStatus::PENDING,//$approve_automatically ? OrderStatus::APPROVED : OrderStatus::PENDING,
+                'order_status' => OrderStatus::PENDING, // $approve_automatically ? OrderStatus::APPROVED : OrderStatus::PENDING,
                 'total_products' => Cart::count(),
                 'sub_total' => Cart::subtotal(),
                 'vat' => Cart::tax(),
@@ -51,12 +51,12 @@ class OrderController extends Controller
                     'table' => 'orders',
                     'field' => 'invoice_no',
                     'length' => 10,
-                    'prefix' => 'INV-'
+                    'prefix' => 'INV-',
                 ]),
                 'due' => (Cart::total() - $request->pay),
-                "user_id" => $request->author_id ?? auth()->id(),
-                "tagged_user_id" => $request->tagged_user_id,
-                "uuid" => Str::uuid(),
+                'user_id' => $request->author_id ?? auth()->id(),
+                'tagged_user_id' => $request->tagged_user_id,
+                'uuid' => Str::uuid(),
             ]);
 
             // Create Order Details
@@ -76,6 +76,7 @@ class OrderController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()
                 ->back()
                 ->with('error', $e->getMessage());
@@ -103,13 +104,13 @@ class OrderController extends Controller
     public function show($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
-        $order = Order::where("uuid", $uuid)->firstOrFail();
+        $order = Order::where('uuid', $uuid)->firstOrFail();
         $order->loadMissing(['customer', 'details'])->get();
 
-        return view('orders.' . ($order->order_status === null ? 'edit' : 'show'), [
+        return view('orders.'.($order->order_status === null ? 'edit' : 'show'), [
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::ofAuth()->get(['id', 'name']),
-            'order' => $order
+            'order' => $order,
         ]);
     }
 
@@ -145,10 +146,9 @@ class OrderController extends Controller
             abort(403, 'Customer is out of limit');
         }
 
-
         $order->update([
             'order_status' => $order_status,
-            'reason' => $request->reason
+            'reason' => $request->reason,
         ]);
 
         return redirect()
@@ -187,23 +187,25 @@ class OrderController extends Controller
 
         try {
             DB::beginTransaction();
-            $order = Order::where("uuid", $uuid)->firstOrFail();
+            $order = Order::where('uuid', $uuid)->firstOrFail();
             if ($order->order_status != null) {
                 $details = OrderDetails::where('order_id', $order->id)->get();
                 foreach ($details as $detail) {
                     $product = Product::find($detail->product_id);
                     $product->update([
-                        'quantity' => $product->quantity + $detail->quantity
+                        'quantity' => $product->quantity + $detail->quantity,
                     ]);
                 }
             }
             $order->delete();
             DB::commit();
+
             return redirect()
                 ->route('orders.index')
                 ->with('success', 'Order has been deleted!');
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()
                 ->route('orders.index')
                 ->with('error', $e->getMessage());
@@ -213,7 +215,7 @@ class OrderController extends Controller
     public function downloadInvoice($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
-        $order = Order::with(['customer', 'details'])->where("uuid", $uuid)->firstOrFail();
+        $order = Order::with(['customer', 'details'])->where('uuid', $uuid)->firstOrFail();
 
         return view('orders.print-invoice', [
             'order' => $order,

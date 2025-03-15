@@ -8,8 +8,8 @@ use App\Observers\OrderObserver;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ObservedBy([OrderObserver::class])]
 class Order extends Model
@@ -35,16 +35,19 @@ class Order extends Model
         'due',
         'user_id',
         'tagged_user_id',
-        'uuid'
-    ];
-
-    protected $casts = [
-        'order_date'    => 'date',
-        'created_at'    => 'datetime',
-        'updated_at'    => 'datetime',
+        'uuid',
     ];
 
     protected $appends = ['status', 'status_color', 'is_updatable_status'];
+
+    protected function casts(): array
+    {
+        return [
+            'order_date' => 'date',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 
     public function getStatusAttribute()
     {

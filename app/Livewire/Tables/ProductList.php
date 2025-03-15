@@ -3,10 +3,10 @@
 namespace App\Livewire\Tables;
 
 use App\Models\OrderDetails;
-use Livewire\Component;
 use App\Models\Product;
-use Livewire\WithPagination;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Livewire\Component;
+use Livewire\WithPagination;
 
 class ProductList extends Component
 {
@@ -23,12 +23,14 @@ class ProductList extends Component
     public $product;
 
     public $id;
+
     public $name;
+
     public $price;
 
     public $order_id;
 
-    public function mount($order_id=null)
+    public function mount($order_id = null)
     {
         $this->order_id = $order_id;
     }
@@ -36,7 +38,7 @@ class ProductList extends Component
     public function sortBy($field): void
     {
         if ($this->sortField === $field) {
-            $this->sortAsc = !$this->sortAsc;
+            $this->sortAsc = ! $this->sortAsc;
 
         } else {
             $this->sortAsc = true;
@@ -47,7 +49,7 @@ class ProductList extends Component
 
     public function addCartItem($id, $name, $price)
     {
-        if($this->order_id) {
+        if ($this->order_id) {
             $this->updateOrderDetails($id, $price);
         }
 
@@ -65,7 +67,7 @@ class ProductList extends Component
 
     public function updateOrderDetails($product_id, $unitcost)
     {
-        if(!$this->order_id){
+        if (! $this->order_id) {
             $this->addCartItem();
         }
 
@@ -73,7 +75,7 @@ class ProductList extends Component
             ->where('product_id', $product_id)
             ->first();
 
-        if($order_details) {
+        if ($order_details) {
             $order_details->update([
                 'quantity' => $order_details->quantity + 1,
                 'total' => $order_details->total + $unitcost,
@@ -100,7 +102,7 @@ class ProductList extends Component
                 ->where('quantity', '>', 0)
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                ->paginate($this->perPage)
+                ->paginate($this->perPage),
         ]);
     }
 }

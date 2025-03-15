@@ -8,10 +8,15 @@ use Livewire\Component;
 class ProductHistory extends Component
 {
     public $product;
+
     public $startDate;
+
     public $endDate;
+
     public $entries;
+
     public $totalIncoming = 0;
+
     public $totalOutgoing = 0;
 
     public function mount($product)
@@ -37,10 +42,10 @@ class ProductHistory extends Component
         $query = $this->product->activities()
             ->where('event', 'updated')
             ->whereRaw("JSON_EXTRACT(properties, '$.attributes.quantity') IS NOT NULL")
-            ->when($this->startDate, function($query) {
+            ->when($this->startDate, function ($query) {
                 return $query->whereDate('created_at', '>=', $this->startDate);
             })
-            ->when($this->endDate, function($query) {
+            ->when($this->endDate, function ($query) {
                 return $query->whereDate('created_at', '<=', $this->endDate);
             })
             ->orderBy('created_at', 'desc');

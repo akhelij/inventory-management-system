@@ -2,25 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
     public function add(Request $request)
     {
-        Cart::add('', '', '', '', '',[
+        Cart::add('', '', '', '', '', [
 
         ]);
     }
 
-    public function update()
-    {
+    public function update() {}
 
-    }
-
-    public function delete()
-    {
-
-    }
+    public function delete() {}
 }

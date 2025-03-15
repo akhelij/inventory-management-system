@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Enums\PurchaseStatus;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Purchase extends Model
 {
@@ -24,16 +24,19 @@ class Purchase extends Model
         'total_amount',
         'created_by',
         'updated_by',
-        "user_id",
-        "uuid"
+        'user_id',
+        'uuid',
     ];
 
-    protected $casts = [
-        'date'       => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'status'     => PurchaseStatus::class
-    ];
+    protected function casts(): array
+    {
+        return [
+            'date' => 'date',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'status' => PurchaseStatus::class,
+        ];
+    }
 
     public function supplier(): BelongsTo
     {
@@ -58,13 +61,11 @@ class Purchase extends Model
     public function scopeSearch($query, $value): void
     {
         $query->where('purchase_no', 'like', "%{$value}%")
-            ->orWhere('status', 'like', "%{$value}%")
-        ;
+            ->orWhere('status', 'like', "%{$value}%");
     }
-     /**
+
+    /**
      * Get the user that owns the Category
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {

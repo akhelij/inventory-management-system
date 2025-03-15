@@ -11,9 +11,13 @@ class RepairTicketTable extends Component
     use WithPagination;
 
     public $perPage = 25;
+
     public $search = '';
+
     public $sortField = 'id';
+
     public $sortAsc = false;
+
     public $statusComment = '';
 
     protected $listeners = ['refreshComponent' => '$refresh'];
@@ -21,7 +25,7 @@ class RepairTicketTable extends Component
     public function sortBy($field): void
     {
         if ($this->sortField === $field) {
-            $this->sortAsc = !$this->sortAsc;
+            $this->sortAsc = ! $this->sortAsc;
         } else {
             $this->sortAsc = true;
         }
@@ -35,32 +39,32 @@ class RepairTicketTable extends Component
             $ticket = RepairTicket::findOrFail($ticketId);
 
             // Validate the status is one of the allowed values
-            if (!in_array($status, [
+            if (! in_array($status, [
                 'RECEIVED',
                 'IN_PROGRESS',
                 'REPAIRED',
                 'UNREPAIRABLE',
-                'DELIVERED'
+                'DELIVERED',
             ])) {
                 throw new \Exception('Invalid status');
             }
 
             // Update status
             $ticket->update([
-                'status' => $status
+                'status' => $status,
             ]);
 
             // Show success message
             $this->dispatch('notify', [
                 'type' => 'success',
-                'message' => 'Status updated successfully'
+                'message' => 'Status updated successfully',
             ])->to(null);
 
         } catch (\Exception $e) {
             // Show error message
             $this->dispatch('notify', [
                 'type' => 'error',
-                'message' => 'Error updating status'
+                'message' => 'Error updating status',
             ])->to(null);
         }
     }
@@ -71,7 +75,7 @@ class RepairTicketTable extends Component
             'tickets' => RepairTicket::with(['customer', 'product', 'technician', 'creator'])
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                ->paginate($this->perPage)
+                ->paginate($this->perPage),
         ]);
     }
 }

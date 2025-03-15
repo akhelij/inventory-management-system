@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Customer;
-use Illuminate\Http\Request;
+use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Http\Request;
 
 class PosController extends Controller
 {
@@ -24,7 +24,7 @@ class PosController extends Controller
         ]);
     }
 
-    public function addCartItem (Request $request)
+    public function addCartItem(Request $request)
     {
         $request->all();
 
@@ -41,7 +41,7 @@ class PosController extends Controller
             1,
             $validatedData['selling_price'],
             1,
-            (array)$options = null);
+            (array) $options = null);
 
         return redirect()
             ->back()
@@ -63,7 +63,7 @@ class PosController extends Controller
             ->with('success', 'Product has been updated from cart!');
     }
 
-    public function deleteCartItem(String $rowId)
+    public function deleteCartItem(string $rowId)
     {
         Cart::remove($rowId);
 

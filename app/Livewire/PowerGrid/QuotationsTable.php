@@ -8,7 +8,6 @@ use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
@@ -20,21 +19,23 @@ final class QuotationsTable extends PowerGridComponent
 {
     use WithExport;
 
-    //public bool $multiSort = true;
+    // public bool $multiSort = true;
     public string $sortField = 'created_at';
+
     public string $sortDirection = 'desc';
 
     public int $perPage = 5;
+
     public array $perPageValues = [0, 5, 10, 20, 50];
 
     public function setUp(): array
     {
-        //$this->showCheckBox();
+        // $this->showCheckBox();
 
         return [
-//            Exportable::make('export')
-//                ->striped()
-//                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+            //            Exportable::make('export')
+            //                ->striped()
+            //                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 
             Header::make()->showSearchInput(),
             Footer::make()
@@ -98,14 +99,14 @@ final class QuotationsTable extends PowerGridComponent
                 ->bodyAttribute('text-center align-middle')
                 ->contentClasses([
                     'Pending' => 'badge bg-yellow text-white',
-                    'Sent'    => 'badge bg-green text-white'
+                    'Sent' => 'badge bg-green text-white',
                 ])
                 ->sortable()
                 ->searchable(),
 
             Column::action('Action')
                 ->headerAttribute('text-center', styleAttr: 'width: 150px;')
-                ->bodyAttribute('text-center d-flex justify-content-around')
+                ->bodyAttribute('text-center d-flex justify-content-around'),
         ];
     }
 

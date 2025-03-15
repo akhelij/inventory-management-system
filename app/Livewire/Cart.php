@@ -3,9 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Product;
-use Livewire\Component;
-use Livewire\Attributes\On;
 use Gloudemans\Shoppingcart\Facades\Cart as G_Cart;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class Cart extends Component
 {
@@ -31,6 +31,7 @@ class Cart extends Component
     public function render()
     {
         $carts = G_Cart::content();
+
         return view('livewire.cart')->with(compact('carts'));
     }
 }

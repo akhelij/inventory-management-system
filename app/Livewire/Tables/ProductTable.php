@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Tables;
 
-use Livewire\Component;
 use App\Models\Product;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 class ProductTable extends Component
@@ -19,12 +19,12 @@ class ProductTable extends Component
     public $sortAsc = false;
 
     public $warehouses;
+
     public $warehouse_id = null;
 
     public function sortBy($field): void
     {
-        if($this->sortField === $field)
-        {
+        if ($this->sortField === $field) {
             $this->sortAsc = ! $this->sortAsc;
 
         } else {
@@ -45,13 +45,13 @@ class ProductTable extends Component
             'products' => Product::with(['category', 'warehouse', 'unit'])
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                ->when($this->warehouse_id, function($query) {
+                ->when($this->warehouse_id, function ($query) {
                     return $query->where('warehouse_id', $this->warehouse_id);
                 })
                 ->when(auth()->user()->warehouse_id != null, function ($q) {
                     return $q->where('warehouse_id', auth()->user()->warehouse_id);
                 })
-                ->paginate($this->perPage)
+                ->paginate($this->perPage),
         ]);
     }
 }

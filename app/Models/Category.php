@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Traits\HasActivityLogs;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-    use HasFactory, HasActivityLogs;
+    use HasActivityLogs, HasFactory;
 
     protected $guarded = [
         'id',
@@ -20,13 +20,16 @@ class Category extends Model
         'name',
         'slug',
         'short_code',
-        "user_id",
+        'user_id',
     ];
 
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+        ];
+    }
 
     public function products(): HasMany
     {
@@ -46,8 +49,6 @@ class Category extends Model
 
     /**
      * Get the user that owns the Category
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {

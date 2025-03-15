@@ -9,6 +9,7 @@ use Illuminate\View\Component;
 class ActivityProperties extends Component
 {
     public $properties;
+
     /**
      * Create a new component instance.
      */
@@ -23,7 +24,7 @@ class ActivityProperties extends Component
     public function render(): View|Closure|string
     {
         return view('components.activity-properties', [
-            'properties' => $this->properties
+            'properties' => $this->properties,
         ]);
     }
 }

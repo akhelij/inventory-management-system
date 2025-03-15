@@ -4,8 +4,8 @@ namespace App\Livewire;
 
 use App\Models\Order;
 use App\Models\OrderDetails;
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class OrderUpdate extends Component
 {
@@ -26,11 +26,12 @@ class OrderUpdate extends Component
         $order_details = OrderDetails::where('order_id', $this->order_id)->where('product_id', $product_id)->first();
         $order_details->update([
             'quantity' => $quantity,
-            'total' => $quantity * $order_details->unitcost
+            'total' => $quantity * $order_details->unitcost,
         ]);
     }
 
-    public function updateOrder(){
+    public function updateOrder()
+    {
         $order = Order::find($this->order_id);
         $details = OrderDetails::where('order_id', $this->order_id)->get();
         $total = 0;
@@ -55,6 +56,7 @@ class OrderUpdate extends Component
     {
         $order_details = OrderDetails::where('order_id', $this->order_id)->get();
         $order = $this->updateOrder();
+
         return view('livewire.order-update')->with(compact('order_details', 'order'));
     }
 }

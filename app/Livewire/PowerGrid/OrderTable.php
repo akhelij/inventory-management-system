@@ -19,7 +19,7 @@ final class OrderTable extends PowerGridComponent
 {
     public function setUp(): array
     {
-        //$this->showCheckBox();
+        // $this->showCheckBox();
 
         return [
             Exportable::make('export')
@@ -66,15 +66,15 @@ final class OrderTable extends PowerGridComponent
             Column::make('Created at', 'created_at_formatted', 'created_at')
                 ->searchable(),
 
-            Column::action('Action')
+            Column::action('Action'),
         ];
     }
 
     public function filters(): array
     {
         return [
-            //Filter::inputText('name'),
-            //Filter::datepicker('created_at_formatted', 'created_at'),
+            // Filter::inputText('name'),
+            // Filter::datepicker('created_at_formatted', 'created_at'),
         ];
     }
 
@@ -85,7 +85,7 @@ final class OrderTable extends PowerGridComponent
                 ->slot('Edit: '.$row->id)
                 ->id()
                 ->class('pg-btn-white dark:ring-pg-primary-600 dark:border-pg-primary-600 dark:hover:bg-pg-primary-700 dark:ring-offset-pg-primary-800 dark:text-pg-primary-300 dark:bg-pg-primary-700')
-                ->dispatch('edit', ['rowId' => $row->id])
+                ->dispatch('edit', ['rowId' => $row->id]),
         ];
     }
 
@@ -94,8 +94,8 @@ final class OrderTable extends PowerGridComponent
         return [
             Button::make('new-modal')
                 ->slot(file_get_contents('assets/svg/eye.svg'))
-                ->class('btn btn-icon')
-                //->openModal('new', []),
+                ->class('btn btn-icon'),
+            // ->openModal('new', []),
         ];
     }
 }

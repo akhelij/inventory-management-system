@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Purchase;
 
-
 use App\Enums\PurchaseStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Purchase\StorePurchaseRequest;
@@ -25,7 +24,7 @@ class PurchaseController extends Controller
     public function index()
     {
         return view('purchases.index', [
-            'purchases' => Purchase::where("user_id",auth()->id())->count()
+            'purchases' => Purchase::where('user_id', auth()->id())->count(),
         ]);
     }
 
@@ -35,24 +34,24 @@ class PurchaseController extends Controller
             ->where('status', PurchaseStatus::APPROVED)->get(); // 1 = approved
 
         return view('purchases.approved-purchases', [
-            'purchases' => $purchases
+            'purchases' => $purchases,
         ]);
     }
 
     public function show($uuid)
     {
-        $purchase = Purchase::where("uuid",$uuid)->firstOrFail();
+        $purchase = Purchase::where('uuid', $uuid)->firstOrFail();
         // N+1 Problem if load 'createdBy', 'updatedBy',
         $purchase->loadMissing(['supplier', 'details'])->get();
 
         return view('purchases.show', [
-            'purchase' => $purchase
+            'purchase' => $purchase,
         ]);
     }
 
     public function edit($uuid)
     {
-        $purchase = Purchase::where("uuid",$uuid)->firstOrFail();
+        $purchase = Purchase::where('uuid', $uuid)->firstOrFail();
         // N+1 Problem if load 'createdBy', 'updatedBy',
         $purchase->with(['supplier', 'details'])->get();
 
@@ -64,8 +63,8 @@ class PurchaseController extends Controller
     public function create()
     {
         return view('purchases.create', [
-            'categories' => Category::where("user_id",auth()->id())->select(['id', 'name'])->get(),
-            'suppliers' => Supplier::where("user_id",auth()->id())->select(['id', 'name'])->get(),
+            'categories' => Category::where('user_id', auth()->id())->select(['id', 'name'])->get(),
+            'suppliers' => Supplier::where('user_id', auth()->id())->select(['id', 'name'])->get(),
         ]);
     }
 
@@ -76,35 +75,33 @@ class PurchaseController extends Controller
                 'table' => 'purchases',
                 'field' => 'purchase_no',
                 'length' => 10,
-                'prefix' => 'PRS-'
+                'prefix' => 'PRS-',
             ]),
-            'status'     => PurchaseStatus::PENDING->value,
+            'status' => PurchaseStatus::PENDING->value,
             'created_by' => auth()->user()->id,
-            'supplier_id.required' =>$request->required,
-            'supplier_id'   =>$request->supplier_id,
-            'date'          =>$request->date,
-            'total_amount'  =>$request->total_amount,
-            "uuid"=>Str::uuid(),
-            "user_id"=>auth()->id()
+            'supplier_id.required' => $request->required,
+            'supplier_id' => $request->supplier_id,
+            'date' => $request->date,
+            'total_amount' => $request->total_amount,
+            'uuid' => Str::uuid(),
+            'user_id' => auth()->id(),
         ]);
 
         /*
          * TODO: Must validate that
          */
-        if (! $request->invoiceProducts == null)
-        {
+        if (! $request->invoiceProducts == null) {
             $pDetails = [];
 
-            foreach ($request->invoiceProducts as $product)
-            {
-                $pDetails['purchase_id']    = $purchase['id'];
-                $pDetails['product_id']     = $product['product_id'];
-                $pDetails['quantity']       = $product['quantity'];
-                $pDetails['unitcost']       = $product['unitcost'];
-                $pDetails['total']          = $product['total'];
-                $pDetails['created_at']     = Carbon::now();
+            foreach ($request->invoiceProducts as $product) {
+                $pDetails['purchase_id'] = $purchase['id'];
+                $pDetails['product_id'] = $product['product_id'];
+                $pDetails['quantity'] = $product['quantity'];
+                $pDetails['unitcost'] = $product['unitcost'];
+                $pDetails['total'] = $product['total'];
+                $pDetails['created_at'] = Carbon::now();
 
-                //PurchaseDetails::insert($pDetails);
+                // PurchaseDetails::insert($pDetails);
                 $purchase->details()->insert($pDetails);
             }
         }
@@ -116,19 +113,18 @@ class PurchaseController extends Controller
 
     public function update($uuid, Request $request)
     {
-        $purchase =Purchase::where("uuid",$uuid)->firstOrFail();
+        $purchase = Purchase::where('uuid', $uuid)->firstOrFail();
         $products = PurchaseDetails::where('purchase_id', $purchase->id)->get();
 
-        foreach ($products as $product)
-        {
+        foreach ($products as $product) {
             Product::where('id', $product->product_id)
-                    ->update(['quantity' => DB::raw('quantity+'.$product->quantity)]);
+                ->update(['quantity' => DB::raw('quantity+'.$product->quantity)]);
         }
 
         Purchase::findOrFail($purchase->id)
             ->update([
                 'status' => PurchaseStatus::APPROVED,
-                'updated_by' => auth()->user()->id
+                'updated_by' => auth()->user()->id,
             ]);
 
         return redirect()
@@ -138,7 +134,7 @@ class PurchaseController extends Controller
 
     public function destroy($uuid)
     {
-        $purchase = Purchase::where("uuid",$uuid)->firstOrFail();
+        $purchase = Purchase::where('uuid', $uuid)->firstOrFail();
         $purchase->delete();
 
         return redirect()
@@ -146,15 +142,14 @@ class PurchaseController extends Controller
             ->with('success', 'Purchase has been deleted!');
     }
 
-
     public function dailyPurchaseReport()
     {
         $purchases = Purchase::with(['supplier'])
-            //->where('purchase_status', 1)
+            // ->where('purchase_status', 1)
             ->where('date', today()->format('Y-m-d'))->get();
 
         return view('purchases.details-purchase', [
-            'purchases' => $purchases
+            'purchases' => $purchases,
         ]);
     }
 
@@ -178,12 +173,12 @@ class PurchaseController extends Controller
         $purchases = DB::table('purchase_details')
             ->join('products', 'purchase_details.product_id', '=', 'products.id')
             ->join('purchases', 'purchase_details.purchase_id', '=', 'purchases.id')
-            ->whereBetween('purchases.purchase_date',[$sDate,$eDate])
-            ->where('purchases.purchase_status','1')
-            ->select( 'purchases.purchase_no', 'purchases.purchase_date', 'purchases.supplier_id','products.code', 'products.name', 'purchase_details.quantity', 'purchase_details.unitcost', 'purchase_details.total')
+            ->whereBetween('purchases.purchase_date', [$sDate, $eDate])
+            ->where('purchases.purchase_status', '1')
+            ->select('purchases.purchase_no', 'purchases.purchase_date', 'purchases.supplier_id', 'products.code', 'products.name', 'purchase_details.quantity', 'purchase_details.unitcost', 'purchase_details.total')
             ->get();
 
-        $purchase_array [] = array(
+        $purchase_array[] = [
             'Date',
             'No Purchase',
             'Supplier',
@@ -192,11 +187,10 @@ class PurchaseController extends Controller
             'Quantity',
             'Unitcost',
             'Total',
-        );
+        ];
 
-        foreach($purchases as $purchase)
-        {
-            $purchase_array[] = array(
+        foreach ($purchases as $purchase) {
+            $purchase_array[] = [
                 'Date' => $purchase->purchase_date,
                 'No Purchase' => $purchase->purchase_no,
                 'Supplier' => $purchase->supplier_id,
@@ -205,7 +199,7 @@ class PurchaseController extends Controller
                 'Quantity' => $purchase->quantity,
                 'Unitcost' => $purchase->unitcost,
                 'Total' => $purchase->total,
-            );
+            ];
         }
 
         $this->exportExcel($purchase_array);
@@ -217,7 +211,7 @@ class PurchaseController extends Controller
         ini_set('memory_limit', '4000M');
 
         try {
-            $spreadSheet = new Spreadsheet();
+            $spreadSheet = new Spreadsheet;
             $spreadSheet->getActiveSheet()->getDefaultColumnDimension()->setWidth(20);
             $spreadSheet->getActiveSheet()->fromArray($products);
             $Excel_writer = new Xls($spreadSheet);

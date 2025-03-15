@@ -30,7 +30,7 @@ class Segment
 
     public function url()
     {
-        return url(implode('/', array_slice($this->request->segments(), 0, $this->position() + 1 )));
+        return url(implode('/', array_slice($this->request->segments(), 0, $this->position() + 1)));
     }
 
     public function position()

@@ -10,7 +10,7 @@ class UnitTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_unauthenticated_user_cant_has_access()
+    public function test_unauthenticated_user_cant_has_access(): void
     {
         $response = $this->get('units/');
 
@@ -19,7 +19,7 @@ class UnitTest extends TestCase
             ->assertRedirect('login/');
     }
 
-    public function test_logged_user_has_access_to_url()
+    public function test_logged_user_has_access_to_url(): void
     {
         $this->withoutExceptionHandling();
 
@@ -33,10 +33,10 @@ class UnitTest extends TestCase
             ->get('units/');
 
         $response->assertStatus(200)
-                ->assertViewIs('units.index');
+            ->assertViewIs('units.index');
     }
 
-    public function test_create_new_unit()
+    public function test_create_new_unit(): void
     {
         $user = $this->createUser();
         $this->actingAs($user)->get('units/create');
@@ -44,18 +44,18 @@ class UnitTest extends TestCase
         Unit::create([
             'name' => 'Piece',
             'slug' => 'piece',
-            'short_code' => 'pc'
+            'short_code' => 'pc',
         ]);
 
         $this->assertDatabaseHas('units', ['name' => 'Piece']);
     }
 
-    public function test_edit_unit()
+    public function test_edit_unit(): void
     {
         Unit::create([
             'name' => 'Piece',
             'slug' => 'piece',
-            'short_code' => 'pc'
+            'short_code' => 'pc',
         ]);
 
         $this->assertDatabaseHas('units', ['name' => 'Piece']);
@@ -65,33 +65,33 @@ class UnitTest extends TestCase
         $response = $this->actingAs($user)->get('units/piece/edit');
 
         $response->assertStatus(200)
-                ->assertViewIs('units.edit')
-                ->assertSee('Edit Unit');
+            ->assertViewIs('units.edit')
+            ->assertSee('Edit Unit');
     }
 
-    public function test_user_can_store_unit()
+    public function test_user_can_store_unit(): void
     {
         $user = $this->createUser();
 
         $response = $this->actingAs($user)->post('units/', [
             'name' => 'Piece',
             'slug' => 'piece',
-            'short_code' => 'pc'
+            'short_code' => 'pc',
         ]);
 
         $response->assertRedirect();
         $this->assertDatabaseCount('units', 1);
         $this->assertDatabaseHas('units', [
-           'name' => 'Piece'
+            'name' => 'Piece',
         ]);
     }
 
-    public function test_show_unit()
+    public function test_show_unit(): void
     {
         $unit = Unit::create([
             'name' => 'Piece',
             'slug' => 'piece',
-            'short_code' => 'pc'
+            'short_code' => 'pc',
         ]);
 
         $this->assertDatabaseHas('units', ['name' => 'Piece']);
@@ -103,16 +103,16 @@ class UnitTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_update_unit_request_validation()
+    public function test_update_unit_request_validation(): void
     {
-        //$this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
 
         $user = $this->createUser();
         $unit = $this->createUnit();
 
-        $response = $this->actingAs($user)->put('units/' . $unit->slug, [
-            'name' => "",
-            'slug' => ""
+        $response = $this->actingAs($user)->put('units/'.$unit->slug, [
+            'name' => '',
+            'slug' => '',
         ]);
 
         $response->assertStatus(302);
@@ -120,37 +120,37 @@ class UnitTest extends TestCase
         $response->assertSessionHasErrors(['name', 'slug']);
     }
 
-    public function test_update_unit()
+    public function test_update_unit(): void
     {
-        //$this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
 
         $user = $this->createUser();
         $unit = $this->createUnit();
 
         $this->assertDatabaseHas('units', [
-            'name' => $unit->name
+            'name' => $unit->name,
         ]);
 
-        $response = $this->actingAs($user)->put('units/' . $unit->slug, [
+        $response = $this->actingAs($user)->put('units/'.$unit->slug, [
             'name' => 'Meter',
-            'slug' => 'meter'
+            'slug' => 'meter',
         ]);
 
         $this->assertDatabaseHas('units', [
-            'name' => 'Meter'
+            'name' => 'Meter',
         ]);
 
         $response->assertRedirect();
     }
 
-    public function test_delete_unit()
+    public function test_delete_unit(): void
     {
         $this->withoutExceptionHandling();
 
         $unit = Unit::create([
             'name' => 'Piece',
             'slug' => 'piece',
-            'short_code' => 'pc'
+            'short_code' => 'pc',
         ]);
 
         $this->assertDatabaseHas('units', ['name' => 'Piece']);
@@ -159,7 +159,7 @@ class UnitTest extends TestCase
         $user = $this->createUser();
         $this->actingAs($user);
 
-        $this->delete('/units/'. $unit->slug);
+        $this->delete('/units/'.$unit->slug);
 
         $this->assertDatabaseCount('units', 0);
 

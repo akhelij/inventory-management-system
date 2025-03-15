@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ObservedBy([RepairTicketObserver::class])]
 class RepairTicket extends Model
@@ -26,7 +27,7 @@ class RepairTicket extends Model
         'status',
     ];
 
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
@@ -36,27 +37,27 @@ class RepairTicket extends Model
         return $this->belongsTo(Driver::class);
     }
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function technician()
+    public function technician(): BelongsTo
     {
         return $this->belongsTo(User::class, 'technician_id');
     }
 
-    public function photos()
+    public function photos(): HasMany
     {
         return $this->hasMany(RepairPhoto::class);
     }
 
-    public function statusHistories()
+    public function statusHistories(): HasMany
     {
         return $this->hasMany(RepairStatusHistory::class);
     }
@@ -64,20 +65,20 @@ class RepairTicket extends Model
     public function scopeSearch($query, $term = null)
     {
         if ($term) {
-            return $query->where(function($query) use ($term) {
+            return $query->where(function ($query) use ($term) {
                 $query->where('ticket_number', 'like', "%{$term}%")
                     ->orWhere('serial_number', 'like', "%{$term}%")
                     ->orWhere('problem_description', 'like', "%{$term}%")
                     ->orWhere('status', 'like', "%{$term}%")
-                    ->orWhereHas('customer', function($query) use ($term) {
+                    ->orWhereHas('customer', function ($query) use ($term) {
                         $query->where('name', 'like', "%{$term}%")
                             ->orWhere('phone', 'like', "%{$term}%");
                     })
-                    ->orWhereHas('product', function($query) use ($term) {
+                    ->orWhereHas('product', function ($query) use ($term) {
                         $query->where('name', 'like', "%{$term}%")
                             ->orWhere('model', 'like', "%{$term}%");
                     })
-                    ->orWhereHas('technician', function($query) use ($term) {
+                    ->orWhereHas('technician', function ($query) use ($term) {
                         $query->where('name', 'like', "%{$term}%");
                     });
             });

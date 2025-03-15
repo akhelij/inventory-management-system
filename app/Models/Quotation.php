@@ -5,8 +5,8 @@ namespace App\Models;
 use App\Enums\QuotationStatus;
 use Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quotation extends Model
 {
@@ -25,24 +25,28 @@ class Quotation extends Model
         'note',
         'created_at',
         'updated_at',
-        "user_id",
-        "uuid"
+        'user_id',
+        'uuid',
     ];
 
-    protected $casts = [
-        'date' => 'date',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'status' => QuotationStatus::class
-    ];
-
-    public static function boot() {
+    public static function boot()
+    {
         parent::boot();
 
         static::creating(function ($model) {
             $number = Quotation::max('id') + 1;
             $model->reference = make_reference_id('QT', $number);
         });
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'date' => 'date',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'status' => QuotationStatus::class,
+        ];
     }
 
     public function quotationDetails(): HasMany
@@ -54,7 +58,6 @@ class Quotation extends Model
     {
         return $this->belongsTo(Customer::class);
     }
-
 
     protected function shippingAmount(): Attribute
     {
@@ -88,7 +91,6 @@ class Quotation extends Model
         );
     }
 
-
     public function scopeSearch($query, $value): void
     {
         $query->where('reference', 'like', "%{$value}%")
@@ -96,10 +98,8 @@ class Quotation extends Model
             ->orWhere('status', 'like', "%{$value}%");
     }
 
-     /**
+    /**
      * Get the user that owns the Category
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {

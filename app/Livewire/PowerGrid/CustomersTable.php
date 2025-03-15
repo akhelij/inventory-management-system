@@ -8,7 +8,6 @@ use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
@@ -21,6 +20,7 @@ final class CustomersTable extends PowerGridComponent
     use WithExport;
 
     public int $perPage = 5;
+
     public array $perPageValues = [0, 5, 10, 20, 50];
 
     public function setUp(): array
@@ -54,7 +54,7 @@ final class CustomersTable extends PowerGridComponent
             ->addColumn('id')
             ->addColumn('name')
 
-           /** Example of custom column using a closure **/
+            /** Example of custom column using a closure **/
             ->addColumn('name_lower', fn (Customer $model) => strtolower(e($model->name)))
 
             ->addColumn('email')
@@ -85,7 +85,7 @@ final class CustomersTable extends PowerGridComponent
                 ->searchable(),
             Column::action('Action')
                 ->headerAttribute('align-middle text-center', styleAttr: 'width: 150px;')
-                ->bodyAttribute('align-middle text-center d-flex justify-content-around')
+                ->bodyAttribute('align-middle text-center d-flex justify-content-around'),
         ];
     }
 

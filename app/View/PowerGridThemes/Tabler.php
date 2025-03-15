@@ -2,23 +2,23 @@
 
 namespace App\View\PowerGridThemes;
 
-use PowerComponents\LivewirePowerGrid\Themes\Theme;
 use PowerComponents\LivewirePowerGrid\Themes\Bootstrap5;
-use PowerComponents\LivewirePowerGrid\Themes\Components\{Actions,
-    Checkbox,
-    Cols,
-    Editable,
-    FilterBoolean,
-    FilterDatePicker,
-    FilterInputText,
-    FilterMultiSelect,
-    FilterNumber,
-    FilterSelect,
-    Footer,
-    Radio,
-    SearchBox,
-    Table,
-    Toggleable};
+use PowerComponents\LivewirePowerGrid\Themes\Components\Actions;
+use PowerComponents\LivewirePowerGrid\Themes\Components\Checkbox;
+use PowerComponents\LivewirePowerGrid\Themes\Components\Cols;
+use PowerComponents\LivewirePowerGrid\Themes\Components\Editable;
+use PowerComponents\LivewirePowerGrid\Themes\Components\FilterBoolean;
+use PowerComponents\LivewirePowerGrid\Themes\Components\FilterDatePicker;
+use PowerComponents\LivewirePowerGrid\Themes\Components\FilterInputText;
+use PowerComponents\LivewirePowerGrid\Themes\Components\FilterMultiSelect;
+use PowerComponents\LivewirePowerGrid\Themes\Components\FilterNumber;
+use PowerComponents\LivewirePowerGrid\Themes\Components\FilterSelect;
+use PowerComponents\LivewirePowerGrid\Themes\Components\Footer;
+use PowerComponents\LivewirePowerGrid\Themes\Components\Radio;
+use PowerComponents\LivewirePowerGrid\Themes\Components\SearchBox;
+use PowerComponents\LivewirePowerGrid\Themes\Components\Table;
+use PowerComponents\LivewirePowerGrid\Themes\Components\Toggleable;
+use PowerComponents\LivewirePowerGrid\Themes\Theme;
 
 class Tabler extends Bootstrap5
 {
@@ -42,13 +42,13 @@ class Tabler extends Bootstrap5
     {
         return Theme::cols()
             ->div('')
-            ->clearFilter('' );
+            ->clearFilter('');
     }
 
     public function footer(): Footer
     {
         return Theme::footer()
-            ->view($this->root() . '.footer')
+            ->view($this->root().'.footer')
             ->select('');
     }
 
@@ -63,13 +63,13 @@ class Tabler extends Bootstrap5
     public function toggleable(): Toggleable
     {
         return Theme::toggleable()
-            ->view($this->root() . '.toggleable');
+            ->view($this->root().'.toggleable');
     }
 
     public function editable(): Editable
     {
         return Theme::editable()
-            ->view($this->root() . '.editable')
+            ->view($this->root().'.editable')
             ->span('d-flex justify-content-between')
             ->button('width: 100%;text-align: left;border: 0;padding: 4px;background: none')
             ->input('form-control shadow-none');
@@ -95,35 +95,35 @@ class Tabler extends Bootstrap5
     public function filterBoolean(): FilterBoolean
     {
         return Theme::filterBoolean()
-            ->view($this->root() . '.filters.boolean')
+            ->view($this->root().'.filters.boolean')
             ->select('form-control form-select shadow-none');
     }
 
     public function filterDatePicker(): FilterDatePicker
     {
         return Theme::filterDatePicker()
-            ->view($this->root() . '.filters.date-picker')
+            ->view($this->root().'.filters.date-picker')
             ->input('form-control shadow-none');
     }
 
     public function filterMultiSelect(): FilterMultiSelect
     {
         return Theme::filterMultiSelect()
-            ->view($this->root() . '.filters.multi-select');
+            ->view($this->root().'.filters.multi-select');
     }
 
     public function filterNumber(): FilterNumber
     {
         return Theme::filterNumber()
             ->base(attrStyle: 'min-width: 85px !important')
-            ->view($this->root() . '.filters.number')
+            ->view($this->root().'.filters.number')
             ->input('form-control shadow-none');
     }
 
     public function filterSelect(): FilterSelect
     {
         return Theme::filterSelect()
-            ->view($this->root() . '.filters.select')
+            ->view($this->root().'.filters.select')
             ->select('form-control form-select shadow-none');
     }
 
@@ -131,7 +131,7 @@ class Tabler extends Bootstrap5
     {
         return Theme::filterInputText()
             ->base(attrStyle: 'min-width: 165px !important')
-            ->view($this->root() . '.filters.input-text')
+            ->view($this->root().'.filters.input-text')
             ->select('form-control mb-1 shadow-none form-select')
             ->input('form-control shadow-none');
     }

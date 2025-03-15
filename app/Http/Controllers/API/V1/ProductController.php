@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 
 class ProductController
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
         $products = Product::all();
 
-        if ($request->has('category_id'))
-        {
+        if ($request->has('category_id')) {
             $products = Product::query()
                 ->where('category_id', $request->get('category_id'))
                 ->get();

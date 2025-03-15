@@ -2,16 +2,16 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Support\Str;
 use Illuminate\Auth\Events\Lockout;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    //protected $inputType;
+    // protected $inputType;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -46,12 +46,12 @@ class LoginRequest extends FormRequest
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
-//            throw ValidationException::withMessages([
-//                $this->email  => trans('auth.failed'),
-//            ]);
+            //            throw ValidationException::withMessages([
+            //                $this->email  => trans('auth.failed'),
+            //            ]);
         }
 
-        //RateLimiter::clear($this->throttleKey());
+        // RateLimiter::clear($this->throttleKey());
     }
 
     /**
@@ -85,11 +85,11 @@ class LoginRequest extends FormRequest
         return Str::transliterate(Str::lower($this->input('username')).'|'.$this->ip());
     }
 
-//    protected function prepareForValidation()
-//    {
-//        $this->inputType = filter_var($this->input('input_type'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-//        $this->merge([
-//            $this->inputType => $this->input('input_type')
-//        ]);
-//    }
+    //    protected function prepareForValidation()
+    //    {
+    //        $this->inputType = filter_var($this->input('input_type'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+    //        $this->merge([
+    //            $this->inputType => $this->input('input_type')
+    //        ]);
+    //    }
 }

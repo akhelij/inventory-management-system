@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PermissionEnum;
-use App\Models\Customer;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
+use App\Models\Customer;
 use Illuminate\Support\Str;
 
 class CustomerController extends Controller
@@ -15,13 +15,14 @@ class CustomerController extends Controller
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
 
         return view('customers.index', [
-            'customers' => Customer::count()
+            'customers' => Customer::count(),
         ]);
     }
 
     public function create()
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CUSTOMERS), 403);
+
         return view('customers.create');
     }
 
@@ -29,16 +30,16 @@ class CustomerController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CUSTOMERS), 403);
 
-        $image = "";
+        $image = '';
         if ($request->hasFile('photo')) {
-            $image = $request->file('photo')->store("customers", "public");
+            $image = $request->file('photo')->store('customers', 'public');
         }
 
         $data = $request->safe()->all();
 
         $data = array_merge($data, [
-            "user_id" => auth()->id(),
-            "uuid" => Str::uuid(),
+            'user_id' => auth()->id(),
+            'uuid' => Str::uuid(),
             'photo' => $image,
         ]);
 
@@ -52,12 +53,13 @@ class CustomerController extends Controller
     public function show($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
-        $customer = Customer::where("uuid", $uuid)->with(['orders', 'payments'])->firstOrFail();
+        $customer = Customer::where('uuid', $uuid)->with(['orders', 'payments'])->firstOrFail();
 
         $due = $customer->total_orders - $customer->total_payments;
         $totalPayments = $customer->total_payments;
         $diff = $due;
         $amountPendingPayments = $customer->total_pending_payments;
+
         return view('customers.show', [
             'customer' => $customer,
             'totalOrders' => $customer->total_orders,
@@ -72,16 +74,17 @@ class CustomerController extends Controller
     public function edit($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CUSTOMERS), 403);
-        $customer = Customer::where("uuid", $uuid)->firstOrFail();
+        $customer = Customer::where('uuid', $uuid)->firstOrFail();
+
         return view('customers.edit', [
-            'customer' => $customer
+            'customer' => $customer,
         ]);
     }
 
     public function update(UpdateCustomerRequest $request, $uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CUSTOMERS), 403);
-        $customer = Customer::where("uuid", $uuid)->firstOrFail();
+        $customer = Customer::where('uuid', $uuid)->firstOrFail();
 
         /**
          * Handle upload image with Storage.
@@ -89,9 +92,9 @@ class CustomerController extends Controller
         $image = $customer->photo;
         if ($request->hasFile('photo')) {
             if ($customer->photo) {
-                unlink(public_path('storage/') . $customer->photo);
+                unlink(public_path('storage/').$customer->photo);
             }
-            $image = $request->file('photo')->store("customers", "public");
+            $image = $request->file('photo')->store('customers', 'public');
         }
 
         $data = $request->safe()->all();
@@ -110,9 +113,9 @@ class CustomerController extends Controller
     public function destroy($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::DELETE_CUSTOMERS), 403);
-        $customer = Customer::where("uuid", $uuid)->firstOrFail();
+        $customer = Customer::where('uuid', $uuid)->firstOrFail();
         if ($customer->photo) {
-            unlink(public_path('storage/customers/') . $customer->photo);
+            unlink(public_path('storage/customers/').$customer->photo);
         }
 
         $customer->delete();
@@ -125,6 +128,7 @@ class CustomerController extends Controller
     public function downloadPayments(Customer $customer)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
+
         return view('customer.print-payments', [
             'payments' => $customer->payments,
         ]);

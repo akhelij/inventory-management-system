@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Invoice\StoreInvoiceRequest;
 use App\Models\Customer;
 use Gloudemans\Shoppingcart\Facades\Cart;
-use App\Http\Requests\Invoice\StoreInvoiceRequest;
 
 class InvoiceController extends Controller
 {
@@ -17,7 +17,7 @@ class InvoiceController extends Controller
 
         return view('pos.create', [
             'customer' => $customer,
-            'carts' => $carts
+            'carts' => $carts,
         ]);
     }
 }

@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Supplier;
 use App\Http\Requests\Supplier\StoreSupplierRequest;
 use App\Http\Requests\Supplier\UpdateSupplierRequest;
+use App\Models\Supplier;
 use Str;
 
 class SupplierController extends Controller
 {
     public function index()
     {
-        $suppliers = Supplier::where("user_id", auth()->id())->count();
+        $suppliers = Supplier::where('user_id', auth()->id())->count();
 
         return view('suppliers.index', [
-            'suppliers' => $suppliers
+            'suppliers' => $suppliers,
         ]);
     }
 
@@ -25,14 +25,14 @@ class SupplierController extends Controller
 
     public function store(StoreSupplierRequest $request)
     {
-        $image = "";
+        $image = '';
         if ($request->hasFile('photo')) {
-            $image = $request->file('photo')->store("supliers", "public");
+            $image = $request->file('photo')->store('supliers', 'public');
         }
 
         Supplier::create([
-            "user_id" => auth()->id(),
-            "uuid" => Str::uuid(),
+            'user_id' => auth()->id(),
+            'uuid' => Str::uuid(),
             'photo' => $image,
             'name' => $request->name,
             'email' => $request->email,
@@ -52,25 +52,26 @@ class SupplierController extends Controller
 
     public function show($uuid)
     {
-        $supplier = Supplier::where("uuid", $uuid)->firstOrFail();
+        $supplier = Supplier::where('uuid', $uuid)->firstOrFail();
         $supplier->loadMissing('purchases')->get();
 
         return view('suppliers.show', [
-            'supplier' => $supplier
+            'supplier' => $supplier,
         ]);
     }
 
     public function edit($uuid)
     {
-        $supplier = Supplier::where("uuid", $uuid)->firstOrFail();
+        $supplier = Supplier::where('uuid', $uuid)->firstOrFail();
+
         return view('suppliers.edit', [
-            'supplier' => $supplier
+            'supplier' => $supplier,
         ]);
     }
 
     public function update(UpdateSupplierRequest $request, $uuid)
     {
-        $supplier = Supplier::where("uuid", $uuid)->firstOrFail();
+        $supplier = Supplier::where('uuid', $uuid)->firstOrFail();
 
         /**
          * Handle upload image with Storage.
@@ -80,10 +81,10 @@ class SupplierController extends Controller
 
             // Delete Old Photo
             if ($supplier->photo) {
-                unlink(public_path('storage/') . $supplier->photo);
+                unlink(public_path('storage/').$supplier->photo);
             }
 
-            $image = $request->file('photo')->store("supliers", "public");
+            $image = $request->file('photo')->store('supliers', 'public');
         }
 
         $supplier->update([
@@ -106,12 +107,12 @@ class SupplierController extends Controller
 
     public function destroy($uuid)
     {
-        $supplier = Supplier::where("uuid", $uuid)->firstOrFail();
+        $supplier = Supplier::where('uuid', $uuid)->firstOrFail();
         /**
          * Delete photo if exists.
          */
         if ($supplier->photo) {
-            unlink(public_path('storage/suppliers/') . $supplier->photo);
+            unlink(public_path('storage/suppliers/').$supplier->photo);
         }
 
         $supplier->delete();

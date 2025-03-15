@@ -3,9 +3,9 @@
 namespace App\Livewire\Tables;
 
 use App\Models\Customer;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class CustomerTable extends Component
 {
@@ -22,7 +22,7 @@ class CustomerTable extends Component
     public function sortBy($field): void
     {
         if ($this->sortField === $field) {
-            $this->sortAsc = !$this->sortAsc;
+            $this->sortAsc = ! $this->sortAsc;
         } else {
             $this->sortAsc = true;
         }
@@ -37,11 +37,11 @@ class CustomerTable extends Component
             ->search($this->search)
             ->get();
 
-        if(request()->input('only_out_of_limit')) {
+        if (request()->input('only_out_of_limit')) {
             $query = $query->where('is_out_of_limit', true);
         }
 
-        if(request()->input('only_unpaid')) {
+        if (request()->input('only_unpaid')) {
             $query = $query->where('have_unpaid_checks', true);
         }
 
@@ -51,7 +51,7 @@ class CustomerTable extends Component
         $customers = new LengthAwarePaginator($currentItems, $query->count(), $this->perPage, $currentPage);
 
         return view('livewire.tables.customer-table', [
-            'customers' => $customers
+            'customers' => $customers,
         ]);
     }
 }

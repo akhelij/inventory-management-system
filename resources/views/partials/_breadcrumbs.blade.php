@@ -7,7 +7,7 @@
         @foreach(request()->breadcrumbs()->segments() as $segment)
             <li class="breadcrumb-item">
                 <a href="{{ $segment->url() }}">
-                    {{ optional($segment->model())->title ?: $segment->name() }}
+                    {{ $segment->model()?->title ?: $segment->name() }}
                 </a>
             </li>
         @endforeach
@@ -19,7 +19,7 @@
     @foreach(request()->breadcrumbs()->segments() as $segment)
         <li class="breadcrumb-item">
             <a href="{{ $segment->url() }}">
-                {{ optional($segment->model())->title ?: $segment->name() }}
+                {{ $segment->model()?->title ?: $segment->name() }}
             </a>
         </li>
     @endforeach

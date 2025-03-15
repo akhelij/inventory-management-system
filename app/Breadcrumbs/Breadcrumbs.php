@@ -15,7 +15,7 @@ class Breadcrumbs
 
     public function segments(): array
     {
-        return collect($this->request->segments())->map(function ($segment){
+        return collect($this->request->segments())->map(function ($segment) {
             return new Segment($this->request, $segment);
         })->toArray();
     }

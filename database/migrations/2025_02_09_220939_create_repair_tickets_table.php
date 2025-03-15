@@ -25,7 +25,7 @@ return new class extends Migration
                 'IN_PROGRESS',
                 'REPAIRED',
                 'UNREPAIRABLE',
-                'DELIVERED'
+                'DELIVERED',
             ])->default('RECEIVED');
             $table->timestamps();
         });
