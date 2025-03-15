@@ -22,8 +22,7 @@ class ProductByUnitTable extends Component
 
     public function sortBy($field): void
     {
-        if($this->sortField === $field)
-        {
+        if ($this->sortField === $field) {
             $this->sortAsc = ! $this->sortAsc;
 
         } else {
@@ -44,7 +43,7 @@ class ProductByUnitTable extends Component
             'products' => Product::where('unit_id', $this->unit->id)
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                ->paginate($this->perPage)
+                ->paginate($this->perPage),
         ]);
     }
 }

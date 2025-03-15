@@ -13,9 +13,9 @@ class OrderObserver
      */
     public function created(Order $order): void
     {
-        if ($order->order_status == 1){
+        if ($order->order_status == 1) {
             $contents = Cart::content();
-            foreach($contents as $item) {
+            foreach ($contents as $item) {
                 $product = Product::find($item->id);
                 $product->quantity = $product->quantity - $item->qty;
                 $product->save();
@@ -28,12 +28,12 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-        if ($order->wasChanged('order_status') && $order->order_status == 1){
-           foreach($order->details as $item) {
-               $product = Product::find($item->product_id);
-               $product->quantity = $product->quantity - $item->quantity;
-               $product->save();
-           }
+        if ($order->wasChanged('order_status') && $order->order_status == 1) {
+            foreach ($order->details as $item) {
+                $product = Product::find($item->product_id);
+                $product->quantity = $product->quantity - $item->quantity;
+                $product->save();
+            }
         }
     }
 

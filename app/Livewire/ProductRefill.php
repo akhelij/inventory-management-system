@@ -2,16 +2,17 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\Product;
+use Livewire\Component;
 
 class ProductRefill extends Component
 {
     public $product;
+
     public $refillQuantity = 0;
 
     protected $rules = [
-        'refillQuantity' => 'required|numeric|min:1'
+        'refillQuantity' => 'required|numeric|min:1',
     ];
 
     public function mount(Product $product)
@@ -29,12 +30,12 @@ class ProductRefill extends Component
         $this->js('
             const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("refillModal"));
             modal.hide();
-            document.getElementById("quantity").value = "' . $this->product->quantity . '";
+            document.getElementById("quantity").value = "'.$this->product->quantity.'";
 
             // Add success message
             const alertHtml = `
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    ' . __('Stock has been refilled successfully.') . '
+                    '.__('Stock has been refilled successfully.').'
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             `;

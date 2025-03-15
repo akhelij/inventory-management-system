@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Unit;
 use App\Http\Requests\Unit\StoreUnitRequest;
 use App\Http\Requests\Unit\UpdateUnitRequest;
+use App\Models\Unit;
 use Str;
 
 class UnitController extends Controller
@@ -29,14 +29,14 @@ class UnitController extends Controller
         $unit->loadMissing('products')->get();
 
         return view('units.show', [
-            'unit' => $unit
+            'unit' => $unit,
         ]);
     }
 
     public function store(StoreUnitRequest $request)
     {
         Unit::create([
-            "user_id" => auth()->id(),
+            'user_id' => auth()->id(),
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'short_code' => $request->short_code,
@@ -50,13 +50,13 @@ class UnitController extends Controller
     public function edit(Unit $unit)
     {
         return view('units.edit', [
-            'unit' => $unit
+            'unit' => $unit,
         ]);
     }
 
     public function update(UpdateUnitRequest $request, $slug)
     {
-        $unit = Unit::where(["user_id" => auth()->id(), "slug" => $slug])->firstOrFail();
+        $unit = Unit::where(['user_id' => auth()->id(), 'slug' => $slug])->firstOrFail();
         $unit->name = $request->name;
         $unit->slug = Str::slug($request->name);
         $unit->short_code = $request->short_code;

@@ -14,7 +14,7 @@ class RepairStatusHistory extends Model
         'user_id',
         'from_status',
         'to_status',
-        'comment'
+        'comment',
     ];
 
     public function repairTicket()

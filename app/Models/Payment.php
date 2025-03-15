@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Model;
 #[ObservedBy([PaymentObserver::class])]
 class Payment extends Model
 {
-    use HasFactory;
     use HasActivityLogs;
+    use HasFactory;
 
-    protected $guarded =[];
+    protected $guarded = [];
 
     protected $with = [
         'customer',

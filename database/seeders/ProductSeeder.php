@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Product;
-use Haruncpi\LaravelIdGenerator\IdGenerator;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Str;
 
@@ -26,8 +24,8 @@ class ProductSeeder extends Seeder
                 'notes' => null,
                 'category_id' => 3,
                 'unit_id' => 3,
-                "user_id"=>1,
-                "uuid"=>Str::uuid()
+                'user_id' => 1,
+                'uuid' => Str::uuid(),
             ],
             [
                 'name' => 'ASUS Laptop',
@@ -42,8 +40,8 @@ class ProductSeeder extends Seeder
                 'notes' => null,
                 'category_id' => 1,
                 'unit_id' => 3,
-                "user_id"=>1,
-                "uuid"=>Str::uuid()
+                'user_id' => 1,
+                'uuid' => Str::uuid(),
             ],
             [
                 'name' => 'Logitech Keyboard',
@@ -58,8 +56,8 @@ class ProductSeeder extends Seeder
                 'notes' => null,
                 'category_id' => 2,
                 'unit_id' => 3,
-                "user_id"=>1,
-                "uuid"=>Str::uuid()
+                'user_id' => 1,
+                'uuid' => Str::uuid(),
             ],
             [
                 'name' => 'Logitech Speakers',
@@ -74,8 +72,8 @@ class ProductSeeder extends Seeder
                 'notes' => null,
                 'category_id' => 4,
                 'unit_id' => 3,
-                "user_id"=>1,
-                "uuid"=>Str::uuid()
+                'user_id' => 1,
+                'uuid' => Str::uuid(),
             ],
             [
                 'name' => 'AutoCAD v7.0',
@@ -90,12 +88,12 @@ class ProductSeeder extends Seeder
                 'notes' => null,
                 'category_id' => 5,
                 'unit_id' => 3,
-                "user_id"=>1,
-                "uuid"=>Str::uuid()
-            ]
+                'user_id' => 1,
+                'uuid' => Str::uuid(),
+            ],
         ]);
 
-        $products->each(function ($product){
+        $products->each(function ($product) {
             Product::create($product);
         });
     }

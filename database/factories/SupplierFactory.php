@@ -19,8 +19,8 @@ class SupplierFactory extends Factory
     public function definition(): array
     {
         return [
-            "user_id"=>1,
-            "uuid"=>Str::uuid(),
+            'user_id' => 1,
+            'uuid' => Str::uuid(),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'phone' => fake()->unique()->phoneNumber(),

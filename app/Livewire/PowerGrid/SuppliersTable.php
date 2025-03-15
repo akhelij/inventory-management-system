@@ -8,7 +8,6 @@ use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
@@ -18,6 +17,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 final class SuppliersTable extends PowerGridComponent
 {
     public int $perPage = 5;
+
     public array $perPageValues = [0, 5, 10, 20, 50];
 
     public function setUp(): array
@@ -77,7 +77,7 @@ final class SuppliersTable extends PowerGridComponent
 
             Column::action('Action')
                 ->headerAttribute('text-center', styleAttr: 'width: 150px;')
-                ->bodyAttribute('text-center d-flex justify-content-around')
+                ->bodyAttribute('text-center d-flex justify-content-around'),
         ];
     }
 

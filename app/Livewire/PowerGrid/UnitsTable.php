@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
 use PowerComponents\LivewirePowerGrid\Footer;
 use PowerComponents\LivewirePowerGrid\Header;
 use PowerComponents\LivewirePowerGrid\PowerGrid;
@@ -21,6 +19,7 @@ final class UnitsTable extends PowerGridComponent
     use WithExport;
 
     public int $perPage = 5;
+
     public array $perPageValues = [0, 5, 10, 20, 50];
 
     public function setUp(): array
@@ -87,7 +86,7 @@ final class UnitsTable extends PowerGridComponent
 
             Column::action('Action')
                 ->headerAttribute('text-center', styleAttr: 'width: 150px;')
-                ->bodyAttribute('text-center d-flex justify-content-around')
+                ->bodyAttribute('text-center d-flex justify-content-around'),
         ];
     }
 
@@ -118,7 +117,7 @@ final class UnitsTable extends PowerGridComponent
                 ->class('btn btn-outline-danger btn-icon w-100')
                 ->route('units.destroy', ['unit' => $row])
                 ->method('delete')
-                ->tooltip('Delete Unit')
+                ->tooltip('Delete Unit'),
         ];
     }
 }

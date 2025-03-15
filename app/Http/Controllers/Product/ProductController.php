@@ -10,7 +10,6 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Unit;
 use App\Models\Warehouse;
-use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Picqer\Barcode\BarcodeGeneratorHTML;
@@ -55,38 +54,35 @@ class ProductController extends Controller
         /**
          * Handle upload image
          */
-        $image = "";
+        $image = '';
         if ($request->hasFile('product_image')) {
             $image = $request->file('product_image')->store('products', 'public');
         }
 
         Product::create([
-            "code"              => strtoupper($request->code),
-            'product_image'     => $image,
-            'name'              => $request->name,
-            'category_id'       => $request->category_id,
-            'warehouse_id'      => $request->warehouse_id,
-            'unit_id'           => $request->unit_id,
-            'quantity'          => $request->quantity,
-            'buying_price'      => $request->buying_price,
-            'selling_price'     => $request->selling_price,
-            'quantity_alert'    => $request->quantity_alert,
-            'tax'               => $request->tax,
-            'tax_type'          => $request->tax_type,
-            'notes'             => $request->notes,
-            "user_id"           => auth()->id(),
-            "slug"              => Str::slug($request->name, '-'),
-            "uuid"              => Str::uuid()
+            'code' => strtoupper($request->code),
+            'product_image' => $image,
+            'name' => $request->name,
+            'category_id' => $request->category_id,
+            'warehouse_id' => $request->warehouse_id,
+            'unit_id' => $request->unit_id,
+            'quantity' => $request->quantity,
+            'buying_price' => $request->buying_price,
+            'selling_price' => $request->selling_price,
+            'quantity_alert' => $request->quantity_alert,
+            'tax' => $request->tax,
+            'tax_type' => $request->tax_type,
+            'notes' => $request->notes,
+            'user_id' => auth()->id(),
+            'slug' => Str::slug($request->name, '-'),
+            'uuid' => Str::uuid(),
         ]);
-
 
         return to_route('products.index')->with('success', 'Product has been created!');
     }
 
     /**
      * Generate unique random product code between 5 to 12 characters
-     *
-     * @return string
      */
     private function generateProductCode(): string
     {
@@ -113,7 +109,7 @@ class ProductController extends Controller
     public function show($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
-        $product = Product::where("uuid", $uuid)->firstOrFail();
+        $product = Product::where('uuid', $uuid)->firstOrFail();
 
         $product_entries = $product->activities()
             ->where('event', 'updated')
@@ -136,7 +132,7 @@ class ProductController extends Controller
             });
 
         // Generate a barcode
-        $generator = new BarcodeGeneratorHTML();
+        $generator = new BarcodeGeneratorHTML;
         $barcode = $generator->getBarcode($product->code, $generator::TYPE_CODE_128);
 
         return view('products.show', [
@@ -149,26 +145,27 @@ class ProductController extends Controller
     public function edit($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
-        $product = Product::where("uuid", $uuid)->firstOrFail();
+        $product = Product::where('uuid', $uuid)->firstOrFail();
+
         return view('products.edit', [
             'categories' => Category::get(),
             'warehouses' => Warehouse::all(),
             'units' => Unit::get(),
-            'product' => $product
+            'product' => $product,
         ]);
     }
 
     public function update(UpdateProductRequest $request, $uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
-        $product = Product::where("uuid", $uuid)->firstOrFail();
+        $product = Product::where('uuid', $uuid)->firstOrFail();
 
         $image = $product->product_image;
         if ($request->hasFile('product_image')) {
 
             // Delete Old Photo
             if ($product->product_image) {
-                unlink(public_path('storage/') . $product->product_image);
+                unlink(public_path('storage/').$product->product_image);
             }
             $image = $request->file('product_image')->store('products', 'public');
         }
@@ -186,14 +183,14 @@ class ProductController extends Controller
     public function destroy($uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::DELETE_PRODUCTS), 403);
-        $product = Product::where("uuid", $uuid)->firstOrFail();
+        $product = Product::where('uuid', $uuid)->firstOrFail();
         /**
          * Delete photo if exists.
          */
         if ($product->product_image) {
             // check if image exists in our file system
-            if (file_exists(public_path('storage/') . $product->product_image)) {
-                unlink(public_path('storage/') . $product->product_image);
+            if (file_exists(public_path('storage/').$product->product_image)) {
+                unlink(public_path('storage/').$product->product_image);
             }
         }
 

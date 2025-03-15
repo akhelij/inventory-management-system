@@ -10,7 +10,7 @@ class DriverController extends Controller
     public function index()
     {
         return view('drivers.index', [
-            'drivers' => Driver::paginate(20)
+            'drivers' => Driver::paginate(20),
         ]);
     }
 
@@ -24,7 +24,7 @@ class DriverController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:255',
-            'license_number' => 'nullable|string|max:255'
+            'license_number' => 'nullable|string|max:255',
         ]);
 
         Driver::create($request->all());
@@ -37,7 +37,7 @@ class DriverController extends Controller
     public function edit(Driver $driver)
     {
         return view('drivers.edit', [
-            'driver' => $driver
+            'driver' => $driver,
         ]);
     }
 
@@ -46,7 +46,7 @@ class DriverController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:255',
-            'license_number' => 'nullable|string|max:255'
+            'license_number' => 'nullable|string|max:255',
         ]);
 
         $driver->update($request->all());
@@ -59,6 +59,7 @@ class DriverController extends Controller
     public function destroy(Driver $driver)
     {
         $driver->delete();
+
         return redirect()
             ->route('drivers.index')
             ->with('success', 'Driver has been deleted!');

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PermissionEnum;
-use App\Models\Category;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
+use App\Models\Category;
 use Str;
 
 class CategoryController extends Controller
@@ -23,6 +23,7 @@ class CategoryController extends Controller
     public function create()
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CATEGORIES), 403);
+
         return view('categories.create');
     }
 
@@ -30,9 +31,9 @@ class CategoryController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CATEGORIES), 403);
         Category::create([
-            "user_id"=>auth()->id(),
-            "name" => $request->name,
-            "slug" => Str::slug($request->name)
+            'user_id' => auth()->id(),
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
         ]);
 
         return redirect()
@@ -43,16 +44,18 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CATEGORIES), 403);
+
         return view('categories.show', [
-            'category' => $category
+            'category' => $category,
         ]);
     }
 
     public function edit(Category $category)
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CATEGORIES), 403);
+
         return view('categories.edit', [
-            'category' => $category
+            'category' => $category,
         ]);
     }
 
@@ -60,8 +63,8 @@ class CategoryController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CATEGORIES), 403);
         $category->update([
-            "name" => $request->name,
-            "slug" => Str::slug($request->name)
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
         ]);
 
         return redirect()

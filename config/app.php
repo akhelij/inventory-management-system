@@ -161,7 +161,7 @@ return [
         /*
          * Package Service Providers...
          */
-         Spatie\Permission\PermissionServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -175,7 +175,7 @@ return [
         * Third Party Service Providers...
         */
         Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
-        Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class
+        Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class,
     ])->toArray(),
 
     /*

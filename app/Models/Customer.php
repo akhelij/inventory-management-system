@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use App\Traits\HasActivityLogs;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Model
 {
-    use HasFactory, HasActivityLogs;
+    use HasActivityLogs, HasFactory;
 
-//    const ALAMI = "electro@alami.com";
+    //    const ALAMI = "electro@alami.com";
 
     protected $guarded = [
         'id',
@@ -31,7 +31,7 @@ class Customer extends Model
         'account_number',
         'bank_name',
         'user_id',
-        'uuid'
+        'uuid',
     ];
 
     protected $casts = [
@@ -48,12 +48,12 @@ class Customer extends Model
 
     public function getIsOutOfLimitAttribute(): bool
     {
-        return ($this->total_orders - $this->total_payments + $this->total_pending_payments > $this->limit);
+        return $this->total_orders - $this->total_payments + $this->total_pending_payments > $this->limit;
     }
 
     public function getHaveUnpaidChecksAttribute(): bool
     {
-        return ($this->total_orders - $this->total_payments > 0);
+        return $this->total_orders - $this->total_payments > 0;
     }
 
     public function getTotalOrdersAttribute(): float
@@ -65,7 +65,6 @@ class Customer extends Model
     {
         return $this->payments->sum('amount');
     }
-
 
     public function getTotalPendingPaymentsAttribute(): float
     {
@@ -101,9 +100,10 @@ class Customer extends Model
 
     public function scopeOfAuth($query)
     {
-        if(!auth()->user()->can('see all customers')) {
-            return $query->where("user_id", auth()->id());
+        if (! auth()->user()->can('see all customers')) {
+            return $query->where('user_id', auth()->id());
         }
+
         return $query;
     }
 }

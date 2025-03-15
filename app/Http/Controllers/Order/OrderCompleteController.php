@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Order;
 
 use App\Enums\OrderStatus;
+use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class OrderCompleteController extends Controller
 {
@@ -16,7 +16,7 @@ class OrderCompleteController extends Controller
             ->get();
 
         return view('orders.complete-orders', [
-            'orders' => $orders
+            'orders' => $orders,
         ]);
     }
 }

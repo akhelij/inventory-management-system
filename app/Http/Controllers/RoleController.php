@@ -14,7 +14,7 @@ class RoleController extends Controller
     public function index()
     {
         return view('roles.index', [
-            'roles' => Role::all()
+            'roles' => Role::all(),
         ]);
     }
 
@@ -37,7 +37,7 @@ class RoleController extends Controller
 
         Role::create([
             'name' => $request->name,
-            'guard_name' => 'web'
+            'guard_name' => 'web',
         ]);
 
         return redirect()->route('roles.index')->with('success', 'Role created successfully');
@@ -49,7 +49,7 @@ class RoleController extends Controller
     public function show(Role $role)
     {
         return view('roles.show', [
-            'role' => $role
+            'role' => $role,
         ]);
     }
 
@@ -59,6 +59,7 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         $permissions = Permission::all();
+
         return view('roles.edit', compact('role', 'permissions'));
     }
 
@@ -70,11 +71,11 @@ class RoleController extends Controller
         $request->validate([
             'name' => 'required|unique:roles,name,'.$role->id,
             'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id'
+            'permissions.*' => 'exists:permissions,id',
         ]);
 
         $role->update([
-            'name' => $request->name
+            'name' => $request->name,
         ]);
 
         $permissions = Permission::whereIn('id', $request->permissions)->get();

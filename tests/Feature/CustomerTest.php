@@ -55,7 +55,7 @@ class CustomerTest extends TestCase
         $user = $this->createUser();
         $this->actingAs($user);
 
-        $this->delete('/customers/'. $customer->id);
+        $this->delete('/customers/'.$customer->id);
 
         $this->assertDatabaseCount('customers', 0);
 

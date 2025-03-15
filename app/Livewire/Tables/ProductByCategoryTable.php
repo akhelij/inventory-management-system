@@ -22,8 +22,7 @@ class ProductByCategoryTable extends Component
 
     public function sortBy($field): void
     {
-        if($this->sortField === $field)
-        {
+        if ($this->sortField === $field) {
             $this->sortAsc = ! $this->sortAsc;
 
         } else {
@@ -40,11 +39,11 @@ class ProductByCategoryTable extends Component
 
     public function render()
     {
-        return view('livewire.tables.product-by-category-table',[
+        return view('livewire.tables.product-by-category-table', [
             'products' => Product::where('category_id', $this->category->id)
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                ->paginate($this->perPage)
+                ->paginate($this->perPage),
         ]);
     }
 }

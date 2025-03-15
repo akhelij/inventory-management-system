@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => bcrypt('password'),
                 'created_at' => now(),
-                "uuid" => Str::uuid()
+                'uuid' => Str::uuid(),
             ],
             [
                 'name' => 'Electro Alami',
@@ -28,7 +28,7 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => bcrypt('password'),
                 'created_at' => now(),
-                "uuid" => Str::uuid()
+                'uuid' => Str::uuid(),
             ],
         ]);
 
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
         });
 
         $roles = ['admin', 'magasinier', 'commercial'];
-        foreach(User::all() as $index => $user) {
+        foreach (User::all() as $index => $user) {
             $user->assignRole($roles[$index]);
         }
     }

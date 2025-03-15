@@ -21,7 +21,7 @@ class CategoryTable extends Component
     public function sortBy($field): void
     {
         if ($this->sortField === $field) {
-            $this->sortAsc = !$this->sortAsc;
+            $this->sortAsc = ! $this->sortAsc;
         } else {
             $this->sortAsc = true;
         }
@@ -35,7 +35,7 @@ class CategoryTable extends Component
             'categories' => Category::with(['products'])
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                ->paginate($this->perPage)
+                ->paginate($this->perPage),
         ]);
     }
 }

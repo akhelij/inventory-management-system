@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\Product;
-use App\Models\ProductEntry;
 
 class ProductObserver
 {
@@ -18,10 +17,7 @@ class ProductObserver
     /**
      * Handle the Product "updating" event.
      */
-    public function updating(Product $product): void
-    {
-
-    }
+    public function updating(Product $product): void {}
 
     /**
      * Handle the Product "deleted" event.

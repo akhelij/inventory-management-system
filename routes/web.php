@@ -19,13 +19,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Purchase\PurchaseController;
 use App\Http\Controllers\Quotation\QuotationController;
 use App\Http\Controllers\RepairTicketController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
 use App\Http\Controllers\WarehouseController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,7 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard/', [DashboardController::class, 'index'])->name('dashboard');
 
     // User Management
-    Route::resource('/users', UserController::class); //->except(['show']);
+    Route::resource('/users', UserController::class); // ->except(['show']);
     Route::resource('/roles', RoleController::class);
 
     Route::put('/user/change-password/{username}', [UserController::class, 'updatePassword'])->name('users.updatePassword');
@@ -85,7 +85,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/pos/cart/update/{rowId}', [PosController::class, 'updateCartItem'])->name('pos.updateCartItem');
     Route::delete('/pos/cart/delete/{rowId}', [PosController::class, 'deleteCartItem'])->name('pos.deleteCartItem');
 
-    //Route::post('/pos/invoice', [PosController::class, 'createInvoice'])->name('pos.createInvoice');
+    // Route::post('/pos/invoice', [PosController::class, 'createInvoice'])->name('pos.createInvoice');
     Route::post('invoice/create/', [InvoiceController::class, 'create'])->name('invoice.create');
 
     // Route Orders
@@ -122,7 +122,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/orders/details/{order_id}/download', [OrderController::class, 'downloadInvoice'])->name('order.downloadInvoice');
     Route::post('/orders/details/download', [OrderController::class, 'bulkDownloadInvoice'])->name('order.bulk.download');
 
-
     // Route Purchases
     Route::get('/purchases/approved', [PurchaseController::class, 'approvedPurchases'])->name('purchases.approvedPurchases');
     Route::get('/purchases/report', [PurchaseController::class, 'dailyPurchaseReport'])->name('purchases.dailyPurchaseReport');
@@ -133,10 +132,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/purchases/create', [PurchaseController::class, 'create'])->name('purchases.create');
     Route::post('/purchases', [PurchaseController::class, 'store'])->name('purchases.store');
 
-    //Route::get('/purchases/show/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
+    // Route::get('/purchases/show/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
     Route::get('/purchases/{purchase}', [PurchaseController::class, 'show'])->name('purchases.show');
 
-    //Route::get('/purchases/edit/{purchase}', [PurchaseController::class, 'edit'])->name('purchases.edit');
+    // Route::get('/purchases/edit/{purchase}', [PurchaseController::class, 'edit'])->name('purchases.edit');
     Route::get('/purchases/{purchase}/edit', [PurchaseController::class, 'edit'])->name('purchases.edit');
 
     Route::put('/purchases/update/{purchase}', [PurchaseController::class, 'update'])->name('purchases.update');
@@ -151,7 +150,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/lang/{lang}', function ($lang) {
         // Validate the language
         $supportedLocales = ['en', 'fr'];
-        if (!in_array($lang, $supportedLocales)) {
+        if (! in_array($lang, $supportedLocales)) {
             abort(400, 'Unsupported language');
         }
 
@@ -167,6 +166,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::get('test/', function (){
+Route::get('test/', function () {
     return view('test');
 });

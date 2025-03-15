@@ -23,7 +23,7 @@ class StoreUnitRequest extends FormRequest
     {
         return [
             'name' => 'required|unique:units,name',
-            'short_code' => 'required'
+            'short_code' => 'required',
         ];
     }
 }

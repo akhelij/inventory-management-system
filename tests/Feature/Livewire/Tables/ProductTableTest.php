@@ -3,8 +3,6 @@
 namespace Tests\Feature\Livewire\Tables;
 
 use App\Livewire\Tables\ProductTable;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Livewire\Livewire;
 use Tests\TestCase;
 

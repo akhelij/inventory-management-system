@@ -69,7 +69,7 @@ class CategoryTest extends TestCase
 
     public function test_user_can_delete_category()
     {
-        //$this->withoutExceptionHandling();
+        // $this->withoutExceptionHandling();
 
         $category = $this->createCategory();
 
@@ -79,7 +79,7 @@ class CategoryTest extends TestCase
         $user = $this->createUser();
         $this->actingAs($user);
 
-        $this->delete('/categories/'. $category->slug);
+        $this->delete('/categories/'.$category->slug);
 
         $this->assertDatabaseCount('categories', 0);
 

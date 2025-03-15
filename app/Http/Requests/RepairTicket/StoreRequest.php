@@ -1,5 +1,7 @@
 <?php
+
 // app/Http/Requests/RepairTicket/StoreRequest.php
+
 namespace App\Http\Requests\RepairTicket;
 
 use Illuminate\Foundation\Http\FormRequest;

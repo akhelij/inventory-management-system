@@ -3,20 +3,23 @@
 namespace App\Livewire\Modals;
 
 use App\Models\RepairTicket;
-use Livewire\Component;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
 
 class StatusUpdateModal extends Component
 {
     public $ticketId = null;
+
     public $newStatus = null;
+
     public $currentStatus = null;
+
     public $statusComment = '';
 
     protected $listeners = ['prepareStatusUpdate'];
 
     protected $rules = [
-        'statusComment' => 'required|string|min:3'
+        'statusComment' => 'required|string|min:3',
     ];
 
     protected $statuses = [
@@ -24,7 +27,7 @@ class StatusUpdateModal extends Component
         'IN_PROGRESS' => 'In Progress',
         'REPAIRED' => 'Repaired',
         'UNREPAIRABLE' => 'Unrepairable',
-        'DELIVERED' => 'Delivered'
+        'DELIVERED' => 'Delivered',
     ];
 
     public function prepareStatusUpdate($data)
@@ -42,9 +45,9 @@ class StatusUpdateModal extends Component
         try {
             $ticket = RepairTicket::findOrFail($this->ticketId);
 
-            DB::transaction(function() use ($ticket) {
+            DB::transaction(function () use ($ticket) {
                 $ticket->update([
-                    'status' => $this->newStatus
+                    'status' => $this->newStatus,
                 ]);
 
                 request()->merge(['status_comment' => $this->statusComment]);
@@ -74,7 +77,7 @@ class StatusUpdateModal extends Component
     {
         return view('livewire.modals.status-update-modal', [
             'statusName' => $this->getStatusName($this->newStatus),
-            'currentStatusName' => $this->getStatusName($this->currentStatus)
+            'currentStatusName' => $this->getStatusName($this->currentStatus),
         ]);
     }
 }

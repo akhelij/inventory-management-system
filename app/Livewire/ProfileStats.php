@@ -2,21 +2,29 @@
 
 namespace App\Livewire;
 
-use App\Models\Order;
-use Livewire\Component;
 use App\Enums\OrderStatus;
+use App\Models\Order;
 use Carbon\Carbon;
+use Livewire\Component;
 
 class ProfileStats extends Component
 {
     public $user;
+
     public $startDate;
+
     public $endDate;
+
     public $sales;
+
     public $totalSales = 0;
+
     public $totalAmount = 0;
+
     public $approvedSales = 0;
+
     public $pendingSales = 0;
+
     public $canceledSales = 0;
 
     public function mount($user)
@@ -40,10 +48,10 @@ class ProfileStats extends Component
     private function loadSales()
     {
         $query = $this->user->orders()
-            ->when($this->startDate, function($query) {
+            ->when($this->startDate, function ($query) {
                 return $query->whereDate('order_date', '>=', $this->startDate);
             })
-            ->when($this->endDate, function($query) {
+            ->when($this->endDate, function ($query) {
                 return $query->whereDate('order_date', '<=', $this->endDate);
             })
             ->orderBy('order_date', 'desc');
@@ -90,7 +98,7 @@ class ProfileStats extends Component
                 'approvedSales' => $this->approvedSales,
                 'pendingSales' => $this->pendingSales,
                 'canceledSales' => $this->canceledSales,
-            ]
+            ],
         ]);
     }
 }

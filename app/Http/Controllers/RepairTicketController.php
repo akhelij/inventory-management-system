@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Driver;
-use App\Models\RepairTicket;
-use App\Models\Customer;
-use App\Models\Product;
-use App\Models\User;
-use Illuminate\Http\Request;
 use App\Http\Requests\RepairTicket\StoreRequest;
 use App\Http\Requests\RepairTicket\UpdateRequest;
-use Illuminate\Support\Facades\Storage;
+use App\Models\Customer;
+use App\Models\Driver;
+use App\Models\Product;
+use App\Models\RepairTicket;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class RepairTicketController extends Controller
 {
@@ -39,7 +39,7 @@ class RepairTicketController extends Controller
         DB::beginTransaction();
         try {
             // Generate ticket number (you might want to customize this format)
-            $ticketNumber = $request->ticket_number ?? 'RT-' . date('Ymd') . '-' . str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
+            $ticketNumber = $request->ticket_number ?? 'RT-'.date('Ymd').'-'.str_pad(mt_rand(1, 999), 3, '0', STR_PAD_LEFT);
 
             // Create repair ticket
             $repairTicket = RepairTicket::create([
@@ -52,14 +52,14 @@ class RepairTicketController extends Controller
                 'technician_id' => $request->technician_id,
                 'serial_number' => $request->serial_number,
                 'problem_description' => $request->problem_description,
-                'status' => 'RECEIVED'
+                'status' => 'RECEIVED',
             ]);
             // Handle photo uploads
             if ($request->hasFile('photos')) {
                 foreach ($request->file('photos') as $photo) {
                     $path = $photo->store('repair-photos', 'public');
                     $repairTicket->photos()->create([
-                        'photo_path' => $path
+                        'photo_path' => $path,
                     ]);
                 }
             }
@@ -73,6 +73,7 @@ class RepairTicketController extends Controller
         } catch (\Exception $e) {
             throw $e;
             DB::rollBack();
+
             return redirect()
                 ->back()
                 ->with('error', __('Error creating repair ticket'))
@@ -110,7 +111,7 @@ class RepairTicketController extends Controller
                 'technician_id' => $request->technician_id,
                 'serial_number' => $request->serial_number,
                 'problem_description' => $request->problem_description,
-                'status' => $request->status
+                'status' => $request->status,
             ]);
 
             // Handle new photo uploads
@@ -118,7 +119,7 @@ class RepairTicketController extends Controller
                 foreach ($request->file('photos') as $photo) {
                     $path = $photo->store('repair-photos', 'public');
                     $repairTicket->photos()->create([
-                        'photo_path' => $path
+                        'photo_path' => $path,
                     ]);
                 }
             }
@@ -131,6 +132,7 @@ class RepairTicketController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
+
             return redirect()
                 ->back()
                 ->with('error', __('Error updating repair ticket'))
@@ -147,7 +149,7 @@ class RepairTicketController extends Controller
 
         try {
             $repairTicket->update([
-                'status' => $validated['status']
+                'status' => $validated['status'],
             ]);
 
             return redirect()

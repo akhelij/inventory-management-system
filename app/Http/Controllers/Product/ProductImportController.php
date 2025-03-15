@@ -7,7 +7,6 @@ use App\Models\Product;
 use Exception;
 use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use Str;
 
 class ProductImportController extends Controller
 {
@@ -26,36 +25,37 @@ class ProductImportController extends Controller
 
         try {
             $spreadsheet = IOFactory::load($the_file->getRealPath());
-            $sheet        = $spreadsheet->getActiveSheet();
-            $row_limit    = $sheet->getHighestDataRow();
-            $row_range    = range(2, $row_limit);
+            $sheet = $spreadsheet->getActiveSheet();
+            $row_limit = $sheet->getHighestDataRow();
+            $row_range = range(2, $row_limit);
             $startcount = 2;
-            $data = array();
+            $data = [];
             foreach ($row_range as $row) {
                 $data[] = [
-                    'name'          => $sheet->getCell('A' . $row)->getValue(),
-                    'slug'          => $sheet->getCell('B' . $row)->getValue(),
-                    'category_id'   => $sheet->getCell('C' . $row)->getValue(),
-                    'unit_id'       => $sheet->getCell('D' . $row)->getValue(),
-                    'code'          => $sheet->getCell('E' . $row)->getValue(),
-                    'quantity'      => $sheet->getCell('F' . $row)->getValue(),
-                    "quantity_alert" => $sheet->getCell('G' . $row)->getValue(),
-                    'buying_price'  => $sheet->getCell('H' . $row)->getValue(),
-                    'selling_price' => $sheet->getCell('I' . $row)->getValue(),
-                    'product_image' => $sheet->getCell('J' . $row)->getValue(),
-                    'notes' => $sheet->getCell('K' . $row)->getValue(),
+                    'name' => $sheet->getCell('A'.$row)->getValue(),
+                    'slug' => $sheet->getCell('B'.$row)->getValue(),
+                    'category_id' => $sheet->getCell('C'.$row)->getValue(),
+                    'unit_id' => $sheet->getCell('D'.$row)->getValue(),
+                    'code' => $sheet->getCell('E'.$row)->getValue(),
+                    'quantity' => $sheet->getCell('F'.$row)->getValue(),
+                    'quantity_alert' => $sheet->getCell('G'.$row)->getValue(),
+                    'buying_price' => $sheet->getCell('H'.$row)->getValue(),
+                    'selling_price' => $sheet->getCell('I'.$row)->getValue(),
+                    'product_image' => $sheet->getCell('J'.$row)->getValue(),
+                    'notes' => $sheet->getCell('K'.$row)->getValue(),
                 ];
                 $startcount++;
             }
 
             foreach ($data as $product) {
                 Product::firstOrCreate([
-                    "slug" => $product["slug"],
-                    "code" => $product["code"],
+                    'slug' => $product['slug'],
+                    'code' => $product['code'],
                 ], $product);
             }
         } catch (Exception $e) {
             throw $e;
+
             // $error_code = $e->errorInfo[1];
             return redirect()
                 ->route('products.index')

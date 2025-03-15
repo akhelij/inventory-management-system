@@ -10,7 +10,7 @@ class Warehouse extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     public function products()

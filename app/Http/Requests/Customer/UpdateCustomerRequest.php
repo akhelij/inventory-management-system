@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Customer;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCustomerRequest extends FormRequest
 {
@@ -26,44 +26,44 @@ class UpdateCustomerRequest extends FormRequest
             'photo' => [
                 'image',
                 'file',
-                'max:1024'
+                'max:1024',
             ],
             'name' => [
                 'required',
                 'string',
-                'max:50'
+                'max:50',
             ],
             'type' => [
                 'nullable',
                 'string',
                 'max:25',
-                Rule::in(['particulier', 'grossiste', 'magasinier'])
+                Rule::in(['particulier', 'grossiste', 'magasinier']),
             ],
             'email' => [
                 'nullable',
                 'email',
-                'max:50'
+                'max:50',
             ],
             'phone' => [
                 'nullable',
                 'string',
-                'max:25'
+                'max:25',
             ],
             'city' => 'nullable|string|max:25',
             'limit' => 'integer',
             'account_holder' => [
-                'max:50'
+                'max:50',
             ],
             'account_number' => [
-                'max:25'
+                'max:25',
             ],
             'bank_name' => [
-                'max:25'
+                'max:25',
             ],
             'address' => [
                 'nullable',
                 'string',
-                'max:100'
+                'max:100',
             ],
         ];
     }

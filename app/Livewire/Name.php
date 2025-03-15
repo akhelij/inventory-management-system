@@ -2,8 +2,8 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use Livewire\Attributes\Rule;
+use Livewire\Component;
 
 class Name extends Component
 {

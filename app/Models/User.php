@@ -3,18 +3,18 @@
 namespace App\Models;
 
 use App\Traits\HasActivityLogs;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, HasActivityLogs;
+    use HasActivityLogs, HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     protected $fillable = [
         'uuid',
@@ -24,11 +24,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'email_verified_atg',
         'password',
-        "store_name",
-        "store_address",
-        "store_phone",
-        "store_email",
-        'warehouse_id'
+        'store_name',
+        'store_address',
+        'store_phone',
+        'store_email',
+        'warehouse_id',
     ];
 
     protected $hidden = [
@@ -39,11 +39,11 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
         'created_at' => 'datetime',
-        'updated_at' => 'datetime'
+        'updated_at' => 'datetime',
     ];
 
     protected $appends = [
-        'role'
+        'role',
     ];
 
     public function getRoleAttribute()

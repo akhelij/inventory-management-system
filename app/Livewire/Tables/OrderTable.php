@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Tables;
 
+use App\Enums\OrderStatus;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
-use App\Models\Customer;
-use App\Enums\OrderStatus;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,18 +14,28 @@ class OrderTable extends Component
     use WithPagination;
 
     public $perPage = 25;
+
     public $search = '';
+
     public $sortField = 'invoice_no';
+
     public $sortAsc = false;
+
     public $startDate = null;
+
     public $endDate = null;
+
     public $order_ids = [];
 
     // New properties for status update
     public $showWarningModal = false;
+
     public $selectedOrder = null;
+
     public $newStatus = null;
+
     public $statusReason = '';
+
     public $isOverLimit = false;
 
     protected $listeners = ['refreshComponent' => '$refresh'];
@@ -33,7 +43,7 @@ class OrderTable extends Component
     public function sortBy($field): void
     {
         if ($this->sortField === $field) {
-            $this->sortAsc = !$this->sortAsc;
+            $this->sortAsc = ! $this->sortAsc;
         } else {
             $this->sortAsc = true;
         }
@@ -60,6 +70,7 @@ class OrderTable extends Component
 
             if ($this->isOverLimit) {
                 $this->showWarningModal = true;
+
                 return;
             }
         }
@@ -69,29 +80,30 @@ class OrderTable extends Component
 
     public function updateOrderStatus($force = false)
     {
-        if (!$this->selectedOrder) {
+        if (! $this->selectedOrder) {
             return;
         }
 
-        if ($this->isOverLimit && !$force) {
+        if ($this->isOverLimit && ! $force) {
             $this->showWarningModal = true;
+
             return;
         }
 
         try {
             $this->selectedOrder->update([
                 'order_status' => $this->newStatus,
-                'reason' => $this->statusReason
+                'reason' => $this->statusReason,
             ]);
 
             $this->dispatch('orderStatusUpdated', [
-                'message' => 'Order status has been updated successfully!'
+                'message' => 'Order status has been updated successfully!',
             ]);
 
             $this->reset(['showWarningModal', 'selectedOrder', 'newStatus', 'statusReason', 'isOverLimit']);
         } catch (\Exception $e) {
             $this->dispatch('orderStatusError', [
-                'message' => 'Error updating order status: ' . $e->getMessage()
+                'message' => 'Error updating order status: '.$e->getMessage(),
             ]);
         }
     }
@@ -114,9 +126,9 @@ class OrderTable extends Component
             return $q->where('user_id', auth()->id());
         });
 
-        if (!auth()->user()->hasRole('admin')) {
-            $query->where("user_id", auth()->id())
-                ->orWhereIn("user_id", User::role('admin')->pluck('id'));
+        if (! auth()->user()->hasRole('admin')) {
+            $query->where('user_id', auth()->id())
+                ->orWhereIn('user_id', User::role('admin')->pluck('id'));
         }
 
         if ($this->startDate && $this->endDate) {
@@ -127,7 +139,7 @@ class OrderTable extends Component
             'orders' => $query->with(['customer', 'details'])
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                ->paginate($this->perPage)
+                ->paginate($this->perPage),
         ]);
     }
 }

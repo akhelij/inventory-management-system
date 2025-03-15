@@ -26,8 +26,8 @@ class PaymentController extends Controller
     public function store(Request $request, Customer $customer)
     {
         $request->validate([
-            'date'   => 'required|date',
-            'bank'   => 'string|nullable',
+            'date' => 'required|date',
+            'bank' => 'string|nullable',
             'payment_type' => 'required|string|in:HandCash,Cheque,Exchange',
             'nature' => [
                 'required',
@@ -72,6 +72,7 @@ class PaymentController extends Controller
 
         return redirect()->route('customers.show', $payment->customer->uuid);
     }
+
     /**
      * Remove the specified resource from storage.
      */

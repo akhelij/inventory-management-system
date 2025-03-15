@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests\Product;
 
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -24,24 +23,23 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_image'     => 'nullable|image|file|max:2048',
-            'name'              => 'required|string',
-            'code'              => [
+            'product_image' => 'nullable|image|file|max:2048',
+            'name' => 'required|string',
+            'code' => [
                 'required',
                 'string',
                 Rule::unique('products', 'code')->ignore($this->route('product')),
             ],
-            'category_id'       => 'nullable|integer|exists:categories,id',
-            'warehouse_id'      => 'required|integer|exists:warehouses,id',
-            'unit_id'           => 'required|integer',
-            'quantity'          => 'required|integer',
-            'buying_price'      => 'required|integer',
-            'selling_price'     => 'required|integer',
-            'quantity_alert'    => 'required|integer',
-            'tax'               => 'nullable|numeric',
-            'tax_type'          => 'nullable|integer',
-            'notes'             => 'nullable|max:1000'
+            'category_id' => 'nullable|integer|exists:categories,id',
+            'warehouse_id' => 'required|integer|exists:warehouses,id',
+            'unit_id' => 'required|integer',
+            'quantity' => 'required|integer',
+            'buying_price' => 'required|integer',
+            'selling_price' => 'required|integer',
+            'quantity_alert' => 'required|integer',
+            'tax' => 'nullable|numeric',
+            'tax_type' => 'nullable|integer',
+            'notes' => 'nullable|max:1000',
         ];
     }
-
 }

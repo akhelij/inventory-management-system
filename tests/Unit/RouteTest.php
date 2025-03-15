@@ -3,11 +3,9 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class RouteTest extends TestCase
 {
-
     public function test_login_route(): void
     {
         $response = $this->get(route('login'));
