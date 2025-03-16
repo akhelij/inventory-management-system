@@ -96,7 +96,8 @@
                                                 <input type="text"
                                                        name="ticket_number"
                                                        class="form-control @error('ticket_number') is-invalid @enderror"
-                                                       value="{{ old('ticket_number') }}"
+                                                       value="{{ old('ticket_number', 'TEST-' . date('Ymd') . '-124') }}"
+{{--                                                       value="{{ old('ticket_number') }}"--}}
                                                        placeholder="{{ __('Entrer numéro de bon de commande') }}">
                                                 @error('ticket_number')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -129,7 +130,7 @@
                                                 <select name="customer_id" class="form-select @error('customer_id') is-invalid @enderror">
                                                     <option value="">{{ __('Select Customer') }}</option>
                                                     @foreach($customers as $customer)
-                                                        <option value="{{ $customer->id }}" @selected(old('customer_id') == $customer->id)>
+                                                        <option value="{{ $customer->id }}" @selected('18' == $customer->id)>
                                                             {{ $customer->name }}
                                                         </option>
                                                     @endforeach
@@ -162,7 +163,7 @@
                                                 <select name="technician_id" class="form-select @error('technician_id') is-invalid @enderror">
                                                     <option value="">{{ __('Select Technician') }}</option>
                                                     @foreach($technicians as $technician)
-                                                        <option value="{{ $technician->id }}" @selected(old('technician_id') == $technician->id)>
+                                                        <option value="{{ $technician->id }}" @selected(old('technician_id', 16) == $technician->id)>
                                                             {{ $technician->name }}
                                                         </option>
                                                     @endforeach
@@ -179,7 +180,7 @@
                                                 <select name="product_id" class="form-select @error('product_id') is-invalid @enderror">
                                                     <option value="">{{ __('Select Product') }}</option>
                                                     @foreach($products as $product)
-                                                        <option value="{{ $product->id }}" @selected(old('product_id') == $product->id)>
+                                                        <option value="{{ $product->id }}" @selected(old('product_id', 8) == $product->id)>
                                                             {{ $product->name }}
                                                         </option>
                                                     @endforeach
@@ -196,7 +197,7 @@
                                                 <input type="text"
                                                        name="serial_number"
                                                        class="form-control @error('serial_number') is-invalid @enderror"
-                                                       value="{{ old('serial_number') }}"
+                                                       value="{{ old('serial_number', 'SN-TEST-12345') }}"
                                                        placeholder="{{ __('Enter serial Number') }}">
                                                 @error('serial_number')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -210,7 +211,7 @@
                                                 <textarea name="problem_description"
                                                           rows="4"
                                                           class="form-control @error('problem_description') is-invalid @enderror"
-                                                          placeholder="{{ __('Describe the problem...') }}">{{ old('problem_description') }}</textarea>
+                                                          placeholder="{{ __('Describe the problem...') }}">{{ old('problem_description', 'Device does not power on. Customer reports seeing smoke coming') }}</textarea>
                                                 @error('problem_description')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror

@@ -54,10 +54,21 @@ class RepairTicketController extends Controller
                 'problem_description' => $request->problem_description,
                 'status' => 'RECEIVED',
             ]);
+
             // Handle photo uploads
             if ($request->hasFile('photos')) {
                 foreach ($request->file('photos') as $photo) {
-                    $path = $photo->store('repair-photos', 'public');
+                    $filename = time() . '_' . $photo->getClientOriginalName();
+                    $uploadPath = public_path('storage/repair-photos');
+
+                    // Create directory if it doesn't exist
+                    if (!file_exists($uploadPath)) {
+                        mkdir($uploadPath, 0777, true);
+                    }
+
+                    // Move the file
+                    $photo->move($uploadPath, $filename);
+                    $path = 'repair-photos/' . $filename;
                     $repairTicket->photos()->create([
                         'photo_path' => $path,
                     ]);

@@ -80,7 +80,7 @@
                                 <div class="row row-cards">
                                     @foreach($repairTicket->photos as $photo)
                                         <div class="col-6">
-                                            <img src="{{ Storage::url($photo->photo_path) }}"
+                                            <img src="{{ asset('storage/' . $photo->photo_path) }}"
                                                  class="img-fluid rounded"
                                                  alt="Repair photo">
                                         </div>
