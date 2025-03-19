@@ -195,7 +195,7 @@
                                                 @csrf
                                                 <input type="hidden" name="id" value="{{ $product->id }}">
                                                 <input type="hidden" name="name" value="{{ $product->name }}">
-                                                <input type="hidden" name="price" value="{{ $product->selling_price }}">
+                                                <input type="hidden" name="selling_price" value="{{ $product->selling_price }}">
 
                                                 <button type="submit" class="btn btn-outline-primary btn-sm">
                                                     <i class="fa-solid fa-plus"></i>

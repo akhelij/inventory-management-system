@@ -8,6 +8,7 @@ use App\Models\Warehouse;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PosController extends Controller
 {
@@ -33,6 +34,9 @@ class PosController extends Controller
     {
         $request->all();
 
+        // Log the request data
+        Log::info('Adding item to cart - Request data:', $request->all());
+
         $rules = [
             'id' => 'required|numeric',
             'name' => 'required|string',
@@ -41,6 +45,12 @@ class PosController extends Controller
 
         $validatedData = $request->validate($rules);
 
+        // Log cart content before adding new item
+        Log::info('Cart content before adding item:', [
+            'count' => Cart::count(),
+            'content' => Cart::content()->toArray()
+        ]);
+
         Cart::add($validatedData['id'],
             $validatedData['name'],
             1,
@@ -48,8 +58,20 @@ class PosController extends Controller
             1,
             (array) $options = null);
 
+        // Log cart content after adding new item
+        Log::info('Cart content after adding item:', [
+            'count' => Cart::count(),
+            'content' => Cart::content()->toArray()
+        ]);
+
         // Store the cart in the database
         $this->storeCart();
+
+        // Log cart content after storing
+        Log::info('Cart content after storing:', [
+            'count' => Cart::count(),
+            'content' => Cart::content()->toArray()
+        ]);
 
         return redirect()
             ->back()
@@ -91,14 +113,29 @@ class PosController extends Controller
      */
     private function storeCart()
     {
-        if (Auth::check()) {
-            try {
+        try {
+            if (auth()->check()) {
+                // Log before erasing
+                Log::info('Before erasing cart from database');
+                
                 // Delete existing cart before storing the new one
-                Cart::erase(Auth::id());
-                Cart::store(Auth::id());
-            } catch (\Exception $e) {
-                // Log error or handle silently
+                Cart::erase(auth()->id());
+                
+                // Log after erasing, before storing
+                Log::info('After erasing, before storing cart');
+                
+                // Store the cart
+                Cart::store(auth()->id());
+                
+                // Log after storing
+                Log::info('After storing cart to database');
             }
+        } catch (\Exception $e) {
+            // Log any errors during cart storage
+            Log::error('Error storing cart: ' . $e->getMessage(), [
+                'exception' => $e,
+                'trace' => $e->getTraceAsString()
+            ]);
         }
     }
 
