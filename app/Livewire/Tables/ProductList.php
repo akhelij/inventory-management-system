@@ -61,8 +61,27 @@ class ProductList extends Component
             'weight' => 1,
         ]);
 
+        // Store the cart in the database if user is authenticated
+        $this->storeCart();
+
         // Emit an event to notify other components that the cart has been updated
         $this->dispatch('item-added');
+    }
+
+    /**
+     * Store the current cart in the database
+     */
+    private function storeCart(): void
+    {
+        if (auth()->check()) {
+            try {
+                // Delete existing cart before storing the new one
+                Cart::erase(auth()->id());
+                Cart::store(auth()->id());
+            } catch (\Exception $e) {
+                // Log error or handle silently
+            }
+        }
     }
 
     public function updateOrderDetails($product_id, $unitcost)

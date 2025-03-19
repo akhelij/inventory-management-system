@@ -120,11 +120,17 @@ class ProductCart extends Component
         $this->quantity[$product['id']] = 1;
         $this->discount_type[$product['id']] = 'fixed';
         $this->item_discount[$product['id']] = 0;
+
+        // Store the cart in the database
+        $this->storeCart();
     }
 
     public function removeItem($row_id): void
     {
         Cart::instance($this->cart_instance)->remove($row_id);
+
+        // Store the cart in the database
+        $this->storeCart();
     }
 
     public function updatedGlobalTax(): void
@@ -163,6 +169,9 @@ class ProductCart extends Component
                 'product_discount_type' => $cart_item->options->product_discount_type,
             ],
         ]);
+
+        // Store the cart in the database
+        $this->storeCart();
     }
 
     public function updatedDiscountType($value, $name): void
@@ -263,5 +272,21 @@ class ProductCart extends Component
             'product_discount' => $discount_amount,
             'product_discount_type' => $this->discount_type[$product_id],
         ]]);
+    }
+
+    /**
+     * Store the current cart in the database
+     */
+    private function storeCart(): void
+    {
+        if (auth()->check()) {
+            try {
+                // Delete existing cart before storing the new one
+                Cart::instance($this->cart_instance)->erase(auth()->id());
+                Cart::instance($this->cart_instance)->store(auth()->id());
+            } catch (\Exception $e) {
+                // Log error or handle silently
+            }
+        }
     }
 }
