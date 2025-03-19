@@ -43,35 +43,37 @@ class OrderController extends Controller
                 'pay' => $request->pay ?? 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
                 'order_status' => OrderStatus::PENDING, // $approve_automatically ? OrderStatus::APPROVED : OrderStatus::PENDING,
-                'total_products' => Cart::count(),
-                'sub_total' => Cart::subtotal(),
-                'vat' => Cart::tax(),
-                'total' => Cart::total(),
+                'total_products' => auth()->check() ? auth()->user()->getCart()->count() : 0,
+                'sub_total' => auth()->check() ? auth()->user()->getCart()->sum('subtotal') : 0,
+                'vat' => auth()->check() ? auth()->user()->getCart()->sum('tax') : 0,
+                'total' => auth()->check() ? auth()->user()->getCart()->sum('total') : 0,
                 'invoice_no' => IdGenerator::generate([
                     'table' => 'orders',
                     'field' => 'invoice_no',
                     'length' => 10,
                     'prefix' => 'INV-',
                 ]),
-                'due' => (Cart::total() - $request->pay),
+                'due' => (auth()->check() ? auth()->user()->getCart()->sum('total') : 0) - $request->pay,
                 'user_id' => $request->author_id ?? auth()->id(),
                 'tagged_user_id' => $request->tagged_user_id,
                 'uuid' => Str::uuid(),
             ]);
 
             // Create Order Details
-            $contents = Cart::content();
-            $oDetails = [];
+            if (auth()->check()) {
+                $contents = auth()->user()->getCart();
+                $oDetails = [];
 
-            foreach ($contents as $content) {
-                $oDetails['order_id'] = $order['id'];
-                $oDetails['product_id'] = $content->id;
-                $oDetails['quantity'] = $content->qty;
-                $oDetails['unitcost'] = $content->price;
-                $oDetails['total'] = $content->subtotal;
-                $oDetails['created_at'] = Carbon::now();
+                foreach ($contents as $content) {
+                    $oDetails['order_id'] = $order['id'];
+                    $oDetails['product_id'] = $content->id;
+                    $oDetails['quantity'] = $content->qty;
+                    $oDetails['unitcost'] = $content->price;
+                    $oDetails['total'] = $content->subtotal;
+                    $oDetails['created_at'] = Carbon::now();
 
-                OrderDetails::insert($oDetails);
+                    OrderDetails::insert($oDetails);
+                }
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -82,7 +84,9 @@ class OrderController extends Controller
                 ->with('error', $e->getMessage());
         }
 
-        Cart::destroy();
+        if (auth()->check()) {
+            auth()->user()->clearCart();
+        }
 
         return redirect()
             ->route('orders.index')
@@ -97,7 +101,7 @@ class OrderController extends Controller
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::ofAuth()->get(['id', 'name']),
             'users' => User::query()->get(['id', 'name']),
-            'carts' => Cart::content(),
+            'carts' => auth()->check() ? auth()->user()->getCart() : collect(),
         ]);
     }
 

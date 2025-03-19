@@ -33,6 +33,14 @@ class ProductList extends Component
     public function mount($order_id = null)
     {
         $this->order_id = $order_id;
+        // Restore cart from database when component is mounted
+        if (auth()->check()) {
+            try {
+                Cart::restore(auth()->id());
+            } catch (\Exception $e) {
+                // Silently continue if cart can't be restored
+            }
+        }
     }
 
     public function sortBy($field): void

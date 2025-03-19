@@ -4,20 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Invoice\StoreInvoiceRequest;
 use App\Models\Customer;
-use Gloudemans\Shoppingcart\Facades\Cart;
+use Illuminate\Support\Collection;
 
 class InvoiceController extends Controller
 {
-    public function create(StoreInvoiceRequest $request, Customer $customer)
+    public function create()
     {
-        $customer = Customer::where('id', $request->get('customer_id'))
-            ->first();
+        $carts = auth()->check() ? auth()->user()->getCart() : collect();
+        $customers = Customer::all();
 
-        $carts = Cart::content();
-
-        return view('pos.create', [
-            'customer' => $customer,
-            'carts' => $carts,
-        ]);
+        return view('invoices.create', compact('carts', 'customers'));
     }
 }

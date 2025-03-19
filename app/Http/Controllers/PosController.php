@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\Warehouse;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,16 +16,16 @@ class PosController extends Controller
         // Restore the cart from the database for the current user
         $this->restoreCart();
 
+        $carts = auth()->check() ? auth()->user()->getCart() : collect();
         $products = Product::with(['category', 'unit'])->get();
-
         $customers = Customer::all()->sortBy('name');
-
-        $carts = Cart::content();
+        $warehouses = Warehouse::latest()->get();
 
         return view('pos.index', [
             'products' => $products,
             'customers' => $customers,
             'carts' => $carts,
+            'warehouses' => $warehouses,
         ]);
     }
 

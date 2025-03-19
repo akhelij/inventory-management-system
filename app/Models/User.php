@@ -79,4 +79,50 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Warehouse::class);
     }
+
+    /**
+     * Get cart content directly from the database
+     * This bypasses session limitations
+     * 
+     * @return \Illuminate\Support\Collection
+     */
+    public function getCart()
+    {
+        try {
+            // Get cart data from database
+            $cartData = \Illuminate\Support\Facades\DB::table('shoppingcart')
+                ->where('identifier', $this->id)
+                ->first();
+
+            if (!$cartData) {
+                return collect();
+            }
+
+            // Unserialize the cart content
+            $content = unserialize(base64_decode($cartData->content));
+            
+            return $content;
+        } catch (\Exception $e) {
+            // If there's an error, return empty collection
+            return collect();
+        }
+    }
+
+    /**
+     * Clear the user's cart from the database
+     * 
+     * @return void
+     */
+    public function clearCart()
+    {
+        try {
+            // Clear the cart from the database
+            \Gloudemans\Shoppingcart\Facades\Cart::erase($this->id);
+            
+            // Also clear the session cart
+            \Gloudemans\Shoppingcart\Facades\Cart::destroy();
+        } catch (\Exception $e) {
+            // Silently continue if there's an error
+        }
+    }
 }
