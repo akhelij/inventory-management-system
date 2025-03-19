@@ -9,12 +9,15 @@ use App\Models\Driver;
 use App\Models\Product;
 use App\Models\RepairTicket;
 use App\Models\User;
+use App\Traits\FileUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class RepairTicketController extends Controller
 {
+    use FileUploadTrait;
+
     public function index()
     {
         $tickets = RepairTicket::with(['customer', 'product', 'technician'])
@@ -57,18 +60,9 @@ class RepairTicketController extends Controller
 
             // Handle photo uploads
             if ($request->hasFile('photos')) {
-                foreach ($request->file('photos') as $photo) {
-                    $filename = time() . '_' . $photo->getClientOriginalName();
-                    $uploadPath = public_path('storage/repair-photos');
-
-                    // Create directory if it doesn't exist
-                    if (!file_exists($uploadPath)) {
-                        mkdir($uploadPath, 0777, true);
-                    }
-
-                    // Move the file
-                    $photo->move($uploadPath, $filename);
-                    $path = 'repair-photos/' . $filename;
+                $paths = $this->uploadMultipleFiles($request->file('photos'), 'repair-photos');
+                
+                foreach ($paths as $path) {
                     $repairTicket->photos()->create([
                         'photo_path' => $path,
                     ]);
@@ -82,7 +76,6 @@ class RepairTicketController extends Controller
                 ->with('success', __('Repair ticket created successfully'));
 
         } catch (\Exception $e) {
-            throw $e;
             DB::rollBack();
 
             return redirect()
@@ -125,10 +118,24 @@ class RepairTicketController extends Controller
                 'status' => $request->status,
             ]);
 
+            // Handle deletion of existing photos
+            if ($request->has('photos_to_delete') && is_array($request->photos_to_delete)) {
+                foreach ($request->photos_to_delete as $photoId) {
+                    $photo = $repairTicket->photos()->find($photoId);
+                    if ($photo) {
+                        // Delete the file from storage
+                        $this->deleteFile($photo->photo_path);
+                        // Delete the record
+                        $photo->delete();
+                    }
+                }
+            }
+
             // Handle new photo uploads
             if ($request->hasFile('photos')) {
-                foreach ($request->file('photos') as $photo) {
-                    $path = $photo->store('repair-photos', 'public');
+                $paths = $this->uploadMultipleFiles($request->file('photos'), 'repair-photos');
+                
+                foreach ($paths as $path) {
                     $repairTicket->photos()->create([
                         'photo_path' => $path,
                     ]);
@@ -179,7 +186,7 @@ class RepairTicketController extends Controller
         try {
             // Delete associated photos from storage
             foreach ($repairTicket->photos as $photo) {
-                Storage::disk('public')->delete($photo->photo_path);
+                $this->deleteFile($photo->photo_path);
             }
 
             $repairTicket->delete();
