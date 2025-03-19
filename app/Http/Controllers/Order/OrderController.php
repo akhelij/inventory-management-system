@@ -96,7 +96,7 @@ class OrderController extends Controller
     public function create()
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
-
+        
         return view('orders.create', [
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::ofAuth()->get(['id', 'name']),

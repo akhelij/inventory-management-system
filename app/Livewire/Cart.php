@@ -58,7 +58,6 @@ class Cart extends Component
     {
         // Get cart content directly from database using the User model
         $carts = auth()->check() ? auth()->user()->getCart() : collect();
-        
         return view('livewire.cart')->with(compact('carts'));
     }
 }
