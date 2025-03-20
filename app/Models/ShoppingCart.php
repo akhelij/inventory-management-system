@@ -63,4 +63,20 @@ class ShoppingCart extends Model
             return collect();
         }
     }
+    
+    /**
+     * Clear the cart for a specific user
+     *
+     * @param int $userId
+     * @return bool
+     */
+    public static function clearCart($userId)
+    {
+        try {
+            return self::where('identifier', $userId)->delete();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error clearing cart: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

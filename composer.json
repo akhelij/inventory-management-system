@@ -11,6 +11,7 @@
         "php": "^8.2",
         "anayarojo/shoppingcart": "^4.2",
         "awobaz/compoships": "^2.3",
+        "doctrine/dbal": "^4.2",
         "haruncpi/laravel-id-generator": "^1.1",
         "kyslik/column-sortable": "^6.6",
         "laravel/framework": "^11.44",

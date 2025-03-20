@@ -8,6 +8,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'Cart' => App\Facades\Cart::class,
     ])->toArray(),
 
 ];

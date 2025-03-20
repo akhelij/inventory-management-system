@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Product;
-use Gloudemans\Shoppingcart\Facades\Cart;
+use App\Services\CartService;
 use Livewire\Component;
 
 class ProductCart extends Component
@@ -32,49 +32,44 @@ class ProductCart extends Component
 
     private $product;
 
-    public function mount($cartInstance, $data = null): void
+    public function mount($cart_instance, $global_discount = 0, $global_tax = 0, $shipping = 0): void
     {
-        $this->cart_instance = $cartInstance;
+        $this->cart_instance = $cart_instance;
+        $this->global_discount = $global_discount;
+        $this->global_tax = $global_tax;
+        $this->shipping = $shipping;
 
-        if ($data) {
-            $this->data = $data;
+        // Initialize arrays
+        $this->check_quantity = [];
+        $this->quantity = [];
+        $this->discount_type = [];
+        $this->item_discount = [];
+        $this->unit_price = [];
 
-            $this->global_discount = $data->discount_percentage;
-            $this->global_tax = 0;
-            $this->shipping = $data->shipping_amount;
+        if (auth()->check()) {
+            // Initialize discount and tax from session if available
+            $this->global_discount = session('cart_global_discount', $this->global_discount);
+            $this->global_tax = session('cart_global_tax', $this->global_tax);
 
-            //            $this->updatedGlobalTax();
-            $this->updatedGlobalDiscount();
-
-            $cart_items = Cart::instance($this->cart_instance)->content();
+            // Get cart items using our CartService
+            $cartService = app(CartService::class)->instance($this->cart_instance);
+            $cart_items = $cartService->content(auth()->id());
 
             foreach ($cart_items as $cart_item) {
-                $this->check_quantity[$cart_item->id] = [$cart_item->options->stock];
+                // Initialize arrays with values from cart items
+                $this->check_quantity[$cart_item->id] = [$cart_item->options->stock ?? 0];
                 $this->quantity[$cart_item->id] = $cart_item->qty;
-                $this->unit_price[$cart_item->id] = $cart_item->price;
-                $this->discount_type[$cart_item->id] = $cart_item->options->product_discount_type;
-
-                if ($cart_item->options->product_discount_type == 'fixed') {
-                    $this->item_discount[$cart_item->id] = $cart_item->options->product_discount;
-                } elseif ($cart_item->options->product_discount_type == 'percentage') {
-                    $this->item_discount[$cart_item->id] = round(100 * ($cart_item->options->product_discount / $cart_item->price));
-                }
+                $this->discount_type[$cart_item->id] = $cart_item->options->product_discount_type ?? 'fixed';
+                $this->item_discount[$cart_item->id] = $cart_item->options->product_discount ?? 0;
+                $this->unit_price[$cart_item->id] = $cart_item->options->unit_price ?? $cart_item->price;
             }
-        } else {
-            $this->global_discount = 0;
-            $this->global_tax = 0;
-            $this->shipping = 0.00;
-            $this->check_quantity = [];
-            $this->quantity = [];
-            $this->unit_price = [];
-            $this->discount_type = [];
-            $this->item_discount = [];
         }
     }
 
     public function render()
     {
-        $cart_items = Cart::instance($this->cart_instance)->content();
+        $cartService = app(CartService::class)->instance($this->cart_instance);
+        $cart_items = $cartService->content(auth()->id());
 
         return view('livewire.product-cart', [
             'cart_items' => $cart_items,
@@ -83,95 +78,95 @@ class ProductCart extends Component
 
     public function productSelected($product): void
     {
-        $cart = Cart::instance($this->cart_instance);
+        $cartService = app(CartService::class)->instance($this->cart_instance);
+        
+        // Check if product already exists in cart
+        $cart = $cartService->getCart(auth()->id());
+        $exists = false;
+        $existingRowId = null;
+        
+        foreach ($cart->items as $item) {
+            if ($item->product_id == $product['id']) {
+                $exists = true;
+                $existingRowId = $item->rowId;
+                break;
+            }
+        }
 
-        $exists = $cart->search(function ($cartItem, $rowId) use ($product) {
-            return $cartItem->id == $product['id'];
-        });
-
-        if ($exists->isNotEmpty()) {
-            session()->flash('message', 'Product exists in the cart!');
-
+        if ($exists) {
+            $this->emit('error', 'Product already added to cart!');
             return;
         }
 
-        $this->product = $product;
+        $options = [
+            'sub_total' => $product['price'],
+            'code' => $product['code'],
+            'stock' => $product['quantity'],
+            'unit_price' => $product['price'],
+            'product_discount' => 0.00,
+            'product_discount_type' => 'fixed',
+        ];
 
-        $cart->add([
-            'id' => $product['id'],
-            'name' => $product['name'],
-            'qty' => 1,
-            'price' => $this->calculate($product)['price'],
-            'weight' => 1,
-            'options' => [
-                'product_discount' => 0.00,
-                'product_discount_type' => 'fixed',
-                'sub_total' => $this->calculate($product)['sub_total'],
-                'code' => $product['code'],
-                'stock' => $product['quantity'],
-                // 'unit'                  => $product['product_unit'],
-                'unit' => $product['unit_id'],
-                'product_tax' => 0, // $this->calculate($product)['tax'],
-                'unit_price' => $this->calculate($product)['unit_price'],
-            ],
-        ]);
+        // Add item to cart
+        $cartService->addItem(
+            auth()->id(),
+            $product['id'],
+            $product['name'],
+            $product['price'],
+            1,
+            $options
+        );
 
-        $this->check_quantity[$product['id']] = $product['quantity'];
+        $this->check_quantity[$product['id']] = [$product['quantity']];
         $this->quantity[$product['id']] = 1;
-        $this->discount_type[$product['id']] = 'fixed';
+        $this->unit_price[$product['id']] = $product['price'];
         $this->item_discount[$product['id']] = 0;
-
-        // Store the cart in the database
-        $this->storeCart();
+        $this->discount_type[$product['id']] = 'fixed';
     }
 
     public function removeItem($row_id): void
     {
-        Cart::instance($this->cart_instance)->remove($row_id);
-
-        // Store the cart in the database
-        $this->storeCart();
+        app(CartService::class)->instance($this->cart_instance)->removeItem(auth()->id(), $row_id);
     }
 
     public function updatedGlobalTax(): void
     {
-        Cart::instance($this->cart_instance)->setGlobalTax((int) $this->global_tax);
+        // Our CartService doesn't have a setGlobalTax method yet, so we'll implement it later
+        // For now, we'll just store the value in the session
+        session(['cart_global_tax' => (int) $this->global_tax]);
     }
 
     public function updatedGlobalDiscount(): void
     {
-        Cart::instance($this->cart_instance)->setGlobalDiscount((int) $this->global_discount);
+        // Our CartService doesn't have a setGlobalDiscount method yet, so we'll implement it later
+        // For now, we'll just store the value in the session
+        session(['cart_global_discount' => (int) $this->global_discount]);
     }
 
     public function updateQuantity($row_id, $product_id): void
     {
-        if ($this->cart_instance == 'sale' || $this->cart_instance == 'purchase_return' || $this->cart_instance == 'quotation') {
-            if ($this->check_quantity[$product_id] < $this->quantity[$product_id]) {
-                session()->flash('message', 'The requested quantity is not available in stock.');
-
-                return;
+        // Check if quantity is valid
+        if (isset($this->check_quantity[$product_id])) {
+            if ($this->quantity[$product_id] > $this->check_quantity[$product_id][0]) {
+                $this->quantity[$product_id] = $this->check_quantity[$product_id][0];
             }
         }
 
-        Cart::instance($this->cart_instance)->update($row_id, $this->quantity[$product_id]);
+        // Update quantity using our CartService
+        $cartService = app(CartService::class)->instance($this->cart_instance);
+        $cartService->updateQuantity(auth()->id(), $row_id, $this->quantity[$product_id]);
 
-        $cart_item = Cart::instance($this->cart_instance)->get($row_id);
+        // Get updated cart item
+        $cart = $cartService->getCart(auth()->id());
+        $item = $cart->items()->where('rowId', $row_id)->first();
 
-        Cart::instance($this->cart_instance)->update($row_id, [
-            'options' => [
-                'sub_total' => $cart_item->price * $cart_item->qty,
-                'code' => $cart_item->options->code,
-                'stock' => $cart_item->options->stock,
-                'unit' => $cart_item->options->unit,
-                'product_tax' => 0, // $cart_item->options->product_tax,
-                'unit_price' => $cart_item->options->unit_price,
-                'product_discount' => $cart_item->options->product_discount,
-                'product_discount_type' => $cart_item->options->product_discount_type,
-            ],
-        ]);
-
-        // Store the cart in the database
-        $this->storeCart();
+        if ($item) {
+            // Update options
+            $options = $item->options ?? [];
+            $options['sub_total'] = $item->price * $item->quantity;
+            
+            $cartService->updateItemOptions(auth()->id(), $row_id, $options);
+        }
     }
 
     public function updatedDiscountType($value, $name): void
@@ -186,52 +181,67 @@ class ProductCart extends Component
 
     public function setProductDiscount($row_id, $product_id): void
     {
-        $cart_item = Cart::instance($this->cart_instance)->get($row_id);
+        $cartService = app(CartService::class)->instance($this->cart_instance);
+        $cart = $cartService->getCart(auth()->id());
+        $item = $cart->items()->where('rowId', $row_id)->first();
 
-        if ($this->discount_type[$product_id] == 'fixed') {
-            Cart::instance($this->cart_instance)
-                ->update($row_id, [
-                    'price' => ($cart_item->price + $cart_item->options->product_discount) - $this->item_discount[$product_id],
-                ]);
-
-            $discount_amount = $this->item_discount[$product_id];
-
-            $this->updateCartOptions($row_id, $product_id, $cart_item, $discount_amount);
-        } elseif ($this->discount_type[$product_id] == 'percentage') {
-            $discount_amount = ($cart_item->price + $cart_item->options->product_discount) * ($this->item_discount[$product_id] / 100);
-
-            Cart::instance($this->cart_instance)
-                ->update($row_id, [
-                    'price' => ($cart_item->price + $cart_item->options->product_discount) - $discount_amount,
-                ]);
-
-            $this->updateCartOptions($row_id, $product_id, $cart_item, $discount_amount);
+        if (!$item) {
+            return;
         }
 
-        session()->flash('discount_message'.$product_id, 'Discount added to the product!');
+        // Get the original price from options
+        $originalPrice = $item->options['unit_price'] ?? $item->price;
+        $newPrice = $originalPrice;
+        $discountAmount = 0;
+
+        if ($this->discount_type[$product_id] == 'fixed') {
+            $newPrice = $originalPrice - $this->item_discount[$product_id];
+            $discountAmount = $this->item_discount[$product_id];
+        } elseif ($this->discount_type[$product_id] == 'percentage') {
+            $discountAmount = $originalPrice * ($this->item_discount[$product_id] / 100);
+            $newPrice = $originalPrice - $discountAmount;
+        }
+
+        // Ensure price doesn't go below zero
+        $newPrice = max(0, $newPrice);
+
+        // Update price
+        $cartService->updatePrice(auth()->id(), $row_id, $newPrice);
+
+        // Update options
+        $options = $item->options ?? [];
+        $options['product_discount'] = $discountAmount;
+        $options['product_discount_type'] = $this->discount_type[$product_id];
+        
+        $cartService->updateItemOptions(auth()->id(), $row_id, $options);
     }
 
-    public function updatePrice($row_id, $product_id): void
+    public function setProductPrice($row_id, $product_id): void
     {
         $product = Product::findOrFail($product_id);
+        $cartService = app(CartService::class)->instance($this->cart_instance);
+        
+        // Update price
+        $cartService->updatePrice(auth()->id(), $row_id, $this->unit_price[$product['id']]);
 
-        $cart_item = Cart::instance($this->cart_instance)->get($row_id);
+        // Get updated cart item
+        $cart = $cartService->getCart(auth()->id());
+        $item = $cart->items()->where('rowId', $row_id)->first();
 
-        Cart::instance($this->cart_instance)->update($row_id, ['price' => $this->unit_price[$product['id']]]);
+        if ($item) {
+            // Update options
+            $options = $item->options ?? [];
+            $options['sub_total'] = $item->price * $item->quantity;
+            $options['unit_price'] = $this->unit_price[$product['id']];
+            
+            $cartService->updateItemOptions(auth()->id(), $row_id, $options);
+        }
+    }
 
-        Cart::instance($this->cart_instance)->update($row_id, [
-            'options' => [
-                'sub_total' => $this->calculate($product, $this->unit_price[$product['id']])['sub_total'],
-                'code' => $cart_item->options->code,
-                'stock' => $cart_item->options->stock,
-                'unit' => $cart_item->options->unit,
-                //                'product_tax'           => $this->calculate($product, $this->unit_price[$product['id']])['product_tax'],
-                'product_tax' => 0, // $this->calculate($product, $this->unit_price[$product['id']])['tax'],
-                'unit_price' => $this->calculate($product, $this->unit_price[$product['id']])['unit_price'],
-                'product_discount' => $cart_item->options->product_discount,
-                'product_discount_type' => $cart_item->options->product_discount_type,
-            ],
-        ]);
+    // Alias for setProductPrice to maintain backward compatibility
+    public function updatePrice($row_id, $product_id): void
+    {
+        $this->setProductPrice($row_id, $product_id);
     }
 
     public function calculate($product, $new_price = null): array
@@ -262,16 +272,20 @@ class ProductCart extends Component
 
     public function updateCartOptions($row_id, $product_id, $cart_item, $discount_amount): void
     {
-        Cart::instance($this->cart_instance)->update($row_id, ['options' => [
+        $cartService = app(CartService::class)->instance($this->cart_instance);
+        
+        $options = [
             'sub_total' => $cart_item->price * $cart_item->qty,
-            'code' => $cart_item->options->code,
-            'stock' => $cart_item->options->stock,
-            'unit' => $cart_item->options->unit,
-            'product_tax' => 0, // $cart_item->options->product_tax,
-            'unit_price' => $cart_item->options->unit_price,
+            'code' => $cart_item->options->code ?? '',
+            'stock' => $cart_item->options->stock ?? 0,
+            'unit' => $cart_item->options->unit ?? '',
+            'product_tax' => 0,
+            'unit_price' => $cart_item->options->unit_price ?? $cart_item->price,
             'product_discount' => $discount_amount,
-            'product_discount_type' => $this->discount_type[$product_id],
-        ]]);
+            'product_discount_type' => $this->discount_type[$product_id] ?? 'fixed',
+        ];
+        
+        $cartService->updateItemOptions(auth()->id(), $row_id, $options);
     }
 
     /**
@@ -281,9 +295,8 @@ class ProductCart extends Component
     {
         if (auth()->check()) {
             try {
-                // Delete existing cart before storing the new one
-                Cart::instance($this->cart_instance)->erase(auth()->id());
-                Cart::instance($this->cart_instance)->store(auth()->id());
+                // Our new CartService handles storage automatically, so this is now a no-op
+                // Keeping the method for backward compatibility
             } catch (\Exception $e) {
                 // Log error or handle silently
             }

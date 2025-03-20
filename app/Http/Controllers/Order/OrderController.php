@@ -61,7 +61,8 @@ class OrderController extends Controller
 
             // Create Order Details
             if (auth()->check()) {
-                $contents = auth()->user()->getCart();
+                $cartService = app(\App\Services\CartService::class);
+                $contents = $cartService->content(auth()->id());
                 $oDetails = [];
 
                 foreach ($contents as $content) {

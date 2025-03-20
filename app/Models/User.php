@@ -73,7 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function cart(): HasOne
     {
-        return $this->hasOne(ShoppingCart::class, 'identifier', 'id');
+        return $this->hasOne(Cart::class, 'user_id', 'id')->where('instance', 'default');
     }
 
     public function orders(): HasMany
@@ -93,88 +93,19 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function getCart()
     {
-        try {
-            // Log the start of cart retrieval
-            \Illuminate\Support\Facades\Log::info('Starting cart retrieval for user: ' . $this->id);
-            
-            // Get cart data directly from database
-            $cartData = \Illuminate\Support\Facades\DB::table('shoppingcart')
-                ->where('identifier', $this->id)
-                ->first();
-                
-            if (!$cartData) {
-                \Illuminate\Support\Facades\Log::info('No cart data found for user: ' . $this->id);
-                return collect();
-            }
-            
-            // Log the raw cart data
-            \Illuminate\Support\Facades\Log::info('Raw cart data retrieved:', [
-                'identifier' => $cartData->identifier,
-                'instance' => $cartData->instance,
-                'content_length' => strlen($cartData->content)
-            ]);
-            
-            try {
-                // Try to unserialize the cart content
-                $decoded = base64_decode($cartData->content);
-                \Illuminate\Support\Facades\Log::info('Decoded content length: ' . strlen($decoded));
-                
-                $content = unserialize($decoded);
-                
-                // Log successful unserialization
-                \Illuminate\Support\Facades\Log::info('Cart unserialized successfully', [
-                    'item_count' => $content->count()
-                ]);
-                
-                // If successful, return the content
-                return $content;
-            } catch (\Exception $e) {
-                // Log unserialization error
-                \Illuminate\Support\Facades\Log::error('Cart unserialization error: ' . $e->getMessage(), [
-                    'exception' => $e,
-                    'trace' => $e->getTraceAsString()
-                ]);
-                
-                // If unserialization fails, try to use the Gloudemans\Shoppingcart package
-                // to restore the cart from the database and then get the content
-                \Illuminate\Support\Facades\Log::info('Attempting to restore cart using package');
-                \Gloudemans\Shoppingcart\Facades\Cart::restore($this->id);
-                $content = \Gloudemans\Shoppingcart\Facades\Cart::content();
-                
-                // Store the cart again to fix the serialization
-                \Illuminate\Support\Facades\Log::info('Re-storing cart to fix serialization');
-                \Gloudemans\Shoppingcart\Facades\Cart::store($this->id);
-                
-                return $content;
-            }
-        } catch (\Exception $e) {
-            // Log the error
-            \Illuminate\Support\Facades\Log::error('Cart retrieval error: ' . $e->getMessage(), [
-                'exception' => $e,
-                'trace' => $e->getTraceAsString()
-            ]);
-            
-            // If there's an error, return empty collection
-            return collect();
-        }
+        $cartService = app(\App\Services\CartService::class);
+        return $cartService->content($this->id);
     }
-
+    
     /**
      * Clear the user's cart from the database
+     * 
+     * @return bool
      */
     public function clearCart()
     {
-        try {
-            // Clear cart from database using the Gloudemans\Shoppingcart package
-            \Gloudemans\Shoppingcart\Facades\Cart::erase($this->id);
-            
-            // Also destroy the session cart to ensure consistency
-            \Gloudemans\Shoppingcart\Facades\Cart::destroy();
-            
-            return true;
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Cart clearing error: ' . $e->getMessage());
-            return false;
-        }
+        $cartService = app(\App\Services\CartService::class);
+        $cartService->clearCart($this->id);
+        return true;
     }
 }

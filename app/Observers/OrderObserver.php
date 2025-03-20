@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\CartService;
 
 class OrderObserver
 {
@@ -15,15 +16,19 @@ class OrderObserver
         if ($order->order_status == 1) {
             $user = $order->user;
             if ($user) {
-                $contents = $user->getCart();
-                foreach ($contents as $item) {
+                // Get cart items using the new CartService
+                $cartItems = app(CartService::class)->content($user->id);
+                
+                foreach ($cartItems as $item) {
                     $product = Product::find($item->id);
-                    $product->quantity = $product->quantity - $item->qty;
-                    $product->save();
+                    if ($product) {
+                        $product->quantity = $product->quantity - $item->qty;
+                        $product->save();
+                    }
                 }
                 
                 // Clear the cart after processing
-                $user->clearCart();
+                app(CartService::class)->clearCart($user->id);
             }
         }
     }

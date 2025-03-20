@@ -10,6 +10,7 @@ return Application::configure(basePath: dirname(__DIR__))
         \Spatie\Permission\PermissionServiceProvider::class,
         \Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
         \Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class,
+        \App\Providers\CartServiceProvider::class,
     ])
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
