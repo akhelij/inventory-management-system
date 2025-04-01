@@ -11,7 +11,6 @@ use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\OrderPendingController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentExportController;
-use App\Http\Controllers\PosController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductExportController;
 use App\Http\Controllers\Product\ProductImportController;
@@ -37,14 +36,6 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('php/', function () {
-    return phpinfo();
-});
-
-// Route::get('/', function () {
-//     return view('dashboard');
-// });
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
@@ -79,13 +70,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('products/export/', [ProductExportController::class, 'create'])->name('products.export.store');
     Route::resource('/products', ProductController::class);
 
-    // Route POS
-    Route::get('/pos', [PosController::class, 'index'])->name('pos.index');
-    Route::post('/pos/cart/add', [PosController::class, 'addCartItem'])->name('pos.addCartItem');
-    Route::post('/pos/cart/update/{rowId}', [PosController::class, 'updateCartItem'])->name('pos.updateCartItem');
-    Route::delete('/pos/cart/delete/{rowId}', [PosController::class, 'deleteCartItem'])->name('pos.deleteCartItem');
-
-    // Route::post('/pos/invoice', [PosController::class, 'createInvoice'])->name('pos.createInvoice');
     Route::post('invoice/create/', [InvoiceController::class, 'create'])->name('invoice.create');
 
     // Route Orders

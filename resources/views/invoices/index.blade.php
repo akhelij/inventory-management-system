@@ -119,7 +119,7 @@
 
                 <!-- BEGIN: Invoice Button -->
                 <div class="invoice-btn-section clearfix d-print-none">
-                    <a class="btn btn-lg btn-primary" href="{{ route('pos.index') }}">
+                    <a class="btn btn-lg btn-primary" href="{{ route('orders.index') }}">
                         Back
                     </a>
 
