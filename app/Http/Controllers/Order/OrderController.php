@@ -12,17 +12,17 @@ use App\Models\OrderDetails;
 use App\Models\Product;
 use App\Models\User;
 use Carbon\Carbon;
-use Gloudemans\Shoppingcart\Facades\Cart;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Str;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
     public function index()
     {
-        abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
 
         return view('orders.index', [
             'orders' => 1,
@@ -33,50 +33,70 @@ class OrderController extends Controller
     {
         try {
             DB::beginTransaction();
-            abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
-            //            $customer = Customer::find($request->customer_id);
-            //            $approve_automatically = $customer->email === Customer::ALAMI;
+            abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
+            
+            // Decode cart data from Alpine.js
+            $cartData = json_decode($request->cart_data, true);
+            
+            // Check if cart is empty
+            if (empty($cartData)) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'Cannot create an order with an empty cart');
+            }
+            
+            // Calculate totals
+            $totalProducts = count($cartData);
+            $subTotal = 0;
+            
+            foreach ($cartData as $item) {
+                $subTotal += $item['subtotal'];
+            }
+            
+            // Total is the same as subtotal (no tax)
+            $total = $subTotal;
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'payment_type' => $request->payment_type,
                 'pay' => $request->pay ?? 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
-                'order_status' => OrderStatus::PENDING, // $approve_automatically ? OrderStatus::APPROVED : OrderStatus::PENDING,
-                'total_products' => auth()->check() ? auth()->user()->getCart()->count() : 0,
-                'sub_total' => auth()->check() ? auth()->user()->getCart()->sum('subtotal') : 0,
-                'vat' => auth()->check() ? auth()->user()->getCart()->sum('tax') : 0,
-                'total' => auth()->check() ? auth()->user()->getCart()->sum('total') : 0,
+                'order_status' => OrderStatus::PENDING,
+                'total_products' => $totalProducts,
+                'sub_total' => $subTotal,
+                'vat' => 0, // Set VAT to 0
+                'total' => $total,
                 'invoice_no' => IdGenerator::generate([
                     'table' => 'orders',
                     'field' => 'invoice_no',
                     'length' => 10,
                     'prefix' => 'INV-',
                 ]),
-                'due' => (auth()->check() ? auth()->user()->getCart()->sum('total') : 0) - $request->pay,
-                'user_id' => $request->author_id ?? auth()->id(),
+                'due' => $total - ($request->pay ?? 0),
+                'user_id' => $request->author_id ?? Auth::id(),
                 'tagged_user_id' => $request->tagged_user_id,
                 'uuid' => Str::uuid(),
             ]);
 
-            // Create Order Details
-            if (auth()->check()) {
-                $cartService = app(\App\Services\CartService::class);
-                $contents = $cartService->content(auth()->id());
-                $oDetails = [];
-
-                foreach ($contents as $content) {
-                    $oDetails['order_id'] = $order['id'];
-                    $oDetails['product_id'] = $content->id;
-                    $oDetails['quantity'] = $content->qty;
-                    $oDetails['unitcost'] = $content->price;
-                    $oDetails['total'] = $content->subtotal;
-                    $oDetails['created_at'] = Carbon::now();
-
-                    OrderDetails::insert($oDetails);
-                }
+            // Create Order Details from cart data
+            foreach ($cartData as $item) {
+                OrderDetails::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['id'],
+                    'quantity' => $item['qty'],
+                    'unitcost' => $item['price'],
+                    'total' => $item['subtotal'],
+                ]);
             }
+            
             DB::commit();
+            
+            // Clear the session cart after successful order
+            return redirect()
+                ->route('orders.index')
+                ->with('success', 'Order has been created!')
+                ->withCookie(cookie('order_cart', null, -1)); // Expire the cookie
+                
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -84,31 +104,22 @@ class OrderController extends Controller
                 ->back()
                 ->with('error', $e->getMessage());
         }
-
-        if (auth()->check()) {
-            auth()->user()->clearCart();
-        }
-
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order has been created!');
     }
 
     public function create()
     {
-        abort_unless(auth()->user()->can(PermissionEnum::CREATE_ORDERS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
         
         return view('orders.create', [
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::ofAuth()->get(['id', 'name']),
             'users' => User::query()->get(['id', 'name']),
-            'carts' => auth()->check() ? auth()->user()->getCart() : collect(),
         ]);
     }
 
     public function show($uuid)
     {
-        abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
         $order = Order::where('uuid', $uuid)->firstOrFail();
         $order->loadMissing(['customer', 'details'])->get();
 
@@ -121,7 +132,7 @@ class OrderController extends Controller
 
     public function updateItems(Order $order, Request $request)
     {
-        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
         $order->details()->delete();
         $oDetails = [];
         foreach ($request->product_id as $key => $product_id) {
@@ -142,7 +153,7 @@ class OrderController extends Controller
 
     public function updateStatus(Order $order, int $order_status, Request $request)
     {
-        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS_STATUS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS_STATUS), 403);
         abort_unless(in_array($order_status, [OrderStatus::APPROVED, OrderStatus::CANCELED]), 403);
 
         $customer = Customer::find($order->customer_id);
@@ -164,7 +175,7 @@ class OrderController extends Controller
     public function update(Order $order)
     {
         abort_if($order->order_status != null, 403, 'Only pending orders can be updated');
-        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_ORDERS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
 
         $details = OrderDetails::where('order_id', $order->id)->get();
         $total = 0;
@@ -188,7 +199,7 @@ class OrderController extends Controller
 
     public function destroy($uuid)
     {
-        abort_unless(auth()->user()->can(PermissionEnum::DELETE_ORDERS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::DELETE_ORDERS), 403);
 
         try {
             DB::beginTransaction();
@@ -219,7 +230,7 @@ class OrderController extends Controller
 
     public function downloadInvoice($uuid)
     {
-        abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
         $order = Order::with(['customer', 'details'])->where('uuid', $uuid)->firstOrFail();
 
         return view('orders.print-invoice', [
@@ -229,7 +240,7 @@ class OrderController extends Controller
 
     public function bulkDownloadInvoice(Request $request)
     {
-        abort_unless(auth()->user()->can(PermissionEnum::READ_ORDERS), 403);
+        abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
         $orders = Order::with(['customer', 'details', 'user'])->whereIn('id', $request->order_ids)->get();
 
         return view('orders.bulk-print-invoice', [

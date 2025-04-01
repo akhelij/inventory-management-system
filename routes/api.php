@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\V1\ProductController;
+use App\Http\Controllers\Api\ProductController as ApiProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('products/', [ProductController::class, 'index'])->name('api.product.index');
+
+// Product API endpoints
+Route::get('/products', [ApiProductController::class, 'index']);

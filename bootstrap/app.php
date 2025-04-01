@@ -9,7 +9,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
         \Spatie\Permission\PermissionServiceProvider::class,
         \Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
-        \Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class,
         \App\Providers\CartServiceProvider::class,
     ])
     ->withRouting(

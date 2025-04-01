@@ -9,7 +9,6 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "anayarojo/shoppingcart": "^4.2",
         "awobaz/compoships": "^2.3",
         "doctrine/dbal": "^4.2",
         "haruncpi/laravel-id-generator": "^1.1",
