@@ -398,15 +398,6 @@
     </header>
 
     <div class="page-wrapper">
-        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <strong class="me-auto">{{ config('app.name') }}</strong>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body"></div>
-            </div>
-        </div>
         <x-notification />
         <div>
             @yield('content')
@@ -442,27 +433,16 @@
 {{-- - Page Scripts - --}}
 @stack('page-scripts')
 
-@push('page-scripts')
-    <script>
-        // Listen for notify events
-        Livewire.on('notify', params => {
-            // You can use any notification library here
-            // Example with Tabler's built-in notifications:
-            var color = params.type === 'success' ? 'success' : 'danger';
-            var message = params.message;
 
-            // Show notification
-            var notify = document.querySelector('.toast');
-            if (notify) {
-                notify.querySelector('.toast-body').textContent = message;
-                notify.classList.add('bg-' + color);
-                var toast = new bootstrap.Toast(notify);
-                toast.show();
-            }
-        });
-    </script>
-@endpush
 @livewireScripts
+
+<!-- Toast Component -->
+<x-toast />
+
+<!-- JavaScript -->
+<!-- Adding the script tag for our toast.js -->
+<script src="{{ asset('js/toast.js') }}"></script>
+
 </body>
 
 </html>

@@ -162,6 +162,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return redirect()->back();
     })->name('lang.switch');
+
+    // Documentation Routes
+    Route::get('documentation/toast', function () {
+        return view('documentation.toast');
+    })->name('documentation.toast');
 });
 
 require __DIR__.'/auth.php';
