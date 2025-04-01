@@ -82,9 +82,17 @@
                                             <td class="align-middle text-center" style="width: 10%">
                                                 <div class="d-flex">
                                                     <button
-                                                        @click="$dispatch('add-to-cart', { id: product.id, name: product.name, price: product.selling_price })"
+                                                        @click="addToCart(product)"
+                                                        :disabled="isAddingToCart"
                                                         class="btn btn-icon btn-outline-primary" style="width: 20px">
-                                                        <x-icon.plus/>
+                                                        <template x-if="!isAddingToCart">
+                                                            <x-icon.plus/>
+                                                        </template>
+                                                        <template x-if="isAddingToCart">
+                                                            <div class="spinner-border spinner-border-sm" role="status">
+                                                                <span class="visually-hidden">Loading...</span>
+                                                            </div>
+                                                        </template>
                                                     </button>
                                                 </div>
                                             </td>
@@ -267,14 +275,15 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                            <template x-for="(item, index) in cart" :key="item.rowId">
+                                            <template x-for="(item, index) in cart" :key="item.uuid">
                                                 <tr>
                                                     <td x-text="item.name"></td>
                                                     <td style="width: 120px;">
                                                         <div class="input-group" style="width:110px">
                                                             <input type="number" class="form-control" 
                                                                 x-model="item.qty" 
-                                                                @input="updateQuantity(index, $event.target.value)" 
+                                                                @input="updateCartItem(item.uuid, 'quantity', $event.target.value)" 
+                                                                :max="item.max_qty"
                                                                 min="1" required/>
                                                         </div>
                                                     </td>
@@ -282,13 +291,16 @@
                                                         <div class="input-group" style="width:110px">
                                                             <input type="number" class="form-control" 
                                                                 x-model="item.price" 
-                                                                @input="updatePrice(index, $event.target.value)" 
+                                                                @input="updateCartItem(item.uuid, 'price', $event.target.value)" 
                                                                 :min="item.basePrice" required/>
                                                         </div>
                                                     </td>
                                                     <td class="text-center" x-text="formatCurrency(item.subtotal)"></td>
                                                     <td class="text-center">
-                                                        <button type="button" @click="removeItem(index)" class="btn btn-icon btn-outline-danger">
+                                                        <button 
+                                                            type="button" 
+                                                            @click="removeCartItem(item.uuid)" 
+                                                            class="btn btn-icon btn-outline-danger delete-item-btn">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24"
                                                                 height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                                                 stroke-linecap="round" stroke-linejoin="round">
@@ -343,7 +355,13 @@
 @endsection
 
 @pushonce('page-scripts')
+    <script src="{{ asset('js/toast.js') }}"></script>
     <script>
+        // Check if Bootstrap is loaded
+        if (typeof bootstrap === 'undefined') {
+            console.warn('Bootstrap JS is not loaded. Using fallback toast implementation.');
+        }
+        
         function productList() {
             return {
                 products: [],
@@ -351,17 +369,13 @@
                 sortField: 'id',
                 sortDirection: 'desc',
                 isLoading: true,
+                isAddingToCart: false,
                 currentPage: 1,
                 perPage: 15,
                 totalPages: 1,
                 
                 init() {
                     this.fetchProducts();
-                    
-                    // Listen for add-to-cart events from other components
-                    window.addEventListener('add-to-cart', (event) => {
-                        this.addToCart(event.detail);
-                    });
                 },
                 
                 fetchProducts() {
@@ -385,6 +399,7 @@
                         .catch(error => {
                             console.error('Error fetching products:', error);
                             this.isLoading = false;
+                            window.showErrorToast('Error loading products');
                         });
                 },
                 
@@ -423,15 +438,49 @@
                 },
                 
                 addToCart(product) {
-                    // Dispatch event to be caught by cart component
-                    window.dispatchEvent(new CustomEvent('cart-add-item', { 
-                        detail: {
-                            id: product.id,
-                            name: product.name,
-                            price: product.price,
-                            basePrice: product.price
-                        } 
-                    }));
+                    this.isAddingToCart = true;
+                    
+                    const productData = {
+                        id: product.id,
+                        name: product.name,
+                        price: product.selling_price
+                    };
+                    
+                    fetch('/api/cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify(productData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                if (response.status === 400) {
+                                    if (data.message.includes('already in your cart')) {
+                                        throw new Error('Item already in cart');
+                                    } else if (data.message.includes('exceeds available stock')) {
+                                        window.showErrorToast(data.message);
+                                        throw new Error('Stock limit exceeded');
+                                    }
+                                }
+                                throw new Error(`Error ${response.status}: ${data.message || response.statusText}`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.dispatchEvent(new CustomEvent('cart-updated', { detail: data.cart }));
+                    })
+                    .catch(error => {
+                        if (error.message !== 'Item already in cart' && error.message !== 'Stock limit exceeded') {
+                            console.error('Error adding to cart:', error);
+                        }
+                    })
+                    .finally(() => {
+                        this.isAddingToCart = false;
+                    });
                 }
             };
         }
@@ -439,84 +488,99 @@
         function cartComponent() {
             return {
                 cart: [],
+                isLoading: true,
                 
                 init() {
-                    // Retrieve cart from localStorage if available
-                    const savedCart = localStorage.getItem('order_cart');
-                    if (savedCart) {
-                        this.cart = JSON.parse(savedCart);
-                    }
-                    
-                    // Listen for add-to-cart events
-                    window.addEventListener('cart-add-item', (event) => {
-                        this.addItem(event.detail);
+                    this.fetchCart();
+                    document.addEventListener('cart-updated', event => {
+                        this.cart = event.detail;
                     });
                 },
                 
-                addItem(product) {
-                    // Generate a unique row ID
-                    const rowId = 'row_' + product.id + '_' + Date.now();
-                    
-                    // Check if product already exists in cart
-                    const existingItemIndex = this.cart.findIndex(item => item.id === product.id);
-                    
-                    if (existingItemIndex !== -1) {
-                        // Update existing item
-                        this.cart[existingItemIndex].qty++;
-                        this.updateSubtotal(existingItemIndex);
-                    } else {
-                        // Add new item
-                        this.cart.push({
-                            rowId: rowId,
-                            id: product.id,
-                            name: product.name,
-                            qty: 1,
-                            price: parseFloat(product.price),
-                            basePrice: parseFloat(product.price),
-                            subtotal: parseFloat(product.price)
+                fetchCart() {
+                    this.isLoading = true;
+                    fetch('/api/cart')
+                        .then(response => response.json())
+                        .then(data => {
+                            this.cart = data;
+                            this.isLoading = false;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching cart:', error);
+                            this.isLoading = false;
+                            window.showErrorToast('Error loading cart');
                         });
+                },
+                
+                updateCartItem(uuid, field, value) {
+                    const updateData = {};
+                    
+                    if (field === 'quantity') {
+                        updateData.quantity = parseInt(value);
+                    } else if (field === 'price') {
+                        updateData.price = parseFloat(value);
                     }
                     
-                    this.saveCart();
+                    fetch(`/api/cart/${uuid}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify(updateData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                if (response.status === 400) {
+                                    console.error('Validation error:', data.message);
+                                    window.showErrorToast(data.message);
+                                }
+                                throw new Error(data.message || 'Error updating cart');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            this.cart = data.cart;
+                        } else {
+                            console.error('Error from server:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error updating cart:', error);
+                    });
                 },
                 
-                updateQuantity(index, quantity) {
-                    quantity = parseInt(quantity);
-                    if (quantity < 1) quantity = 1;
+                removeCartItem(uuid) {
+                    console.log('Deleting item with UUID:', uuid);
                     
-                    this.cart[index].qty = quantity;
-                    this.updateSubtotal(index);
-                },
-                
-                updatePrice(index, price) {
-                    price = parseFloat(price);
-                    const basePrice = this.cart[index].basePrice;
-                    
-                    if (price < basePrice) {
-                        price = basePrice;
-                    }
-                    
-                    this.cart[index].price = price;
-                    this.updateSubtotal(index);
-                },
-                
-                updateSubtotal(index) {
-                    const item = this.cart[index];
-                    item.subtotal = item.price * item.qty;
-                    this.saveCart();
-                },
-                
-                removeItem(index) {
-                    this.cart.splice(index, 1);
-                    this.saveCart();
+                    fetch(`/api/cart/${uuid}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            this.cart = data.cart;
+                        } else {
+                            console.error('Failed to remove item:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error removing cart item:', error);
+                    });
                 },
                 
                 getTotalQuantity() {
-                    return this.cart.reduce((total, item) => total + item.qty, 0);
+                    return this.cart.reduce((total, item) => total + parseInt(item.qty), 0);
                 },
                 
                 getSubTotal() {
-                    return this.cart.reduce((total, item) => total + item.subtotal, 0);
+                    return this.cart.reduce((total, item) => total + parseFloat(item.subtotal), 0);
                 },
                 
                 getTotal() {
@@ -524,26 +588,15 @@
                 },
                 
                 formatCurrency(value) {
-                    return value.toFixed(2);
-                },
-                
-                saveCart() {
-                    localStorage.setItem('order_cart', JSON.stringify(this.cart));
-                },
-                
-                clearCart() {
-                    this.cart = [];
-                    localStorage.removeItem('order_cart');
+                    return parseFloat(value).toFixed(2);
                 },
                 
                 submitOrder(e) {
                     if (this.cart.length === 0) {
-                        alert('Cannot create an order with an empty cart');
+                        window.showErrorToast('Cannot create an order with an empty cart');
                         e.preventDefault();
                         return false;
                     }
-                    
-                    // Form will submit normally since we're just preventing when cart is empty
                     e.target.submit();
                 }
             };

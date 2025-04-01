@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\API\V1\ProductController;
 use App\Http\Controllers\Api\ProductController as ApiProductController;
+use App\Http\Controllers\Api\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\OrderItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,3 +26,16 @@ Route::get('products/', [ProductController::class, 'index'])->name('api.product.
 
 // Product API endpoints
 Route::get('/products', [ApiProductController::class, 'index']);
+
+// Cart API endpoints
+Route::get('/cart', [CartController::class, 'index']);
+Route::post('/cart', [CartController::class, 'store']);
+Route::put('/cart/{id}', [CartController::class, 'update']);
+Route::delete('/cart/{id}', [CartController::class, 'destroy']);
+Route::delete('/cart', [CartController::class, 'clear']);
+
+// Order items API endpoints
+Route::get('/orders/{orderId}/items', [OrderItemController::class, 'index']);
+Route::post('/orders/{orderId}/items', [OrderItemController::class, 'store']);
+Route::put('/orders/{orderId}/items/{itemId}', [OrderItemController::class, 'update']);
+Route::delete('/orders/{orderId}/items/{itemId}', [OrderItemController::class, 'destroy']);

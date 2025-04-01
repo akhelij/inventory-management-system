@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cookie;
 
 class OrderController extends Controller
 {
@@ -35,8 +36,9 @@ class OrderController extends Controller
             DB::beginTransaction();
             abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
             
-            // Decode cart data from Alpine.js
-            $cartData = json_decode($request->cart_data, true);
+            // Get cart data from cookie
+            $cartJson = $request->cookie('cart_data');
+            $cartData = $cartJson ? json_decode($cartJson, true) : [];
             
             // Check if cart is empty
             if (empty($cartData)) {
@@ -53,7 +55,6 @@ class OrderController extends Controller
                 $subTotal += $item['subtotal'];
             }
             
-            // Total is the same as subtotal (no tax)
             $total = $subTotal;
 
             $order = Order::create([
@@ -64,7 +65,7 @@ class OrderController extends Controller
                 'order_status' => OrderStatus::PENDING,
                 'total_products' => $totalProducts,
                 'sub_total' => $subTotal,
-                'vat' => 0, // Set VAT to 0
+                'vat' => 0,
                 'total' => $total,
                 'invoice_no' => IdGenerator::generate([
                     'table' => 'orders',
@@ -82,7 +83,7 @@ class OrderController extends Controller
             foreach ($cartData as $item) {
                 OrderDetails::create([
                     'order_id' => $order->id,
-                    'product_id' => $item['id'],
+                    'product_id' => $item['product_id'],
                     'quantity' => $item['qty'],
                     'unitcost' => $item['price'],
                     'total' => $item['subtotal'],
@@ -91,11 +92,10 @@ class OrderController extends Controller
             
             DB::commit();
             
-            // Clear the session cart after successful order
             return redirect()
                 ->route('orders.index')
                 ->with('success', 'Order has been created!')
-                ->withCookie(cookie('order_cart', null, -1)); // Expire the cookie
+                ->cookie(Cookie::forget('cart_data'));
                 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -133,6 +133,14 @@ class OrderController extends Controller
     public function updateItems(Order $order, Request $request)
     {
         abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
+        
+        // Check if product_id array is empty
+        if (!$request->has('product_id') || empty($request->product_id)) {
+            return redirect()
+                ->back()
+                ->with('error', 'Cannot update an order with no items');
+        }
+        
         $order->details()->delete();
         $oDetails = [];
         foreach ($request->product_id as $key => $product_id) {
@@ -178,6 +186,14 @@ class OrderController extends Controller
         abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
 
         $details = OrderDetails::where('order_id', $order->id)->get();
+        
+        // Check if order has no items
+        if ($details->isEmpty()) {
+            return redirect()
+                ->back()
+                ->with('error', 'Cannot update an order with no items');
+        }
+        
         $total = 0;
 
         foreach ($details as $item) {
