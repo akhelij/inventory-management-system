@@ -36,9 +36,11 @@ class OrderController extends Controller
             DB::beginTransaction();
             abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
             
-            // Get cart data from cookie
-            $cartJson = $request->cookie('cart_data');
-            $cartData = $cartJson ? json_decode($cartJson, true) : [];
+            // Get cart data from form submission
+            $cartData = [];
+            if ($request->has('cart_data')) {
+                $cartData = json_decode($request->input('cart_data'), true);
+            }
             
             // Check if cart is empty
             if (empty($cartData)) {
@@ -94,8 +96,7 @@ class OrderController extends Controller
             
             return redirect()
                 ->route('orders.index')
-                ->with('success', 'Order has been created!')
-                ->cookie(Cookie::forget('cart_data'));
+                ->with('success', 'Order has been created!');
                 
         } catch (\Exception $e) {
             DB::rollBack();
