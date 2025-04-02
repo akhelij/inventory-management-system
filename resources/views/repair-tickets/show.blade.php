@@ -230,27 +230,37 @@
                         <div class="card-header bg-primary-subtle">
                             <h3 class="card-title text-primary">{{ __('Status Timeline') }}</h3>
                         </div>
-                        <div class="card-body p-2">
-                            <ul class="timeline timeline-compact">
+                        <div class="card-body p-3">
+                            <ul class="steps steps-vertical">
                                 @foreach($repairTicket->statusHistories->sortByDesc('created_at') as $history)
-                                    <li class="timeline-event">
-                                        <div class="timeline-event-icon bg-{{ 
-                                            $history->to_status === 'RECEIVED' ? 'info' : 
-                                            ($history->to_status === 'IN_PROGRESS' ? 'warning' : 
-                                            ($history->to_status === 'REPAIRED' ? 'success' : 
-                                            ($history->to_status === 'UNREPAIRABLE' ? 'danger' : 
-                                            ($history->to_status === 'DELIVERED' ? 'primary' : 'secondary')))) 
-                                        }}">
-                                            @if($history->to_status === 'RECEIVED')
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-package" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    @php
+                                        $statusColor = 
+                                            $history->to_status === 'RECEIVED' ? 'blue' : 
+                                            ($history->to_status === 'IN_PROGRESS' ? 'orange' : 
+                                            ($history->to_status === 'REPAIRED' ? 'green' : 
+                                            ($history->to_status === 'UNREPAIRABLE' ? 'red' : 
+                                            ($history->to_status === 'DELIVERED' ? 'purple' : 'gray'))));
+                                        
+                                        $statusIcon = 
+                                            $history->to_status === 'RECEIVED' ? 'package' : 
+                                            ($history->to_status === 'IN_PROGRESS' ? 'tools' : 
+                                            ($history->to_status === 'REPAIRED' ? 'check-circle' : 
+                                            ($history->to_status === 'UNREPAIRABLE' ? 'x-circle' : 
+                                            ($history->to_status === 'DELIVERED' ? 'handshake' : 'circle'))));
+                                    @endphp
+                                    
+                                    <li class="step-item">
+                                        <div class="step-item-marker bg-{{ $statusColor }}">
+                                            @if($statusIcon === 'package')
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                                     <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
                                                     <path d="M12 12l8 -4.5" />
                                                     <path d="M12 12l0 9" />
                                                     <path d="M12 12l-8 -4.5" />
                                                 </svg>
-                                            @elseif($history->to_status === 'IN_PROGRESS')
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-tools" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            @elseif($statusIcon === 'tools')
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                                     <path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4" />
                                                     <path d="M14.5 5.5l4 4" />
@@ -259,98 +269,86 @@
                                                     <path d="M16 12l5 5l-4 4l-5 -5" />
                                                     <path d="M16 17l-1.5 1.5" />
                                                 </svg>
-                                            @elseif($history->to_status === 'REPAIRED')
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            @elseif($statusIcon === 'check-circle')
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M5 12l5 5l10 -10" />
+                                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                                    <path d="M9 12l2 2l4 -4" />
                                                 </svg>
-                                            @elseif($history->to_status === 'UNREPAIRABLE')
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            @elseif($statusIcon === 'x-circle')
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M18 6l-12 12" />
-                                                    <path d="M6 6l12 12" />
+                                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                                    <path d="M10 10l4 4m0 -4l-4 4" />
                                                 </svg>
-                                            @elseif($history->to_status === 'DELIVERED')
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-forward" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            @elseif($statusIcon === 'handshake')
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M15 11l4 4l-4 4m4 -4h-11a4 4 0 0 1 0 -8h1" />
+                                                    <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
                                                 </svg>
                                             @endif
                                         </div>
-                                        <div class="card timeline-event-card">
-                                            <div class="card-body p-2">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="status-dot status-dot-animated status-{{ 
-                                                        $history->to_status === 'RECEIVED' ? 'blue' : 
-                                                        ($history->to_status === 'IN_PROGRESS' ? 'yellow' : 
-                                                        ($history->to_status === 'REPAIRED' ? 'green' : 
-                                                        ($history->to_status === 'UNREPAIRABLE' ? 'red' : 
-                                                        ($history->to_status === 'DELIVERED' ? 'azure' : 'gray')))) 
-                                                    }} me-2"></span>
-                                                    <strong>{{ $history->to_status }}</strong>
-                                                </div>
-                                                <div class="text-muted small mt-1">
-                                                    {{ $history->created_at->format('d M Y, H:i') }}
-                                                </div>
-                                                <div class="text-muted small">
-                                                    {{ __('by') }} {{ $history->user->name }}
-                                                </div>
-                                                
-                                                @if($history->comment)
-                                                    @if(is_array(json_decode($history->comment, true)))
-                                                        @php
-                                                            $statusDetails = json_decode($history->comment, true);
-                                                        @endphp
-                                                        <div class="mt-2">
-                                                            @if($history->to_status === 'REPAIRED')
-                                                                <strong>{{ __('Resolution Details') }}:</strong>
-                                                                <p class="text-muted small mb-1">{{ $statusDetails['resolution_details'] }}</p>
-                                                                
-                                                                @if(!empty($statusDetails['parts_replaced']))
-                                                                    <strong>{{ __('Parts Replaced') }}:</strong>
-                                                                    <p class="text-muted small mb-1">{{ $statusDetails['parts_replaced'] }}</p>
-                                                                @endif
-                                                                
-                                                                @if(!empty($statusDetails['comment']))
-                                                                    <strong>{{ __('Comment') }}:</strong>
-                                                                    <p class="text-muted small mb-0">{{ $statusDetails['comment'] }}</p>
-                                                                @endif
-                                                            @elseif($history->to_status === 'UNREPAIRABLE')
-                                                                <strong>{{ __('Problem Description') }}:</strong>
-                                                                <p class="text-muted small mb-1">{{ $statusDetails['problem_description'] }}</p>
-                                                                
-                                                                @if(!empty($statusDetails['comment']))
-                                                                    <strong>{{ __('Comment') }}:</strong>
-                                                                    <p class="text-muted small mb-0">{{ $statusDetails['comment'] }}</p>
-                                                                @endif
-                                                            @elseif($history->to_status === 'DELIVERED')
-                                                                <strong>{{ __('Collected By') }}:</strong>
-                                                                <p class="text-muted small mb-0">
-                                                                    @if($statusDetails['collected_by'] === 'customer')
-                                                                        {{ __('Customer') }}: 
-                                                                        @if(isset($statusDetails['collector_info']))
-                                                                            {{ $statusDetails['collector_info'] }}
-                                                                        @else
-                                                                            {{ \App\Models\Customer::find($statusDetails['customer_id'])->name ?? __('Unknown') }}
-                                                                        @endif
-                                                                    @elseif($statusDetails['collected_by'] === 'driver')
-                                                                        {{ __('Driver') }}: 
-                                                                        @if(isset($statusDetails['collector_info']))
-                                                                            {{ $statusDetails['collector_info'] }}
-                                                                        @else
-                                                                            {{ \App\Models\Driver::find($statusDetails['driver_id'])->name ?? __('Unknown') }}
-                                                                        @endif
-                                                                    @else
-                                                                        {{ __('Other') }}: {{ $statusDetails['collector_name'] }}
-                                                                    @endif
-                                                                </p>
+                                        <div class="step-content d-flex flex-column">
+                                            <span class="fw-bold text-{{ $statusColor }}">{{ $history->to_status }}</span>
+                                            <span class="text-muted small">{{ $history->created_at->format('d M Y, H:i') }}</span>
+                                            <span class="text-muted small mb-2">{{ __('by') }} {{ $history->user->name }}</span>
+                                            
+                                            @if($history->comment)
+                                                @if(is_array(json_decode($history->comment, true)))
+                                                    @php
+                                                        $statusDetails = json_decode($history->comment, true);
+                                                    @endphp
+                                                    <div class="step-details pt-1 ps-3">
+                                                        @if($history->to_status === 'REPAIRED')
+                                                            <strong>{{ __('Resolution Details') }}:</strong>
+                                                            <p class="text-muted small mb-1">{{ $statusDetails['resolution_details'] }}</p>
+                                                            
+                                                            @if(!empty($statusDetails['parts_replaced']))
+                                                                <strong>{{ __('Parts Replaced') }}:</strong>
+                                                                <p class="text-muted small mb-1">{{ $statusDetails['parts_replaced'] }}</p>
                                                             @endif
-                                                        </div>
-                                                    @else
-                                                        <p class="text-muted small">{{ $history->comment }}</p>
-                                                    @endif
+                                                            
+                                                            @if(!empty($statusDetails['comment']))
+                                                                <strong>{{ __('Comment') }}:</strong>
+                                                                <p class="text-muted small mb-0">{{ $statusDetails['comment'] }}</p>
+                                                            @endif
+                                                        @elseif($history->to_status === 'UNREPAIRABLE')
+                                                            <strong>{{ __('Problem Description') }}:</strong>
+                                                            <p class="text-muted small mb-1">{{ $statusDetails['problem_description'] }}</p>
+                                                            
+                                                            @if(!empty($statusDetails['comment']))
+                                                                <strong>{{ __('Comment') }}:</strong>
+                                                                <p class="text-muted small mb-0">{{ $statusDetails['comment'] }}</p>
+                                                            @endif
+                                                        @elseif($history->to_status === 'DELIVERED')
+                                                            <strong>{{ __('Collected By') }}:</strong>
+                                                            <p class="text-muted small mb-0">
+                                                                @if($statusDetails['collected_by'] === 'customer')
+                                                                    {{ __('Customer') }}: 
+                                                                    @if(isset($statusDetails['collector_info']))
+                                                                        {{ $statusDetails['collector_info'] }}
+                                                                    @else
+                                                                        {{ \App\Models\Customer::find($statusDetails['customer_id'])->name ?? __('Unknown') }}
+                                                                    @endif
+                                                                @elseif($statusDetails['collected_by'] === 'driver')
+                                                                    {{ __('Driver') }}: 
+                                                                    @if(isset($statusDetails['collector_info']))
+                                                                        {{ $statusDetails['collector_info'] }}
+                                                                    @else
+                                                                        {{ \App\Models\Driver::find($statusDetails['driver_id'])->name ?? __('Unknown') }}
+                                                                    @endif
+                                                                @else
+                                                                    {{ __('Other') }}: {{ $statusDetails['collector_name'] }}
+                                                                @endif
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                @else
+                                                    <div class="step-details pt-1 ps-3">
+                                                        <p class="text-muted small mb-0">{{ $history->comment }}</p>
+                                                    </div>
                                                 @endif
-                                            </div>
+                                            @endif
                                         </div>
                                     </li>
                                 @endforeach
@@ -404,127 +402,73 @@
 @endsection
 
 <style>
-    /* Timeline styling */
-    .timeline {
+    /* Timeline styling adapted from stepper */
+    .steps-vertical {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
         position: relative;
         list-style: none;
         padding: 0;
-        margin: 0;
     }
     
-    .timeline-event {
+    .steps-vertical .step-item {
         position: relative;
-        padding-bottom: 1.5rem;
-        padding-left: 2.5rem;
+        padding-left: 2rem;
+        counter-increment: step;
     }
     
-    .timeline-event:before {
+    .steps-vertical .step-item:not(:last-child):before {
         content: "";
         position: absolute;
-        left: 0.85rem;
-        top: 2rem;
-        bottom: 0;
+        left: 0.75rem;
+        top: 1.75rem;
+        bottom: -1.5rem;
         width: 2px;
-        background: #e6e7e9;
+        background: var(--tblr-border-color);
+        transform: translateX(-50%);
     }
     
-    .timeline-event:last-child:before {
-        display: none;
-    }
-    
-    .timeline-event-icon {
+    .steps-vertical .step-item-marker {
         position: absolute;
+        width: 1.5rem;
+        height: 1.5rem;
         left: 0;
         top: 0;
+        color: #fff;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 1.75rem;
-        height: 1.75rem;
-        color: #ffffff;
-        border-radius: 50%;
+        font-weight: 600;
+        z-index: 1;
     }
     
-    .timeline-event-card {
-        position: relative;
-        border: none;
-        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-    
-    /* Compact timeline for narrow column */
-    .timeline-compact .timeline-event {
-        padding-bottom: 1rem;
-        padding-left: 2rem;
-    }
-    
-    .timeline-compact .timeline-event-icon {
-        width: 1.5rem;
-        height: 1.5rem;
-    }
-    
-    .timeline-compact .timeline-event-icon svg {
+    .steps-vertical .step-item-marker svg {
         width: 1rem;
         height: 1rem;
+        stroke-width: 2.5;
     }
     
-    .timeline-compact .timeline-event:before {
-        left: 0.7rem;
+    .steps-vertical .step-content {
+        padding: 0 0 0 0.5rem;
     }
     
-    .timeline-compact .timeline-event-card {
-        margin-bottom: 0;
+    .steps-vertical .step-details {
+        border-left: 1px dashed var(--tblr-border-color);
+        margin-left: 0.5rem;
     }
     
-    .timeline-compact .card-body {
-        padding: 0.5rem 0.75rem;
-    }
+    /* Status colors */
+    .bg-blue { background-color: var(--tblr-blue); }
+    .bg-orange { background-color: var(--tblr-orange); }
+    .bg-green { background-color: var(--tblr-green); }
+    .bg-red { background-color: var(--tblr-red); }
+    .bg-purple { background-color: var(--tblr-purple); }
     
-    /* Status dot animation */
-    .status-dot {
-        display: inline-block;
-        width: 0.5rem;
-        height: 0.5rem;
-        border-radius: 50%;
-    }
-    
-    .status-dot-animated {
-        position: relative;
-    }
-    
-    .status-dot-animated:before {
-        content: '';
-        display: block;
-        position: absolute;
-        top: -0.25rem;
-        left: -0.25rem;
-        right: -0.25rem;
-        bottom: -0.25rem;
-        border-radius: 50%;
-        border: 2px solid;
-        border-color: inherit;
-        opacity: 0.3;
-        animation: pulse 2s infinite;
-    }
-    
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-            opacity: 0.3;
-        }
-        70% {
-            transform: scale(1.5);
-            opacity: 0;
-        }
-        100% {
-            transform: scale(1.5);
-            opacity: 0;
-        }
-    }
-    
-    .status-blue, .status-dot-blue { border-color: var(--tblr-blue); background: var(--tblr-blue); }
-    .status-green, .status-dot-green { border-color: var(--tblr-green); background: var(--tblr-green); }
-    .status-red, .status-dot-red { border-color: var(--tblr-red); background: var(--tblr-red); }
-    .status-yellow, .status-dot-yellow { border-color: var(--tblr-yellow); background: var(--tblr-yellow); }
-    .status-azure, .status-dot-azure { border-color: var(--tblr-azure); background: var(--tblr-azure); }
-    .status-gray, .status-dot-gray { border-color: var(--tblr-gray); background: var(--tblr-gray); }
+    .text-blue { color: var(--tblr-blue); }
+    .text-orange { color: var(--tblr-orange); }
+    .text-green { color: var(--tblr-green); }
+    .text-red { color: var(--tblr-red); }
+    .text-purple { color: var(--tblr-purple); }
 </style>
