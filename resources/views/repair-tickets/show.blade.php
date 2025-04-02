@@ -25,7 +25,7 @@
 
                 <div class="col-auto ms-auto d-print-none">
                     <div class="btn-list">
-                        <a href="{{ url()->previous() }}" class="btn btn-secondary d-none d-sm-inline-block">
+                        <a href="{{ route('repair-tickets.index') }}" class="btn btn-secondary d-none d-sm-inline-block">
                             {{ __('Back') }}
                         </a>
                         @if($repairTicket->status !== 'DELIVERED')
@@ -60,7 +60,7 @@
                         <x-repair-actions-card :repairTicket="$repairTicket" />
                     @endif
 
-                    <div class="card mt-3">
+                    <div class="card @if($repairTicket->status !== 'DELIVERED') mt-3 @endif">
                             <div class="card-header">
                                 <h3 class="card-title">{{ __('Photos') }}</h3>
                             <div class="card-actions">
@@ -246,7 +246,7 @@
                                             ($history->to_status === 'IN_PROGRESS' ? 'tools' : 
                                             ($history->to_status === 'REPAIRED' ? 'check-circle' : 
                                             ($history->to_status === 'UNREPAIRABLE' ? 'x-circle' : 
-                                            ($history->to_status === 'DELIVERED' ? 'handshake' : 'circle'))));
+                                            ($history->to_status === 'DELIVERED' ? 'box-seam-check' : 'circle'))));
                                     @endphp
                                     
                                     <li class="step-item">
@@ -281,10 +281,15 @@
                                                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
                                                     <path d="M10 10l4 4m0 -4l-4 4" />
                                                 </svg>
-                                            @elseif($statusIcon === 'handshake')
+                                            @elseif($statusIcon === 'box-seam-check')
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+                                                    <path d="M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5" />
+                                                    <path d="M12 12l8 -4.5" />
+                                                    <path d="M12 12l0 9" />
+                                                    <path d="M12 12l-8 -4.5" />
+                                                    <path d="M15 18.5l2 -2.5" />
+                                                    <path d="M7 16.5l4 4" />
                                                 </svg>
                                             @endif
                                         </div>
