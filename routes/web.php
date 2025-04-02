@@ -128,8 +128,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/activity-logs', [UserController::class, 'activityLogs'])->name('activity-logs');
 
     Route::resource('repair-tickets', RepairTicketController::class);
-    Route::patch('repair-tickets/{repairTicket}/status', [RepairTicketController::class, 'updateStatus'])
-        ->name('repair-tickets.update-status');
+    Route::put('repair-tickets/{repairTicket}/update-status', [RepairTicketController::class, 'updateStatus'])->name('repair-tickets.update-status');
+    Route::put('repair-tickets/{repairTicket}/process-return', [RepairTicketController::class, 'processReturn'])->name('repair-tickets.process-return');
+    Route::post('repair-tickets/{repairTicket}/upload-photos', [RepairTicketController::class, 'uploadPhotos'])->name('repair-tickets.upload-photos');
+    Route::delete('repair-photos/{photoId}', [RepairTicketController::class, 'deletePhoto'])->name('repair-tickets.delete-photo');
 
     Route::get('/lang/{lang}', function ($lang) {
         // Validate the language

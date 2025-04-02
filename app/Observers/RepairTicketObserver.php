@@ -3,24 +3,24 @@
 namespace App\Observers;
 
 use App\Models\RepairTicket;
+use Illuminate\Support\Facades\Auth;
 
 class RepairTicketObserver
 {
     public function updating(RepairTicket $repairTicket)
     {
-        // Check if status is being changed
-        if ($repairTicket->isDirty('status')) {
-            $repairTicket->statusHistories()->create([
-                'user_id' => auth()->id(),
-                'from_status' => $repairTicket->getOriginal('status'),
-                'to_status' => $repairTicket->status,
-                'comment' => request('status_comment') ?? 'Status updated',
-            ]);
-        }
+        // Status history is now handled in the controller
+        // with detailed information about repairs
     }
 
     public function created(RepairTicket $repairTicket): void
     {
-        //
+        // Create initial status history record
+        $repairTicket->statusHistories()->create([
+            'user_id' => Auth::id(),
+            'from_status' => '',
+            'to_status' => 'RECEIVED',
+            'comment' => 'Ticket created',
+        ]);
     }
 }

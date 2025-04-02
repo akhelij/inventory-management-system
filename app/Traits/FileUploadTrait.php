@@ -16,29 +16,39 @@ trait FileUploadTrait
      */
     protected function uploadFile(UploadedFile $file, string $directory = 'uploads'): string
     {
-        $filename = time() . '_' . $file->getClientOriginalName();
-        $uploadPath = public_path('storage/' . $directory);
+        try {
+            // Generate a unique filename
+            $filename = time() . '_' . uniqid() . '_' . preg_replace('/\s+/', '_', $file->getClientOriginalName());
+            $uploadPath = public_path('storage/' . $directory);
 
-        // Create directory if it doesn't exist
-        if (!file_exists($uploadPath)) {
-            mkdir($uploadPath, 0777, true);
+            // Create directory if it doesn't exist
+            if (!file_exists($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            // Move the file
+            $file->move($uploadPath, $filename);
+            
+            return $directory . '/' . $filename;
+        } catch (\Exception $e) {
+            // Log the error
+            \Illuminate\Support\Facades\Log::error('File upload error: ' . $e->getMessage());
+            
+            // Return a default path or throw an exception
+            return 'uploads/error.png';
         }
-
-        // Move the file
-        $file->move($uploadPath, $filename);
-        
-        return $directory . '/' . $filename;
     }
 
     /**
      * Delete a file from storage
-     *
-     * @param string $path
-     * @return bool
      */
-    protected function deleteFile(string $path): bool
+    protected function deleteFile($path)
     {
-        return Storage::disk('public')->delete($path);
+        if ($path && Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->delete($path);
+        }
+        
+        return false;
     }
 
     /**

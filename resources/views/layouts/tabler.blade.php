@@ -436,6 +436,59 @@
 
 @livewireScripts
 
+<!-- Toast container for notifications -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    @if (session('success'))
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M5 12l5 5l10 -10" />
+                </svg>
+                <strong class="me-auto">{{ __('Success') }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ session('success') }}
+            </div>
+        </div>
+    @endif
+    
+    @if (session('error'))
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-danger text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M18 6l-12 12" />
+                    <path d="M6 6l12 12" />
+                </svg>
+                <strong class="me-auto">{{ __('Error') }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{ session('error') }}
+            </div>
+        </div>
+    @endif
+</div>
+
+<!-- Initialize toasts -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto hide toasts after 5 seconds
+        setTimeout(function() {
+            const toasts = document.querySelectorAll('.toast.show');
+            toasts.forEach(toast => {
+                const bsToast = new bootstrap.Toast(toast, {
+                    autohide: true,
+                    delay: 5000
+                });
+                // The toast is already shown, so this just sets up the autohide
+            });
+        }, 500);
+    });
+</script>
+
 <!-- Toast Component -->
 <x-toast />
 
