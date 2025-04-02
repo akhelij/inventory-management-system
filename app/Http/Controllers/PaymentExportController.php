@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
@@ -12,7 +13,7 @@ class PaymentExportController extends Controller
 {
     public function create(Request $request)
     {
-        $customers = Customer::where('user_id', auth()->id())
+        $customers = Customer::where('user_id', Auth::id())
             ->with('orders', 'payments')
             ->search($request->search)
             ->get();

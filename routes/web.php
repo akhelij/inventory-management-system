@@ -126,6 +126,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('repair-tickets/{repairTicket}/upload-photos', [RepairTicketController::class, 'uploadPhotos'])->name('repair-tickets.upload-photos');
     Route::delete('repair-photos/{photoId}', [RepairTicketController::class, 'deletePhoto'])->name('repair-tickets.delete-photo');
 
+    // Payment Export Route
+    Route::get('payments/export', [PaymentExportController::class, 'create'])->name('payments.export');
+
     Route::get('/lang/{lang}', function ($lang) {
         // Validate the language
         $supportedLocales = ['en', 'fr'];
