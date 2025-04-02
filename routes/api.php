@@ -3,9 +3,9 @@
 use App\Http\Controllers\API\V1\ProductController;
 use App\Http\Controllers\Api\ProductController as ApiProductController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\OrderItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\OrderItemController;
 
 /*
 |--------------------------------------------------------------------------
