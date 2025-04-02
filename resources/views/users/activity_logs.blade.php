@@ -48,7 +48,15 @@
                                 @if($activity->event == 'deleted')
                                     Subject deleted
                                 @else
-                                    <a href="{{ route(Str::plural(lcfirst(str_replace('App\\Models\\', '', $activity->subject_type))) . '.show', $activity->subject_id) }}">
+                                    @php
+                                        $modelName = str_replace('App\\Models\\', '', $activity->subject_type);
+                                        $routeName = Str::plural(lcfirst($modelName)) . '.show';
+                                        // Special case for OrderDetails
+                                        if ($modelName === 'OrderDetails') {
+                                            $routeName = 'orderDetails.show';
+                                        }
+                                    @endphp
+                                    <a href="{{ route($routeName, $activity->subject_id) }}">
                                         {{ $activity->subject_type }}
                                     </a>
                                 @endif

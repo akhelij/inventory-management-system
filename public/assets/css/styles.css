@@ -649,7 +649,7 @@ progress {
   color: #69707a;
 }
 .blockquote-footer::before {
-  content: "— ";
+  content: "— ";
 }
 
 .img-fluid {
@@ -6639,6 +6639,13 @@ textarea.form-control-lg {
   vertical-align: baseline;
   border-radius: 0.35rem;
 }
+
+/* Make all elements inside .badge white */
+.badge * {
+  color: #fff !important;
+  background-color: #fff !important;
+}
+
 .badge:empty {
   display: none;
 }

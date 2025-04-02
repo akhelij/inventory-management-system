@@ -41,6 +41,8 @@ class Customer extends Model
         'have_unpaid_checks',
     ];
 
+    protected $with = ['user'];
+
     protected function casts(): array
     {
         return [

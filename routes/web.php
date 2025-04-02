@@ -80,16 +80,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
     Route::post('/orders/store', [OrderController::class, 'store'])->name('orders.store');
 
-    Route::get('/payments/{customer_id}/create', [PaymentController::class, 'create'])->name('payments.create');
-    Route::get('/payments/{payment}', [PaymentController::class, 'show'])->name('payments.show');
-    Route::post('/payments/{customer}', [PaymentController::class, 'store'])->name('payments.store');
-    Route::delete('/payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.delete');
-    Route::post('/payments/{payment}/cash-in', [PaymentController::class, 'cash_in'])->name('payments.cash_in');
-    Route::post('/payments/{payment}/report', [PaymentController::class, 'report'])->name('payments.report');
-    Route::get('payments/export/', [PaymentExportController::class, 'create'])->name('payments.export');
-
     // SHOW ORDER
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/order-details/{order}', [OrderController::class, 'show'])->name('orderDetails.show');
     Route::post('/orders/{order}/update_items', [OrderController::class, 'updateItems'])->name('orders.update_items');
     Route::put('/orders/update/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::get('/orders/update_status/{order}/{order_status}', [OrderController::class, 'updateStatus']);
