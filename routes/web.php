@@ -129,6 +129,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Payment Export Route
     Route::get('payments/export', [PaymentExportController::class, 'create'])->name('payments.export');
 
+    // Payment Routes
+    Route::get('payments/{customer}/create', [PaymentController::class, 'create'])->name('payments.create');
+    Route::post('payments/{customer}', [PaymentController::class, 'store'])->name('payments.store');
+    Route::post('payments/{payment}/report', [PaymentController::class, 'report'])->name('payments.report');
+    Route::post('payments/{payment}/cash-in', [PaymentController::class, 'cash_in'])->name('payments.cash_in');
+    Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
+
     Route::get('/lang/{lang}', function ($lang) {
         // Validate the language
         $supportedLocales = ['en', 'fr'];
