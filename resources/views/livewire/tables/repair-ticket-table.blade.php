@@ -67,26 +67,29 @@
                         </td>
                         <td>{{ $ticket->product?->name }}</td>
                         <td>
-                            <div class="d-flex align-items-center gap-2">
-                                <select wire:model.live="tickets.{{ $ticket->id }}.status"
-                                        wire:change="updateStatus($event.target.value, {{ $ticket->id }})"
-                                        class="form-select form-select-sm"
-                                    @class([
-                                        'form-select form-select-sm',
-                                        'bg-success-lt' => $ticket->status === 'REPAIRED',
-                                        'bg-danger-lt' => $ticket->status === 'UNREPAIRABLE',
-                                        'bg-warning-lt' => $ticket->status === 'IN_PROGRESS',
-                                        'bg-info-lt' => $ticket->status === 'RECEIVED',
-                                        'bg-primary-lt' => $ticket->status === 'DELIVERED',
-                                    ])>
-                                    @foreach(['RECEIVED', 'IN_PROGRESS', 'REPAIRED', 'UNREPAIRABLE', 'DELIVERED'] as $status)
-                                        <option value="{{ $status }}"
-                                            @selected($ticket->status === $status)>
-                                            {{ $status }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <span @class([
+                                'badge',
+                                'bg-success' => $ticket->status === 'REPAIRED',
+                                'bg-danger' => $ticket->status === 'UNREPAIRABLE',
+                                'bg-warning' => $ticket->status === 'IN_PROGRESS',
+                                'bg-info' => $ticket->status === 'RECEIVED',
+                                'bg-primary' => $ticket->status === 'DELIVERED',
+                            ])
+                            style="color: white !important;">
+                                @if($ticket->status === 'RECEIVED')
+                                    {{ __('Received') }}
+                                @elseif($ticket->status === 'IN_PROGRESS')
+                                    {{ __('In Progress') }}
+                                @elseif($ticket->status === 'REPAIRED')
+                                    {{ __('Repaired') }}
+                                @elseif($ticket->status === 'UNREPAIRABLE')
+                                    {{ __('Unrepairable') }}
+                                @elseif($ticket->status === 'DELIVERED')
+                                    {{ __('Delivered') }}
+                                @else
+                                    {{ $ticket->status }}
+                                @endif
+                            </span>
                         </td>
                         <td>{{ $ticket->technician?->name ?? '-' }}</td>
                         <td>{{ $ticket->created_at->format('d M Y H:i') }}</td>
@@ -105,7 +108,6 @@
                 @endforelse
                 </tbody>
             </table>
-            <livewire:modals.status-update-modal />
         </div>
 
         <div class="card-footer d-flex align-items-center">
