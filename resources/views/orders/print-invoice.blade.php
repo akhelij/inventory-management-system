@@ -155,7 +155,12 @@
                     <tbody>
                     @foreach ($order->details as $item)
                         <tr>
-                            <td>{{ $item->product->name }}</td>
+                            <td>
+                                {{ $item->product->name }}
+                                @if($item->unitcost == 0)
+                                    <span class="badge bg-success" style="font-size: 10px; padding: 3px 5px;">Gift</span>
+                                @endif
+                            </td>
                             <td class="text-center">{{ $item->quantity }}</td>
                             <td class="text-center">{{ Number::currency($item->unitcost, 'MAD') }}</td>
                             <td class="text-center">{{ Number::currency($item->total, 'MAD') }}</td>

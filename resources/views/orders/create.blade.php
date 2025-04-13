@@ -36,32 +36,32 @@
                             </div>
                         </div>
 
-                        <div class="table">
-                            <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table table-bordered card-table table-vcenter datatable m-0">
                                 <thead class="thead-light">
                                 <tr>
-                                    <th scope="col" class="align-middle text-center">
-                                        <a href="#" @click.prevent="sortBy('name')" role="button">
+                                    <th scope="col" class="align-middle text-center small" style="width: 50%">
+                                        <a href="#" @click.prevent="sortBy('name')" class="small" role="button">
                                             {{ __('Name') }}
                                             <span x-show="sortField === 'name' && sortDirection === 'asc'">▲</span>
                                             <span x-show="sortField === 'name' && sortDirection === 'desc'">▼</span>
                                         </a>
                                     </th>
-                                    <th scope="col" class="align-middle text-center">
-                                        <a href="#" @click.prevent="sortBy('warehouse_id')" role="button">
+                                    <th scope="col" class="align-middle text-center small" style="width: 20%">
+                                        <a href="#" @click.prevent="sortBy('warehouse_id')" class="small" role="button">
                                             {{ __('Warehouse') }}
                                             <span x-show="sortField === 'warehouse_id' && sortDirection === 'asc'">▲</span>
                                             <span x-show="sortField === 'warehouse_id' && sortDirection === 'desc'">▼</span>
                                         </a>
                                     </th>
-                                    <th scope="col" class="align-middle text-center">
-                                        <a href="#" @click.prevent="sortBy('quantity')" role="button">
+                                    <th scope="col" class="align-middle text-center small" style="width: 15%">
+                                        <a href="#" @click.prevent="sortBy('quantity')" class="small" role="button">
                                             {{ __('Quantity') }}
                                             <span x-show="sortField === 'quantity' && sortDirection === 'asc'">▲</span>
                                             <span x-show="sortField === 'quantity' && sortDirection === 'desc'">▼</span>
                                         </a>
                                     </th>
-                                    <th scope="col" class="align-middle text-center">
+                                    <th scope="col" class="align-middle text-center small" style="width: 15%">
                                         {{ __('Action') }}
                                     </th>
                                 </tr>
@@ -69,30 +69,50 @@
                                 <tbody x-show="!isLoading">
                                     <template x-for="(product, index) in products" :key="product.id">
                                         <tr>
-                                            <td class="text-truncate" style="max-width: 300px;">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <img style="width: 50px; flex-shrink: 0;"
+                                            <td class="text-truncate" style="max-width: 200px;">
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <img style="width: 32px; height: 32px; object-fit: contain; flex-shrink: 0;"
                                                         :src="product.product_image ? '/storage/' + product.product_image : '/assets/img/products/default.webp'"
                                                         :alt="product.name">
-                                                    <span class="text-truncate" :title="product.name" x-text="product.name"></span>
+                                                    <span class="text-truncate fs-sm" :title="product.name" x-text="product.name"></span>
                                                 </div>
                                             </td>
-                                            <td class="align-middle text-center" x-text="product.warehouse?.name || '--'"></td>
-                                            <td class="align-middle text-center" x-text="product.quantity"></td>
-                                            <td class="align-middle text-center" style="width: 10%">
-                                                <div class="d-flex">
+                                            <td class="align-middle text-center fs-sm" x-text="product.warehouse?.name || '--'"></td>
+                                            <td class="align-middle text-center fs-sm" x-text="product.quantity"></td>
+                                            <td class="align-middle text-center" style="width: 80px">
+                                                <div class="d-flex justify-content-center gap-1">
                                                     <button
                                                         @click="addToCart(product)"
                                                         :disabled="isAddingToCart"
-                                                        class="btn btn-icon btn-outline-primary" style="width: 20px">
+                                                        class="btn btn-icon btn-sm btn-outline-primary p-1" 
+                                                        title="Add to cart"
+                                                        data-bs-toggle="tooltip">
                                                         <template x-if="!isAddingToCart">
-                                                            <x-icon.plus/>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                <path d="M12 5l0 14" />
+                                                                <path d="M5 12l14 0" />
+                                                            </svg>
                                                         </template>
                                                         <template x-if="isAddingToCart">
-                                                            <div class="spinner-border spinner-border-sm" role="status">
+                                                            <div class="spinner-border spinner-border-sm" style="width: 14px; height: 14px;">
                                                                 <span class="visually-hidden">Loading...</span>
                                                             </div>
                                                         </template>
+                                                    </button>
+                                                    <button
+                                                        @click="addFreeItem(product)"
+                                                        :disabled="isAddingToCart"
+                                                        class="btn btn-icon btn-sm btn-outline-success p-1"
+                                                        title="Add as free item"
+                                                        data-bs-toggle="tooltip">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M12 8l0 13" />
+                                                            <rect x="3" y="8" width="18" height="4" rx="1" />
+                                                            <path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7" />
+                                                            <path d="M7.5 8a2.5 2.5 0 1 0 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 1 0 0 5" />
+                                                        </svg>
                                                     </button>
                                                 </div>
                                             </td>
@@ -108,24 +128,50 @@
                         </div>
 
                         <div class="card-footer d-flex align-items-center">
-                            <ul class="pagination m-0 ms-auto">
+                            <ul class="pagination pagination-sm m-0 ms-auto">
                                 <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
                                     <a class="page-link" href="#" @click.prevent="prevPage">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>
-                                        prev
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>
                                     </a>
                                 </li>
-                                <template x-for="page in totalPages" :key="page">
+                                <template x-for="page in totalPages" :key="page" x-if="totalPages <= 5">
                                     <li class="page-item" :class="{ 'active': page === currentPage }">
                                         <a class="page-link" href="#" @click.prevent="goToPage(page)" x-text="page"></a>
                                     </li>
                                 </template>
+                                <template x-if="totalPages > 5">
+                                    <!-- Show first page -->
+                                    <li class="page-item" :class="{ 'active': 1 === currentPage }">
+                                        <a class="page-link" href="#" @click.prevent="goToPage(1)">1</a>
+                                    </li>
+                                    <!-- Show dots if needed -->
+                                    <li class="page-item disabled" x-show="currentPage > 3">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    <!-- Show page before current if needed -->
+                                    <li class="page-item" x-show="currentPage > 2" :class="{ 'active': currentPage - 1 === currentPage }">
+                                        <a class="page-link" href="#" @click.prevent="goToPage(currentPage - 1)" x-text="currentPage - 1"></a>
+                                    </li>
+                                    <!-- Show current page if not first or last -->
+                                    <li class="page-item active" x-show="currentPage !== 1 && currentPage !== totalPages">
+                                        <a class="page-link" href="#" x-text="currentPage"></a>
+                                    </li>
+                                    <!-- Show page after current if needed -->
+                                    <li class="page-item" x-show="currentPage < totalPages - 1" :class="{ 'active': currentPage + 1 === currentPage }">
+                                        <a class="page-link" href="#" @click.prevent="goToPage(currentPage + 1)" x-text="currentPage + 1"></a>
+                                    </li>
+                                    <!-- Show dots if needed -->
+                                    <li class="page-item disabled" x-show="currentPage < totalPages - 2">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    <!-- Show last page -->
+                                    <li class="page-item" :class="{ 'active': totalPages === currentPage }">
+                                        <a class="page-link" href="#" @click.prevent="goToPage(totalPages)" x-text="totalPages"></a>
+                                    </li>
+                                </template>
                                 <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
                                     <a class="page-link" href="#" @click.prevent="nextPage">
-                                        next
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
                                     </a>
                                 </li>
                             </ul>
@@ -263,13 +309,13 @@
                                     <table class="table table-striped table-bordered align-middle">
                                         <thead class="thead-light">
                                         <tr>
-                                            <th scope="col">
+                                            <th scope="col" class="small">
                                                 {{ __('Product') }}
                                             </th>
-                                            <th scope="col" class="text-center">{{ __('Quantity') }}</th>
-                                            <th scope="col" class="text-center">{{ __('Price') }}</th>
-                                            <th scope="col" class="text-center">{{ __('SubTotal') }}</th>
-                                            <th scope="col" class="text-center">
+                                            <th scope="col" class="text-center small">{{ __('Quantity') }}</th>
+                                            <th scope="col" class="text-center small">{{ __('Price') }}</th>
+                                            <th scope="col" class="text-center small">{{ __('SubTotal') }}</th>
+                                            <th scope="col" class="text-center small">
                                                 {{ __('Action') }}
                                             </th>
                                         </tr>
@@ -277,10 +323,13 @@
                                         <tbody>
                                             <template x-for="(item, index) in cart" :key="item.uuid">
                                                 <tr>
-                                                    <td x-text="item.name"></td>
+                                                    <td>
+                                                        <span class="small" x-text="item.name"></span>
+                                                        <span x-show="item.is_free" class="badge bg-success ms-1 small">Gift</span>
+                                                    </td>
                                                     <td style="width: 120px;">
                                                         <div class="input-group" style="width:110px">
-                                                            <input type="number" class="form-control" 
+                                                            <input type="number" class="form-control form-control-sm" 
                                                                 x-model="item.qty" 
                                                                 @input="updateCartItem(item.uuid, 'quantity', $event.target.value)" 
                                                                 :max="item.max_qty"
@@ -289,20 +338,20 @@
                                                     </td>
                                                     <td class="text-center">
                                                         <div class="input-group" style="width:110px">
-                                                            <input type="number" class="form-control" 
+                                                            <input type="number" class="form-control form-control-sm" 
                                                                 x-model="item.price" 
                                                                 @change="updateCartItem(item.uuid, 'price', $event.target.value)" 
                                                                 :min="item.basePrice" required/>
                                                         </div>
                                                     </td>
-                                                    <td class="text-center" x-text="formatCurrency(item.subtotal)"></td>
+                                                    <td class="text-center small" x-text="formatCurrency(item.subtotal)"></td>
                                                     <td class="text-center">
                                                         <button 
                                                             type="button" 
                                                             @click="removeCartItem(item.uuid)" 
-                                                            class="btn btn-icon btn-outline-danger delete-item-btn">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24"
-                                                                height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                            class="btn btn-icon btn-sm btn-outline-danger p-1">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="16"
+                                                                height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                                                 stroke-linecap="round" stroke-linejoin="round">
                                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                                                 <path d="M4 7l16 0"/>
@@ -321,18 +370,18 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td colspan="4" class="text-end">
+                                                <td colspan="4" class="text-end small fw-bold">
                                                     Total Product
                                                 </td>
-                                                <td class="text-center" x-text="getTotalQuantity()"></td>
+                                                <td class="text-center small fw-bold" x-text="getTotalQuantity()"></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="4" class="text-end">Subtotal</td>
-                                                <td class="text-center" x-text="formatCurrency(getSubTotal())"></td>
+                                                <td colspan="4" class="text-end small fw-bold">Subtotal</td>
+                                                <td class="text-center small fw-bold" x-text="formatCurrency(getSubTotal())"></td>
                                             </tr>
                                             <tr>
-                                                <td colspan="4" class="text-end">Total</td>
-                                                <td class="text-center" x-text="formatCurrency(getTotal())"></td>
+                                                <td colspan="4" class="text-end small fw-bold">Total</td>
+                                                <td class="text-center small fw-bold" x-text="formatCurrency(getTotal())"></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -376,6 +425,19 @@
                 
                 init() {
                     this.fetchProducts();
+                    this.initTooltips();
+                },
+                
+                initTooltips() {
+                    // Initialize tooltips when DOM is updated
+                    this.$nextTick(() => {
+                        if (typeof bootstrap !== 'undefined') {
+                            const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                            tooltips.forEach(tooltip => {
+                                new bootstrap.Tooltip(tooltip);
+                            });
+                        }
+                    });
                 },
                 
                 fetchProducts() {
@@ -395,6 +457,7 @@
                             this.totalPages = data.last_page;
                             this.currentPage = data.current_page;
                             this.isLoading = false;
+                            this.$nextTick(() => this.initTooltips());
                         })
                         .catch(error => {
                             console.error('Error fetching products:', error);
@@ -476,6 +539,51 @@
                     .catch(error => {
                         if (error.message !== 'Item already in cart' && error.message !== 'Stock limit exceeded') {
                             console.error('Error adding to cart:', error);
+                        }
+                    })
+                    .finally(() => {
+                        this.isAddingToCart = false;
+                    });
+                },
+                
+                addFreeItem(product) {
+                    this.isAddingToCart = true;
+                    
+                    const productData = {
+                        id: product.id,
+                        name: product.name,
+                        price: product.selling_price,
+                        is_free: true
+                    };
+                    
+                    fetch('/api/cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify(productData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                if (response.status === 400) {
+                                    if (data.message.includes('exceeds available stock')) {
+                                        window.showErrorToast(data.message);
+                                        throw new Error('Stock limit exceeded');
+                                    }
+                                }
+                                throw new Error(`Error ${response.status}: ${data.message || response.statusText}`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        document.dispatchEvent(new CustomEvent('cart-updated', { detail: data.cart }));
+                    })
+                    .catch(error => {
+                        if (error.message !== 'Stock limit exceeded') {
+                            console.error('Error adding free item:', error);
                         }
                     })
                     .finally(() => {

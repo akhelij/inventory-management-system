@@ -231,7 +231,10 @@
                                     <tbody>
                                         <template x-for="(item, index) in orderItems" :key="item.id">
                                             <tr>
-                                                <td x-text="item.product.name"></td>
+                                                <td>
+                                                    <span x-text="item.product.name"></span>
+                                                    <span x-show="item.unitcost == 0" class="badge bg-success ms-1 small">Gift</span>
+                                                </td>
                                                 <td style="width: 120px;">
                                                     <div class="input-group" style="width:110px">
                                                         <input type="number" class="form-control" 

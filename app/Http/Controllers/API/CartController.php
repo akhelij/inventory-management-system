@@ -28,7 +28,8 @@ class CartController extends Controller
             'id' => 'required|exists:products,id',
             'name' => 'required|string',
             'price' => 'required|numeric',
-            'quantity' => 'sometimes|numeric|min:1'
+            'quantity' => 'sometimes|numeric|min:1',
+            'is_free' => 'sometimes|boolean'
         ]);
 
         $cart = $this->getCartFromRequest($request);
@@ -36,10 +37,16 @@ class CartController extends Controller
         // Generate UUID for the cart item
         $uuid = Str::uuid()->toString();
         
-        // Check if product already exists in cart
-        $productExists = collect($cart)->contains(function ($item) use ($validated) {
-            return $item['product_id'] == $validated['id'];
-        });
+        // Only check for duplicates if this is not a free item
+        $isFree = $request->has('is_free') && $validated['is_free'] === true;
+        $productExists = false;
+        
+        if (!$isFree) {
+            // Check if non-free version of this product already exists
+            $productExists = collect($cart)->contains(function ($item) use ($validated) {
+                return $item['product_id'] == $validated['id'] && (!isset($item['is_free']) || !$item['is_free']);
+            });
+        }
         
         if ($productExists) {
             return response()->json([
@@ -63,12 +70,13 @@ class CartController extends Controller
         $newItem = [
             'uuid' => $uuid,
             'product_id' => $product->id,
-            'name' => $product->name,
+            'name' => $isFree ? $product->name . ' (Gift)' : $product->name,
             'qty' => $requestedQty,
-            'price' => (float) $validated['price'],
-            'basePrice' => (float) $product->selling_price,
-            'subtotal' => (float) $validated['price'] * $requestedQty,
-            'max_qty' => $product->quantity
+            'price' => $isFree ? 0 : (float) $validated['price'],
+            'basePrice' => $isFree ? 0 : (float) $product->selling_price,
+            'subtotal' => $isFree ? 0 : (float) $validated['price'] * $requestedQty,
+            'max_qty' => $product->quantity,
+            'is_free' => $isFree
         ];
 
         $cart[] = $newItem;
@@ -117,8 +125,13 @@ class CartController extends Controller
         // Update price if provided, ensure it's not below base price
         if (isset($validated['price'])) {
             $basePrice = $cart[$itemIndex]['basePrice'];
-            $newPrice = max((float) $validated['price'], $basePrice);
-            $cart[$itemIndex]['price'] = $newPrice;
+            // If item is free, keep price at 0, otherwise apply validation
+            if (isset($cart[$itemIndex]['is_free']) && $cart[$itemIndex]['is_free']) {
+                $cart[$itemIndex]['price'] = 0;
+            } else {
+                $newPrice = max((float) $validated['price'], $basePrice);
+                $cart[$itemIndex]['price'] = $newPrice;
+            }
         }
 
         // Recalculate subtotal

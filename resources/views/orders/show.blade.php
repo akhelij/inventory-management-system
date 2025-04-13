@@ -133,6 +133,9 @@
                                         </td>
                                         <td class="align-middle text-center">
                                             {{ $item->product->name }}
+                                            @if($item->unitcost == 0)
+                                                <span class="badge bg-success ms-1 small">Gift</span>
+                                            @endif
                                         </td>
                                         <td class="align-middle text-center">
                                             {{ $item->product->warehouse->name }}
