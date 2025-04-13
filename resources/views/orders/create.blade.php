@@ -291,7 +291,7 @@
                                                         <div class="input-group" style="width:110px">
                                                             <input type="number" class="form-control" 
                                                                 x-model="item.price" 
-                                                                @input="updateCartItem(item.uuid, 'price', $event.target.value)" 
+                                                                @change="updateCartItem(item.uuid, 'price', $event.target.value)" 
                                                                 :min="item.basePrice" required/>
                                                         </div>
                                                     </td>
