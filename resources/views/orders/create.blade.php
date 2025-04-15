@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-body">
         <div class="container-xl">
-            <div class="row row-cards">
+            <div class="row" style="min-height: calc(100vh - 160px);">
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>
@@ -13,8 +13,8 @@
                         </ul>
                     </div>
                 @endif
-                <div x-data="productList()" class="col-lg-6">
-                    <div class="card">
+                <div x-data="productList()" class="col-lg-6 d-flex flex-column">
+                    <div class="card flex-grow-1 d-flex flex-column">
                         <div class="card-header">
                             <div>
                                 <h3 class="card-title">
@@ -36,7 +36,7 @@
                             </div>
                         </div>
 
-                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <div class="table-responsive flex-grow-1" style="overflow-y: auto;">
                             <table class="table table-bordered card-table table-vcenter datatable m-0">
                                 <thead class="thead-light">
                                 <tr>
@@ -178,8 +178,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <div class="card">
+                <div class="col-lg-6 d-flex flex-column">
+                    <div class="card flex-grow-1 d-flex flex-column">
                         <form action="{{ route('orders.store') }}" method="POST" x-data="cartComponent()" @submit.prevent="submitOrder">
                             @csrf
                             <div class="card-header">
@@ -192,7 +192,7 @@
                                     <x-action.close route="{{ route('orders.index') }}"/>
                                 </div>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body d-flex flex-column flex-grow-1" style="overflow-y: auto;">
                                 <div class="row gx-3 mb-3">
                                     <div class="col-md-4">
                                         <label class="small mb-1" for="payment_type">
@@ -304,7 +304,7 @@
                                     </div>
                                 </div>
 
-                                <div class="table-responsive">
+                                <div class="table-responsive flex-grow-1">
                                     <input type="hidden" name="cart_data" x-bind:value="JSON.stringify(cart)">
                                     <table class="table table-striped table-bordered align-middle">
                                         <thead class="thead-light">
