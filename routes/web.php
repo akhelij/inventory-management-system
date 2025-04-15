@@ -15,6 +15,7 @@ use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductExportController;
 use App\Http\Controllers\Product\ProductImportController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgressItemController;
 use App\Http\Controllers\Purchase\PurchaseController;
 use App\Http\Controllers\Quotation\QuotationController;
 use App\Http\Controllers\RepairTicketController;
@@ -156,6 +157,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('documentation/toast', function () {
         return view('documentation.toast');
     })->name('documentation.toast');
+    
+    // Progress Item Management Routes
+    Route::resource('progress-items', ProgressItemController::class);
+    Route::post('progress-items/{progressItem}/payment', [ProgressItemController::class, 'recordPayment'])->name('progress-items.payment');
 });
 
 require __DIR__.'/auth.php';

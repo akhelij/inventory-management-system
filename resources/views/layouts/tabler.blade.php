@@ -390,6 +390,11 @@
                             <a href="{{ route('profile.edit') }}" class="dropdown-item">
                                 <i class="fas fa-user-circle me-2"></i>{{ __('Account') }}
                             </a>
+                            @can('manage-progress-items')
+                            <a href="{{ route('progress-items.index') }}" class="dropdown-item">
+                                <i class="fas fa-file-invoice-dollar me-2"></i>{{ __('Dev Progress') }}
+                            </a>
+                            @endcan
                             <form action="{{ route('logout') }}" method="post">
                                 @csrf
                                 <button type="submit" class="dropdown-item">
