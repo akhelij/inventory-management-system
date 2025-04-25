@@ -100,6 +100,7 @@
                                                             </div>
                                                         </template>
                                                     </button>
+                                                    @if(auth()->user()->hasRole('admin'))
                                                     <button
                                                         @click="addFreeItem(product)"
                                                         :disabled="isAddingToCart"
@@ -114,6 +115,7 @@
                                                             <path d="M7.5 8a2.5 2.5 0 1 0 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 1 0 0 5" />
                                                         </svg>
                                                     </button>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
