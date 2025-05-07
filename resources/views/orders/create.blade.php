@@ -188,6 +188,11 @@
                                 <div>
                                     <h3 class="card-title">
                                         {{ __('New Order') }}
+                                        <span 
+                                            class="badge bg-primary ms-2" 
+                                            x-text="getTotalQuantity()" 
+                                            x-show="cart.length > 0">
+                                        </span>
                                     </h3>
                                 </div>
                                 <div class="card-actions btn-actions">

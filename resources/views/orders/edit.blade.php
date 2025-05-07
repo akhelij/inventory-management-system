@@ -137,6 +137,11 @@
                             <div>
                                 <h3 class="card-title">
                                     {{ __('Edit Order') }}
+                                    <span 
+                                        class="badge bg-primary ms-2" 
+                                        x-text="getTotalQuantity()"
+                                        x-show="orderItems.length > 0">
+                                    </span>
                                 </h3>
                             </div>
                             <div class="card-actions btn-actions">
@@ -275,6 +280,13 @@
                                             <td colspan="5" class="text-center">
                                                 {{ __('No items in this order') }}
                                             </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" class="text-end small fw-bold">
+                                                Total Product
+                                            </td>
+                                            <td class="text-center small fw-bold" x-text="getTotalQuantity()"></td>
+                                            <td></td>
                                         </tr>
                                         <tr>
                                             <td colspan="3" class="text-end">Subtotal</td>
@@ -569,6 +581,10 @@
                 
                 formatCurrency(value) {
                     return parseFloat(value).toFixed(2);
+                },
+                
+                getTotalQuantity() {
+                    return this.orderItems.reduce((total, item) => total + parseInt(item.quantity), 0);
                 }
             };
         }
