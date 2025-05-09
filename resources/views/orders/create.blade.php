@@ -73,19 +73,18 @@
                                                 <div class="d-flex align-items-center gap-1">
                                                     <img style="width: 32px; height: 32px; object-fit: contain; flex-shrink: 0;"
                                                         :src="product.product_image ? '/storage/' + product.product_image : '/assets/img/products/default.webp'"
-                                                        :alt="product.name">
-                                                    <span class="text-truncate fs-sm" :title="product.name" x-text="product.name"></span>
+                                                        >
+                                                    <span class="text-truncate fs-sm small" x-text="product.name"></span>
                                                 </div>
                                             </td>
-                                            <td class="align-middle text-center fs-sm" x-text="product.warehouse?.name || '--'"></td>
-                                            <td class="align-middle text-center fs-sm" x-text="product.quantity"></td>
-                                            <td class="align-middle text-center" style="width: 80px">
+                                            <td class="align-middle text-center fs-sm small" x-text="product.warehouse?.name || '--'"></td>
+                                            <td class="align-middle text-center fs-sm small" x-text="product.quantity"></td>
+                                            <td class="align-middle text-center small" style="width: 80px">
                                                 <div class="d-flex justify-content-center gap-1">
                                                     <button
                                                         @click="addToCart(product)"
                                                         :disabled="isAddingToCart"
                                                         class="btn btn-icon btn-sm btn-outline-primary p-1" 
-                                                        title="Add to cart"
                                                         data-bs-toggle="tooltip">
                                                         <template x-if="!isAddingToCart">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -136,12 +135,13 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>
                                     </a>
                                 </li>
-                                <template x-for="page in totalPages" :key="page" x-if="totalPages <= 5">
+                                <!-- Display if totalPages is less than or equal to 5 -->
+                                <template x-for="page in pageNumbers" :key="page"  x-if="totalPages <= 10">
                                     <li class="page-item" :class="{ 'active': page === currentPage }">
                                         <a class="page-link" href="#" @click.prevent="goToPage(page)" x-text="page"></a>
                                     </li>
                                 </template>
-                                <template x-if="totalPages > 5">
+                                <template x-if="totalPages > 10">
                                     <!-- Show first page -->
                                     <li class="page-item" :class="{ 'active': 1 === currentPage }">
                                         <a class="page-link" href="#" @click.prevent="goToPage(1)">1</a>
@@ -189,7 +189,7 @@
                                     <h3 class="card-title">
                                         {{ __('New Order') }}
                                         <span 
-                                            class="badge bg-primary ms-2" 
+                                            class="badge bg-primary text-white ms-2" 
                                             x-text="getTotalQuantity()" 
                                             x-show="cart.length > 0">
                                         </span>
@@ -411,7 +411,6 @@
 @endsection
 
 @pushonce('page-scripts')
-    <script src="{{ asset('js/toast.js') }}"></script>
     <script>
         // Check if Bootstrap is loaded
         if (typeof bootstrap === 'undefined') {
@@ -427,9 +426,10 @@
                 isLoading: true,
                 isAddingToCart: false,
                 currentPage: 1,
-                perPage: 15,
+                perPage: 25,
                 totalPages: 1,
-                
+                pageNumbers: [],
+
                 init() {
                     this.fetchProducts();
                     this.initTooltips();
@@ -463,6 +463,7 @@
                             this.products = data.data;
                             this.totalPages = data.last_page;
                             this.currentPage = data.current_page;
+                            this.pageNumbers = Array.from({length: this.totalPages}, (_, i) => i + 1);
                             this.isLoading = false;
                             this.$nextTick(() => this.initTooltips());
                         })
@@ -502,7 +503,13 @@
                     }
                 },
                 
+                get pageNumbers() {
+                    // Dynamically generate page numbers based on totalPages
+                    return Array.from({length: this.totalPages}, (_, i) => i + 1);
+                },
+                
                 goToPage(page) {
+                    if (page < 1 || page > this.totalPages) return;
                     this.currentPage = page;
                     this.fetchProducts();
                 },
@@ -516,7 +523,7 @@
                         price: product.selling_price
                     };
                     
-                    fetch('/api/cart', {
+                    fetch('/cart', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -563,7 +570,7 @@
                         is_free: true
                     };
                     
-                    fetch('/api/cart', {
+                    fetch('/cart', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -598,8 +605,8 @@
                     });
                 }
             };
-        }
-        
+        }     
+
         function cartComponent() {
             return {
                 cart: [],
@@ -614,7 +621,7 @@
                 
                 fetchCart() {
                     this.isLoading = true;
-                    fetch('/api/cart')
+                    fetch('/cart')
                         .then(response => response.json())
                         .then(data => {
                             this.cart = data;
@@ -636,7 +643,7 @@
                         updateData.price = parseFloat(value);
                     }
                     
-                    fetch(`/api/cart/${uuid}`, {
+                    fetch(`/cart/${uuid}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -671,7 +678,7 @@
                 removeCartItem(uuid) {
                     console.log('Deleting item with UUID:', uuid);
                     
-                    fetch(`/api/cart/${uuid}`, {
+                    fetch(`/cart/${uuid}`, {
                         method: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content

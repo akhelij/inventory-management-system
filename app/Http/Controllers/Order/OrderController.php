@@ -92,6 +92,9 @@ class OrderController extends Controller
                 ]);
             }
             
+            // Clear the user's cart after order creation
+            app(\App\Http\Controllers\CartController::class)->clear();
+            
             DB::commit();
             
             return redirect()
@@ -127,6 +130,7 @@ class OrderController extends Controller
         return view('orders.'.($order->order_status === null ? 'edit' : 'show'), [
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::ofAuth()->get(['id', 'name']),
+            'users' => User::query()->get(['id', 'name']),
             'order' => $order,
         ]);
     }

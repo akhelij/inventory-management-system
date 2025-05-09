@@ -152,6 +152,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         return redirect()->back();
     })->name('lang.switch');
+    
+    // Cart Web Routes
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [\App\Http\Controllers\CartController::class, 'index']);
+        Route::post('/', [\App\Http\Controllers\CartController::class, 'store']);
+        Route::put('/{id}', [\App\Http\Controllers\CartController::class, 'update']);
+        Route::delete('/{id}', [\App\Http\Controllers\CartController::class, 'destroy']);
+        Route::delete('/', [\App\Http\Controllers\CartController::class, 'clear']);
+    });
 
     // Documentation Routes
     Route::get('documentation/toast', function () {

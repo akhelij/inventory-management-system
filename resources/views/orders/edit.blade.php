@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-body">
         <div class="container-xl">
-            <div class="row row-cards">
+            <div class="row" style="min-height: calc(100vh - 160px);">
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>
@@ -13,7 +13,7 @@
                         </ul>
                     </div>
                 @endif
-                <div class="col-lg-6" x-data="productListEdit()">
+                <div x-data="productListEdit()" class="col-lg-6 d-flex flex-column">
                     <div class="card">
                         <div class="card-header">
                             <div>
@@ -36,32 +36,32 @@
                             </div>
                         </div>
 
-                        <div class="table">
-                            <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
+                        <div class="table-responsive flex-grow-1" style="overflow-y: auto;">
+                            <table class="table table-bordered card-table table-vcenter datatable m-0">
                                 <thead class="thead-light">
                                 <tr>
-                                    <th scope="col" class="align-middle text-center">
-                                        <a href="#" @click.prevent="sortBy('name')" role="button">
+                                    <th scope="col" class="align-middle text-center small" style="width: 50%">
+                                        <a href="#" @click.prevent="sortBy('name')" class="small" role="button">
                                             {{ __('Name') }}
                                             <span x-show="sortField === 'name' && sortDirection === 'asc'">▲</span>
                                             <span x-show="sortField === 'name' && sortDirection === 'desc'">▼</span>
                                         </a>
                                     </th>
-                                    <th scope="col" class="align-middle text-center">
-                                        <a href="#" @click.prevent="sortBy('warehouse_id')" role="button">
+                                    <th scope="col" class="align-middle text-center small" style="width: 20%">
+                                        <a href="#" @click.prevent="sortBy('warehouse_id')" class="small" role="button">
                                             {{ __('Warehouse') }}
                                             <span x-show="sortField === 'warehouse_id' && sortDirection === 'asc'">▲</span>
                                             <span x-show="sortField === 'warehouse_id' && sortDirection === 'desc'">▼</span>
                                         </a>
                                     </th>
-                                    <th scope="col" class="align-middle text-center">
-                                        <a href="#" @click.prevent="sortBy('quantity')" role="button">
+                                    <th scope="col" class="align-middle text-center small" style="width: 15%">
+                                        <a href="#" @click.prevent="sortBy('quantity')" class="small" role="button">
                                             {{ __('Quantity') }}
                                             <span x-show="sortField === 'quantity' && sortDirection === 'asc'">▲</span>
                                             <span x-show="sortField === 'quantity' && sortDirection === 'desc'">▼</span>
                                         </a>
                                     </th>
-                                    <th scope="col" class="align-middle text-center">
+                                    <th scope="col" class="align-middle text-center small" style="width: 15%">
                                         {{ __('Action') }}
                                     </th>
                                 </tr>
@@ -69,31 +69,52 @@
                                 <tbody x-show="!isLoading">
                                     <template x-for="(product, index) in products" :key="product.id">
                                         <tr>
-                                            <td class="text-truncate" style="max-width: 300px;">
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <img style="width: 50px; flex-shrink: 0;"
+                                            <td class="text-truncate" style="max-width: 200px;">
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <img style="width: 32px; height: 32px; object-fit: contain; flex-shrink: 0;"
                                                         :src="product.product_image ? '/storage/' + product.product_image : '/assets/img/products/default.webp'"
-                                                        :alt="product.name">
-                                                    <span class="text-truncate" :title="product.name" x-text="product.name"></span>
+                                                        >
+                                                    <span class="text-truncate fs-sm small" x-text="product.name"></span>
                                                 </div>
                                             </td>
-                                            <td class="align-middle text-center" x-text="product.warehouse?.name || '--'"></td>
-                                            <td class="align-middle text-center" x-text="product.quantity"></td>
-                                            <td class="align-middle text-center" style="width: 10%">
-                                                <div class="d-flex">
+                                            <td class="align-middle text-center fs-sm small" x-text="product.warehouse?.name || '--'"></td>
+                                            <td class="align-middle text-center fs-sm small" x-text="product.quantity"></td>
+                                            <td class="align-middle text-center small" style="width: 80px">
+                                                <div class="d-flex justify-content-center gap-1">
                                                     <button
                                                         @click="addToOrder(product)"
                                                         :disabled="isAddingToOrder"
-                                                        class="btn btn-icon btn-outline-primary" style="width: 20px">
+                                                        class="btn btn-icon btn-sm btn-outline-primary p-1" 
+                                                        data-bs-toggle="tooltip">
                                                         <template x-if="!isAddingToOrder">
-                                                            <x-icon.plus/>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                <path d="M12 5l0 14" />
+                                                                <path d="M5 12l14 0" />
+                                                            </svg>
                                                         </template>
                                                         <template x-if="isAddingToOrder">
-                                                            <div class="spinner-border spinner-border-sm" role="status">
+                                                            <div class="spinner-border spinner-border-sm" style="width: 14px; height: 14px;">
                                                                 <span class="visually-hidden">Loading...</span>
                                                             </div>
                                                         </template>
                                                     </button>
+                                                    @if(auth()->user()->hasRole('admin'))
+                                                    <button
+                                                        @click="addFreeItem(product)"
+                                                        :disabled="isAddingToOrder"
+                                                        class="btn btn-icon btn-sm btn-outline-success p-1"
+                                                        title="Add as free item"
+                                                        data-bs-toggle="tooltip">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                            <path d="M12 8l0 13" />
+                                                            <rect x="3" y="8" width="18" height="4" rx="1" />
+                                                            <path d="M19 12v7a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-7" />
+                                                            <path d="M7.5 8a2.5 2.5 0 1 0 0 -5a4.8 8 0 0 1 4.5 5a4.8 8 0 0 1 4.5 -5a2.5 2.5 0 1 0 0 5" />
+                                                        </svg>
+                                                    </button>
+                                                    @endif
                                                 </div>
                                             </td>
                                         </tr>
@@ -108,22 +129,51 @@
                         </div>
 
                         <div class="card-footer d-flex align-items-center">
-                            <ul class="pagination m-0 ms-auto">
+                            <ul class="pagination pagination-sm m-0 ms-auto">
                                 <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
                                     <a class="page-link" href="#" @click.prevent="prevPage">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>
-                                        prev
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M15 6l-6 6l6 6" /></svg>
                                     </a>
                                 </li>
-                                <template x-for="page in totalPages" :key="page">
+                                <!-- Display if totalPages is less than or equal to 5 -->
+                                <template x-for="page in pageNumbers" :key="page"  x-if="totalPages <= 10">
                                     <li class="page-item" :class="{ 'active': page === currentPage }">
                                         <a class="page-link" href="#" @click.prevent="goToPage(page)" x-text="page"></a>
                                     </li>
                                 </template>
+                                <template x-if="totalPages > 10">
+                                    <!-- Show first page -->
+                                    <li class="page-item" :class="{ 'active': 1 === currentPage }">
+                                        <a class="page-link" href="#" @click.prevent="goToPage(1)">1</a>
+                                    </li>
+                                    <!-- Show dots if needed -->
+                                    <li class="page-item disabled" x-show="currentPage > 3">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    <!-- Show page before current if needed -->
+                                    <li class="page-item" x-show="currentPage > 2" :class="{ 'active': currentPage - 1 === currentPage }">
+                                        <a class="page-link" href="#" @click.prevent="goToPage(currentPage - 1)" x-text="currentPage - 1"></a>
+                                    </li>
+                                    <!-- Show current page if not first or last -->
+                                    <li class="page-item active" x-show="currentPage !== 1 && currentPage !== totalPages">
+                                        <a class="page-link" href="#" x-text="currentPage"></a>
+                                    </li>
+                                    <!-- Show page after current if needed -->
+                                    <li class="page-item" x-show="currentPage < totalPages - 1" :class="{ 'active': currentPage + 1 === currentPage }">
+                                        <a class="page-link" href="#" @click.prevent="goToPage(currentPage + 1)" x-text="currentPage + 1"></a>
+                                    </li>
+                                    <!-- Show dots if needed -->
+                                    <li class="page-item disabled" x-show="currentPage < totalPages - 2">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    <!-- Show last page -->
+                                    <li class="page-item" :class="{ 'active': totalPages === currentPage }">
+                                        <a class="page-link" href="#" @click.prevent="goToPage(totalPages)" x-text="totalPages"></a>
+                                    </li>
+                                </template>
                                 <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
                                     <a class="page-link" href="#" @click.prevent="nextPage">
-                                        next
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 6l6 6l-6 6" /></svg>
                                     </a>
                                 </li>
                             </ul>
@@ -131,14 +181,14 @@
                     </div>
                 </div>
 
-                <div class="col-lg-6">
-                    <div class="card">
+                <div class="col-lg-6 d-flex flex-column">
+                    <div class="card flex-grow-1 d-flex flex-column">
                         <div class="card-header">
                             <div>
                                 <h3 class="card-title">
                                     {{ __('Edit Order') }}
                                     <span 
-                                        class="badge bg-primary ms-2" 
+                                        class="badge bg-primary text-white ms-2" 
                                         x-text="getTotalQuantity()"
                                         x-show="orderItems.length > 0">
                                     </span>
@@ -148,7 +198,7 @@
                                 <x-action.close route="{{ route('orders.index') }}"/>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column flex-grow-1" style="overflow-y: auto;">
                             <div class="row gx-3 mb-3">
                                 <div class="col-md-4">
                                     <label for="purchase_date" class="small my-1">
@@ -208,6 +258,8 @@
                                         </option>
                                         <option value="Cheque" @selected($order->payment_type == "Cheque")>Cheque
                                         </option>
+                                        <option value="Exchange" @selected($order->payment_type == "Exchange")>Lettre de change
+                                        </option>
                                     </select>
 
                                     @error('payment_type')
@@ -216,19 +268,77 @@
                                     </div>
                                     @enderror
                                 </div>
+                                
+                                @if(auth()->user()->hasRole('admin'))
+                                <div class="col-md-4">
+                                    <label class="small mb-1" for="author_id">
+                                        {{ __('Author') }}
+                                    </label>
+
+                                    <select
+                                        class="form-select form-control-solid @error('author_id') is-invalid @enderror"
+                                        id="author_id" name="author_id">
+                                        <option selected="" disabled="">
+                                            Select a user:
+                                        </option>
+                                        @if(isset($users))
+                                            @foreach ($users as $user)
+                                                <option
+                                                    value="{{ $user->id }}" @selected($order->user_id == $user->id)>
+                                                    {{ $user->name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+
+                                    @error('author_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                @endif
+                                
+                                <div class="col-md-4">
+                                    <label class="small mb-1" for="tagged_user_id">
+                                        {{ __('Tag') }}
+                                    </label>
+
+                                    <select
+                                        class="form-select form-control-solid @error('tagged_user_id') is-invalid @enderror"
+                                        id="tagged_user_id" name="tagged_user_id">
+                                        <option selected="" disabled="">
+                                            Select a user:
+                                        </option>
+                                        @if(isset($users))
+                                            @foreach ($users as $user)
+                                                <option
+                                                    value="{{ $user->id }}" @selected($order->tagged_user_id == $user->id)>
+                                                    {{ $user->name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+
+                                    @error('tagged_user_id')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
                             </div>
 
-                            <div class="table-responsive" x-data="orderItemsManager({{ $order->id }})">
+                            <div class="table-responsive flex-grow-1" x-data="orderItemsManager({{ $order->id }})">
                                 <table class="table table-striped table-bordered align-middle">
                                     <thead class="thead-light">
                                     <tr>
-                                        <th scope="col">
+                                        <th scope="col" class="small">
                                             {{ __('Product') }}
                                         </th>
-                                        <th scope="col" class="text-center">{{ __('Quantity') }}</th>
-                                        <th scope="col" class="text-center">{{ __('Price') }}</th>
-                                        <th scope="col" class="text-center">{{ __('SubTotal') }}</th>
-                                        <th scope="col" class="text-center">
+                                        <th scope="col" class="text-center small">{{ __('Quantity') }}</th>
+                                        <th scope="col" class="text-center small">{{ __('Price') }}</th>
+                                        <th scope="col" class="text-center small">{{ __('SubTotal') }}</th>
+                                        <th scope="col" class="text-center small">
                                             {{ __('Action') }}
                                         </th>
                                     </tr>
@@ -237,12 +347,12 @@
                                         <template x-for="(item, index) in orderItems" :key="item.id">
                                             <tr>
                                                 <td>
-                                                    <span x-text="item.product.name"></span>
+                                                    <span class="small" x-text="item.product.name"></span>
                                                     <span x-show="item.unitcost == 0" class="badge bg-success ms-1 small">Gift</span>
                                                 </td>
                                                 <td style="width: 120px;">
                                                     <div class="input-group" style="width:110px">
-                                                        <input type="number" class="form-control" 
+                                                        <input type="number" class="form-control form-control-sm" 
                                                             x-model="item.quantity" 
                                                             @input="updateItemQuantity(item.id, $event.target.value)" 
                                                             min="1" required/>
@@ -250,20 +360,20 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="input-group" style="width:110px">
-                                                        <input type="number" class="form-control" 
+                                                        <input type="number" class="form-control form-control-sm" 
                                                             x-model="item.unitcost" 
                                                             @input="updateItemPrice(item.id, $event.target.value)" 
                                                             min="0" required/>
                                                     </div>
                                                 </td>
-                                                <td class="text-center" x-text="formatCurrency(item.total)"></td>
+                                                <td class="text-center small" x-text="formatCurrency(item.total)"></td>
                                                 <td class="text-center">
                                                     <button 
                                                         type="button" 
                                                         @click="removeOrderItem(item.id)" 
-                                                        class="btn btn-icon btn-outline-danger delete-item-btn">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="24"
-                                                            height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                        class="btn btn-icon btn-sm btn-outline-danger p-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="16"
+                                                            height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                                                             stroke-linecap="round" stroke-linejoin="round">
                                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                                             <path d="M4 7l16 0"/>
@@ -282,21 +392,18 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colspan="3" class="text-end small fw-bold">
+                                            <td colspan="4" class="text-end small fw-bold">
                                                 Total Product
                                             </td>
                                             <td class="text-center small fw-bold" x-text="getTotalQuantity()"></td>
-                                            <td></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="3" class="text-end">Subtotal</td>
-                                            <td class="text-center" x-text="formatCurrency(getSubTotal())"></td>
-                                            <td></td>
+                                            <td colspan="4" class="text-end small fw-bold">Subtotal</td>
+                                            <td class="text-center small fw-bold" x-text="formatCurrency(getSubTotal())"></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="3" class="text-end">Total</td>
-                                            <td class="text-center" x-text="formatCurrency(getTotal())"></td>
-                                            <td></td>
+                                            <td colspan="4" class="text-end small fw-bold">Total</td>
+                                            <td class="text-center small fw-bold" x-text="formatCurrency(getTotal())"></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -304,30 +411,9 @@
 
                         </div>
                         <div class="card-footer text-end">
-                            <form action="{{ route('orders.update', $order->id) }}" method="POST" x-data="{
-                                submitForm(e) {
-                                    // Get the order items manager component
-                                    const orderItemsComponent = document.querySelector('[x-data=\"orderItemsManager(' + {{ $order->id }} + ')\"]').__x.$data;
-                                    
-                                    if (orderItemsComponent.orderItems.length === 0) {
-                                        window.showErrorToast('Cannot update an order with no items');
-                                        e.preventDefault();
-                                        return false;
-                                    }
-                                    
-                                    // Form will submit normally
-                                    return true;
-                                }
-                            }" @submit.prevent="submitForm($event)">
-                                @method('PUT')
-                                @csrf
-                                <button 
-                                    type="submit" 
-                                    class="btn btn-success add-list mx-1"
-                                    :disabled="$root.closest('.container-xl').querySelector('[x-data^=\"orderItemsManager\"]').__x.$data.orderItems.length === 0">
-                                    {{ __('Done') }}
-                                </button>
-                            </form>
+                            <a href="{{ route('orders.index') }}" class="btn btn-success mx-1">
+                                <i class="fas fa-check me-1"></i> {{ __('Back to Orders') }}
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -345,15 +431,29 @@
                 search: '',
                 sortField: 'id',
                 sortDirection: 'desc',
+                pageNumbers: [],
+                currentPage: 1,
+                totalPages: 1,
+                perPage: 15,
                 isLoading: true,
                 isAddingToOrder: false,
-                currentPage: 1,
-                perPage: 15,
-                totalPages: 1,
                 orderId: {{ $order->id }},
                 
                 init() {
                     this.fetchProducts();
+                    this.initTooltips();
+                },
+                
+                initTooltips() {
+                    // Initialize tooltips when DOM is updated
+                    this.$nextTick(() => {
+                        if (typeof bootstrap !== 'undefined') {
+                            const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+                            tooltips.forEach(tooltip => {
+                                new bootstrap.Tooltip(tooltip);
+                            });
+                        }
+                    });
                 },
                 
                 fetchProducts() {
@@ -372,7 +472,9 @@
                             this.products = data.data;
                             this.totalPages = data.last_page;
                             this.currentPage = data.current_page;
+                            this.pageNumbers = Array.from({length: this.totalPages}, (_, i) => i + 1);
                             this.isLoading = false;
+                            this.$nextTick(() => this.initTooltips());
                         })
                         .catch(error => {
                             console.error('Error fetching products:', error);
@@ -418,24 +520,26 @@
                 addToOrder(product) {
                     this.isAddingToOrder = true;
                     
+                    // Instead of directly querying the DOM, we'll use a more direct approach
+                    // Create form data for the new item
+                    const formData = new FormData();
+                    formData.append('product_id', product.id);
+                    formData.append('quantity', 1);
+                    formData.append('unitcost', product.selling_price);
+                    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+                    
+                    // Send a direct API request to add the item
                     fetch(`/api/orders/${this.orderId}/items`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        },
-                        body: JSON.stringify({
-                            product_id: product.id,
-                            quantity: 1,
-                            unitcost: product.selling_price
-                        })
+                        body: formData
                     })
                     .then(response => {
                         if (!response.ok) {
-                            if (response.status === 400) {
+                            if (response.status === 422) {
+                                // Validation error - likely item already exists
                                 return response.json().then(data => {
                                     window.showInfoToast(data.message || 'This item is already in the order');
-                                    throw new Error('Item already in order');
+                                    throw new Error('Item already exists');
                                 });
                             }
                             throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -443,12 +547,63 @@
                         return response.json();
                     })
                     .then(data => {
+                        window.showSuccessToast('Item added successfully');
+                        
+                        // Trigger an event to refresh the order items
+                        // This will be handled by orderItemsManager.init() 
+                        // which sets up listeners for this event
                         document.dispatchEvent(new CustomEvent('order-items-updated'));
                     })
                     .catch(error => {
-                        if (error.message !== 'Item already in order') {
+                        if (error.message !== 'Item already exists') {
                             console.error('Error adding to order:', error);
                             window.showErrorToast('Error adding item to order');
+                        }
+                    })
+                    .finally(() => {
+                        this.isAddingToOrder = false;
+                    });
+                },
+                
+                addFreeItem(product) {
+                    this.isAddingToOrder = true;
+                    
+                    // Create form data for the new free item
+                    const formData = new FormData();
+                    formData.append('product_id', product.id);
+                    formData.append('quantity', 1);
+                    formData.append('unitcost', 0); // Free item
+                    formData.append('is_free', 1);
+                    formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+                    
+                    // Send a direct API request to add the free item
+                    fetch(`/api/orders/${this.orderId}/items`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            if (response.status === 422) {
+                                // Validation error - likely item already exists
+                                return response.json().then(data => {
+                                    window.showInfoToast(data.message || 'This item is already in the order');
+                                    throw new Error('Item already exists');
+                                });
+                            }
+                            throw new Error(`Error ${response.status}: ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        window.showSuccessToast('Free item added successfully');
+                        
+                        // Trigger an event to refresh the order items
+                        document.dispatchEvent(new CustomEvent('order-items-updated'));
+                    })
+                    .catch(error => {
+                        if (error.message !== 'Item already exists') {
+                            console.error('Error adding free item to order:', error);
+                            window.showErrorToast('Error adding free item to order');
                         }
                     })
                     .finally(() => {
@@ -463,6 +618,7 @@
                 orderItems: [],
                 isLoading: true,
                 orderId: orderId,
+                addTaxPercentage: 0,
                 
                 init() {
                     this.fetchOrderItems();
@@ -572,11 +728,20 @@
                 },
                 
                 getSubTotal() {
-                    return this.orderItems.reduce((total, item) => total + parseFloat(item.total), 0);
+                    return this.orderItems.reduce((total, item) => {
+                        return total + (parseFloat(item.unitcost || 0) * parseInt(item.quantity || 0));
+                    }, 0);
                 },
                 
                 getTotal() {
-                    return this.getSubTotal();
+                    const subtotal = this.getSubTotal();
+                    const taxAmount = subtotal * (this.addTaxPercentage / 100);
+                    return subtotal + taxAmount;
+                },
+                
+                getTaxAmount() {
+                    const subtotal = this.getSubTotal();
+                    return subtotal * (this.addTaxPercentage / 100);
                 },
                 
                 formatCurrency(value) {
@@ -584,7 +749,7 @@
                 },
                 
                 getTotalQuantity() {
-                    return this.orderItems.reduce((total, item) => total + parseInt(item.quantity), 0);
+                    return this.orderItems.reduce((total, item) => total + parseInt(item.quantity || 0), 0);
                 }
             };
         }

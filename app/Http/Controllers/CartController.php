@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
@@ -259,19 +258,5 @@ class CartController extends Controller
                 'rowId' => $item->rowId
             ];
         })->toArray();
-    }
-
-    /**
-     * Find item index in cart by UUID
-     */
-    protected function findItemIndexByUuid($cart, $uuid)
-    {
-        foreach ($cart as $index => $item) {
-            if ($item['uuid'] === $uuid) {
-                return $index;
-            }
-        }
-        
-        return false;
     }
 }
