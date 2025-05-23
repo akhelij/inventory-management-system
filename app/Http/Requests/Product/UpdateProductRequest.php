@@ -27,7 +27,7 @@ class UpdateProductRequest extends FormRequest
             'product_image' => 'nullable|image|file|max:2048',
             'name' => 'required|string',
             'code' => [
-                'required',
+                'sometimes',
                 'string',
                 Rule::unique('products', 'code')->ignore(Product::where('uuid', $this->route('uuid'))->first()),
             ],
