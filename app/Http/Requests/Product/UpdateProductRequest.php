@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Product;
 
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,7 +29,7 @@ class UpdateProductRequest extends FormRequest
             'code' => [
                 'required',
                 'string',
-                Rule::unique('products', 'code')->ignore($this->route('product')),
+                Rule::unique('products', 'code')->ignore(Product::where('uuid', $this->route('uuid'))->first()),
             ],
             'category_id' => 'nullable|integer|exists:categories,id',
             'warehouse_id' => 'required|integer|exists:warehouses,id',
