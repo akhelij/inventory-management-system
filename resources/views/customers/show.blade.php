@@ -217,7 +217,19 @@
                                 @foreach($customer->payments as $payment)
                                     <tr style="font-size:12px">
                                         <td>{{$payment->date}}</td>
-                                        <td>{{$payment->nature}}</td>
+                                        <td>
+                                            {{$payment->nature}}
+                                            @if($payment->description)
+                                                <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{$payment->description}}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-info-circle" width="18" height="18" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                                                        <path d="M12 9h.01" />
+                                                        <path d="M11 12h1v4h1" />
+                                                    </svg>
+                                                </a>
+                                            @endif
+                                        </td>
                                         <td>{{$payment->payment_type}}</td>
                                         <td>{{ Number::currency($payment->amount, 'MAD') }}</td>
                                         <td>{{$payment->echeance}}</td>
@@ -322,3 +334,14 @@
         });
     </script>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
+@endpush
