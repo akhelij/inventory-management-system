@@ -30,12 +30,24 @@ class ProductRefill extends Component
         $this->js('
             const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("refillModal"));
             modal.hide();
+            
+            // Remove modal backdrop
+            const modalBackdrops = document.querySelectorAll(".modal-backdrop");
+            modalBackdrops.forEach(backdrop => {
+                backdrop.remove();
+            });
+            
+            // Restore body scrolling
+            document.body.classList.remove("modal-open");
+            document.body.style.overflow = "";
+            document.body.style.paddingRight = "";
+            
             document.getElementById("quantity").value = "'.$this->product->quantity.'";
 
             // Add success message
             const alertHtml = `
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    '.__('Stock has been refilled successfully.').'
+                    '.__('Stock has been refilled successfully').'
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             `;
