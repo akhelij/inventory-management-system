@@ -31,9 +31,15 @@ class ProductRefill extends Component
             const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("refillModal"));
             modal.hide();
             
-            // Remove modal backdrop
-            const modalBackdrops = document.querySelectorAll(".modal-backdrop");
+            // Remove all modal-backdrop fade show elements
+            const modalBackdrops = document.querySelectorAll(".modal-backdrop.fade.show");
             modalBackdrops.forEach(backdrop => {
+                backdrop.remove();
+            });
+            
+            // Also remove any other modal backdrops that might exist
+            const otherBackdrops = document.querySelectorAll(".modal-backdrop");
+            otherBackdrops.forEach(backdrop => {
                 backdrop.remove();
             });
             
