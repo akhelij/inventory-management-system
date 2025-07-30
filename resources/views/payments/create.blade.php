@@ -64,10 +64,11 @@
                                 <label for="date" class="small my-1">
                                     {{ __('Date') }}
                                 </label>
-                                <input name="date" id="date" type="date"
-                                       class="form-control example-date-input @error('date') is-invalid @enderror"
-                                       value="{{ old('date') ?? now()->format('Y-m-d') }}"
+                                <input name="date" id="date" type="text"
+                                       class="form-control datepicker @error('date') is-invalid @enderror"
+                                       value="{{ old('date') ? date('d-m-Y', strtotime(old('date'))) : now()->format('d-m-Y') }}"
                                        required
+                                       autocomplete="off"
                                 >
                             </div>
 
@@ -75,10 +76,11 @@
                                 <label for="echeance" class="small my-1">
                                     {{ __('Echeance') }}
                                 </label>
-                                <input name="echeance" id="echeance" type="date"
-                                       class="form-control example-date-input @error('echeance') is-invalid @enderror"
-                                       value="{{ old('echeance') }}"
+                                <input name="echeance" id="echeance" type="text"
+                                       class="form-control datepicker @error('echeance') is-invalid @enderror"
+                                       value="{{ old('echeance') ? date('d-m-Y', strtotime(old('echeance'))) : '' }}"
                                        required
+                                       autocomplete="off"
                                 >
                             </div>
 
