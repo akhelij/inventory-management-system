@@ -64,11 +64,12 @@
                                 <label for="date" class="small my-1">
                                     {{ __('Date') }}
                                 </label>
-                                <input name="date" id="date" type="date"
-                                    class="form-control datepicker @error('date') is-invalid @enderror"
-                                    value="{{ old('date') ? date('Y-m-d', strtotime(old('date'))) : now()->format('Y-m-d') }}"
-                                    required
-                                    autocomplete="off"
+                                <input name="date" id="date" type="text"
+                                       class="form-control datepicker @error('date') is-invalid @enderror"
+                                       value="{{ old('date') ?: now()->format('d/m/Y') }}"
+                                       placeholder="dd/mm/yyyy"
+                                       required
+                                       autocomplete="off"
                                 >
                             </div>
 
@@ -76,11 +77,12 @@
                                 <label for="echeance" class="small my-1">
                                     {{ __('Echeance') }}
                                 </label>
-                                <input name="echeance" id="echeance" type="date"
-                                    class="form-control datepicker @error('echeance') is-invalid @enderror"
-                                    value="{{ old('echeance') ? date('Y-m-d', strtotime(old('echeance'))) : '' }}"
-                                    required
-                                    autocomplete="off"
+                                <input name="echeance" id="echeance" type="text"
+                                       class="form-control datepicker @error('echeance') is-invalid @enderror"
+                                       value="{{ old('echeance') ?: '' }}"
+                                       placeholder="dd/mm/yyyy"
+                                       required
+                                       autocomplete="off"
                                 >
                             </div>
 
@@ -124,4 +126,60 @@
             </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInputs = document.querySelectorAll('.datepicker');
+        
+        dateInputs.forEach(function(input) {
+            // Format input as user types
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                
+                if (value.length >= 2) {
+                    value = value.substring(0,2) + '/' + value.substring(2);
+                }
+                if (value.length >= 5) {
+                    value = value.substring(0,5) + '/' + value.substring(5,9);
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Validate date format and actual date
+            input.addEventListener('blur', function(e) {
+                const dateValue = e.target.value;
+                if (dateValue) {
+                    const dateRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+                    const match = dateValue.match(dateRegex);
+                    
+                    if (!match) {
+                        e.target.setCustomValidity('Please enter date in dd/mm/yyyy format');
+                        return;
+                    }
+                    
+                    const day = parseInt(match[1]);
+                    const month = parseInt(match[2]);
+                    const year = parseInt(match[3]);
+                    
+                    // Validate actual date
+                    const date = new Date(year, month - 1, day);
+                    if (date.getFullYear() !== year || 
+                        date.getMonth() !== month - 1 || 
+                        date.getDate() !== day) {
+                        e.target.setCustomValidity('Please enter a valid date');
+                        return;
+                    }
+                    
+                    e.target.setCustomValidity('');
+                }
+            });
+            
+            // Clear validation message when user starts typing
+            input.addEventListener('input', function(e) {
+                e.target.setCustomValidity('');
+            });
+        });
+    });
+    </script>
 @endsection

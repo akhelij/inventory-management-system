@@ -26,7 +26,7 @@ class PaymentController extends Controller
     public function store(Request $request, Customer $customer)
     {
         $request->validate([
-            'date' => 'required|date',
+            'date' => 'required|date_format:d/m/Y',
             'bank' => 'string|nullable',
             'payment_type' => 'required|string|in:HandCash,Cheque,Exchange',
             'nature' => [
@@ -34,12 +34,19 @@ class PaymentController extends Controller
                 'string',
                 $request->payment_type != 'HandCash' ? 'unique:payments,nature' : '',
             ],
-            'echeance' => 'required|date',
+            'echeance' => 'required|date_format:d/m/Y',
             'amount' => 'required|numeric',
             'description' => 'nullable|string|max:1000',
         ]);
 
-        Payment::create($request->all());
+        // Get all request data
+        $data = $request->all();
+        
+        // Convert dates from d/m/Y to Y-m-d for database storage
+        $data['date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
+        $data['echeance'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->echeance)->format('Y-m-d');
+
+        Payment::create($data);
 
         return redirect()->route('customers.show', $customer->uuid);
     }
