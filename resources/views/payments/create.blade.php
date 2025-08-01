@@ -64,11 +64,11 @@
                                 <label for="date" class="small my-1">
                                     {{ __('Date') }}
                                 </label>
-                                <input name="date" id="date" type="text"
-                                       class="form-control datepicker @error('date') is-invalid @enderror"
-                                       value="{{ old('date') ? date('d-m-Y', strtotime(old('date'))) : now()->format('d-m-Y') }}"
-                                       required
-                                       autocomplete="off"
+                                <input name="date" id="date" type="date"
+                                    class="form-control datepicker @error('date') is-invalid @enderror"
+                                    value="{{ old('date') ? date('Y-m-d', strtotime(old('date'))) : now()->format('Y-m-d') }}"
+                                    required
+                                    autocomplete="off"
                                 >
                             </div>
 
@@ -76,15 +76,13 @@
                                 <label for="echeance" class="small my-1">
                                     {{ __('Echeance') }}
                                 </label>
-                                <input name="echeance" id="echeance" type="text"
-                                       class="form-control datepicker @error('echeance') is-invalid @enderror"
-                                       value="{{ old('echeance') ? date('d-m-Y', strtotime(old('echeance'))) : '' }}"
-                                       required
-                                       autocomplete="off"
+                                <input name="echeance" id="echeance" type="date"
+                                    class="form-control datepicker @error('echeance') is-invalid @enderror"
+                                    value="{{ old('echeance') ? date('Y-m-d', strtotime(old('echeance'))) : '' }}"
+                                    required
+                                    autocomplete="off"
                                 >
                             </div>
-
-
 
                             <div class="col-md-6">
                                 <label class="small mb-1" for="customer_id">
