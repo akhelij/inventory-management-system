@@ -121,8 +121,19 @@
                 </div>
             @endif
 
+            <a href="{{ route('customers.export-pending-payments', $customer->uuid) }}" class="btn btn-success">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-spreadsheet" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                    <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
+                    <path d="M8 11h8v7h-8z"/>
+                    <path d="M8 15h8"/>
+                    <path d="M11 11v7"/>
+                </svg>
+                {{ __('Export Excel') }}
+            </a>
             <div class="row" style="margin-left:-20px; margin-top:1%">
-                <div class="col-4">
+                <div class="col-3">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
@@ -131,8 +142,8 @@
                             <div class="card-actions">
                                 <x-status dot
                                           color="green"
-                                          class="btn">
-                                    {{ __('Purchases amount') }}: {{ $totalOrders }} MAD
+                                          class="btn btn-sm">
+                                    {{ $totalOrders }} MAD
                                 </x-status>
                             </div>
                         </div>
@@ -172,7 +183,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-8">
+                <div class="col-9">
                     <div class="card">
                         <div class="card-header">
                             <div>
@@ -184,21 +195,21 @@
                             <div class="card-actions">
                                 <x-status dot
                                           color="green"
-                                          class="btn">
-                                    {{ __('Total Payments') }}: {{ $totalPayments }} MAD
+                                          class="btn btn-sm">
+                                    <small>{{ __('Paid') }}:</small> {{ $totalPayments }}
                                 </x-status>
                                 <x-status dot
                                           color="orange"
-                                          class="btn">
-                                    {{ __('Total Pending') }}: {{ $amountPendingPayments }} MAD
+                                          class="btn btn-sm">
+                                    <small>{{ __('Pending') }}:</small> {{ $amountPendingPayments }}
                                 </x-status>
                                 <x-status dot
                                           color="red"
-                                          class="btn">
-                                    {{ __('Due') }}: {{ $due }} MAD
+                                          class="btn btn-sm">
+                                    <small>{{ __('Due') }}:</small> {{ $due }}
                                 </x-status>
-                                <a href="{{ route('customers.export-pending-payments', $customer->uuid) }}" class="btn btn-success">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-file-spreadsheet" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <a href="{{ route('customers.export-pending-payments', $customer->uuid) }}" class="btn btn-sm btn-success" title="{{ __('Export Excel') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                                         <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
                                         <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
@@ -206,9 +217,14 @@
                                         <path d="M8 15h8"/>
                                         <path d="M11 11v7"/>
                                     </svg>
-                                    {{ __('Export Excel') }}
                                 </a>
-                                <x-action.create route="{{ '/payments/'.$customer->id.'/create'}}"/>
+                                <a href="{{ '/payments/'.$customer->id.'/create'}}" class="btn btn-sm btn-primary" title="{{ __('Add Payment') }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                        <path d="M12 5l0 14"/>
+                                        <path d="M5 12l14 0"/>
+                                    </svg>
+                                </a>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -245,58 +261,71 @@
                                         <td>{{$payment->payment_type}}</td>
                                         <td>{{ Number::currency($payment->amount, 'MAD') }}</td>
                                         <td>{{$payment->echeance}}</td>
-                                        <td>{{$payment->description}}</td>
                                         <td>
                                             <div class="row">
                                                 @if($payment->reported)
                                                     <x-status dot
                                                               color="red"
-                                                              class="btn">
-                                                        {{ __('Reported') }}
+                                                              class="btn btn-sm">
+                                                        <small>{{ __('Reported') }}</small>
                                                     </x-status>
                                                 @elseif($payment->cashed_in)
                                                     <x-status dot
                                                               color="green"
-                                                              class="btn">
-                                                        {{ __('Cashed In') }}
+                                                              class="btn btn-sm">
+                                                        <small>{{ __('Cashed In') }}</small>
                                                     </x-status>
                                                 @else
                                                     <x-status dot
                                                               color="orange"
-                                                              class="btn">
-                                                        {{ __('Pending') }}
+                                                              class="btn btn-sm">
+                                                        <small>{{ __('Pending') }}</small>
                                                     </x-status>
                                                 @endif
                                             </div>
                                         </td>
+                                        <td>{{$payment->description}}</td>
                                         <td>
                                             <div class="row">
                                                 @if(!$payment->reported && !$payment->cashed_in)
-                                                    <form class="reportForm col-4"
+                                                    <form class="reportForm"
                                                           action="{{ '/payments/' . $payment->id . '/report'}}"
-                                                          method="POST">
+                                                          method="POST"
+                                                          style="display: inline-block;">
                                                         @csrf
-                                                        <button class="reportButton btn btn-sm btn-warning"
-                                                                type="submit">Reporté
+                                                        <button class="reportButton btn btn-sm btn-icon btn-warning"
+                                                                type="submit" title="Reporté">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                <path d="M12 21a9 9 0 0 0 0 -18c-4 0 -7.5 1.5 -9 4.5v-2.5h-3v8h8v-3h-2.5c1.5 -2.5 4 -4 6.5 -4a6 6 0 0 1 6 6m0 -3v6"/>
+                                                            </svg>
                                                         </button>
                                                     </form>
                                                 @endif
                                                 @if(!$payment->cashed_in)
-                                                    <form class="col-3"
-                                                          action="{{ '/payments/' . $payment->id . '/cash-in'}}"
-                                                          method="POST">
+                                                    <form action="{{ '/payments/' . $payment->id . '/cash-in'}}"
+                                                          method="POST"
+                                                          style="display: inline-block;">
                                                         @csrf
-                                                        <button type="submit" class="btn btn-sm btn-primary">Encaissé
+                                                        <button type="submit" class="btn btn-sm btn-icon btn-primary" title="Encaissé">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                <path d="M5 12l5 5l10 -10"/>
+                                                            </svg>
                                                         </button>
                                                     </form>
 
-                                                    <form class="col-3"
-                                                          action="{{ '/payments/' . $payment->id}}"
+                                                    <form action="{{ '/payments/' . $payment->id}}"
                                                           method="POST"
-                                                          style="margin-left: 2px;">
+                                                          style="display: inline-block; margin-left: 2px;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-danger">X
+                                                        <button type="submit" class="btn btn-sm btn-icon btn-danger" title="{{ __('Delete') }}">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                                <path d="M18 6l-12 12"/>
+                                                                <path d="M6 6l12 12"/>
+                                                            </svg>
                                                         </button>
                                                     </form>
                                                 @endif
