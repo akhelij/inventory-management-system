@@ -196,28 +196,18 @@
                                 <x-status dot
                                           color="green"
                                           class="btn btn-sm">
-                                    <small>{{ __('Paid') }}:</small> {{ $totalPayments }}
+                                    <small>{{ __('Paid') }}:</small> {{ $totalPayments }} MAD
                                 </x-status>
                                 <x-status dot
                                           color="orange"
                                           class="btn btn-sm">
-                                    <small>{{ __('Pending') }}:</small> {{ $amountPendingPayments }}
+                                    <small>{{ __('Pending') }}:</small> {{ $amountPendingPayments }} MAD
                                 </x-status>
                                 <x-status dot
                                           color="red"
                                           class="btn btn-sm">
-                                    <small>{{ __('Due') }}:</small> {{ $due }}
+                                    <small>{{ __('Due') }}:</small> {{ $due }} MAD
                                 </x-status>
-                                <a href="{{ route('customers.export-pending-payments', $customer->uuid) }}" class="btn btn-sm btn-success" title="{{ __('Export Excel') }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
-                                        <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
-                                        <path d="M8 11h8v7h-8z"/>
-                                        <path d="M8 15h8"/>
-                                        <path d="M11 11v7"/>
-                                    </svg>
-                                </a>
                                 <a href="{{ '/payments/'.$customer->id.'/create'}}" class="btn btn-sm btn-primary" title="{{ __('Add Payment') }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -286,12 +276,11 @@
                                         </td>
                                         <td>{{$payment->description}}</td>
                                         <td>
-                                            <div class="row">
+                                            <div class="d-flex align-items-center gap-1">
                                                 @if(!$payment->reported && !$payment->cashed_in)
                                                     <form class="reportForm"
                                                           action="{{ '/payments/' . $payment->id . '/report'}}"
-                                                          method="POST"
-                                                          style="display: inline-block;">
+                                                          method="POST">
                                                         @csrf
                                                         <button class="reportButton btn btn-sm btn-icon btn-warning"
                                                                 type="submit" title="Reporté">
@@ -304,8 +293,7 @@
                                                 @endif
                                                 @if(!$payment->cashed_in)
                                                     <form action="{{ '/payments/' . $payment->id . '/cash-in'}}"
-                                                          method="POST"
-                                                          style="display: inline-block;">
+                                                          method="POST">
                                                         @csrf
                                                         <button type="submit" class="btn btn-sm btn-icon btn-primary" title="Encaissé">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -316,8 +304,7 @@
                                                     </form>
 
                                                     <form action="{{ '/payments/' . $payment->id}}"
-                                                          method="POST"
-                                                          style="display: inline-block; margin-left: 2px;">
+                                                          method="POST">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit" class="btn btn-sm btn-icon btn-danger" title="{{ __('Delete') }}">
@@ -330,7 +317,7 @@
                                                     </form>
                                                 @endif
                                                 @if($payment->cashed_in)
-                                                    --
+                                                    <span class="text-muted">--</span>
                                                 @endif
                                             </div>
                                         </td>
