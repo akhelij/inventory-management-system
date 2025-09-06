@@ -31,8 +31,8 @@
         }
 
         .invoice-content {
-            padding: 2cm 1.5cm 2.5cm 1.5cm; /* Moderate bottom padding for footer */
-            min-height: calc(100% - 4.5cm);
+            padding: 2cm 1.5cm 3cm 1.5cm; /* Increased bottom padding to prevent overlap */
+            min-height: calc(100% - 5cm);
         }
 
         /* Header with logo */
@@ -114,6 +114,7 @@
             width: 100%;
             border-collapse: collapse;
             margin: 30px 0;
+            margin-bottom: 50px; /* Extra space before footer */
             page-break-inside: auto;
         }
         
@@ -173,7 +174,8 @@
             background: white;
             font-size: 11px;
             color: #666;
-            height: 2cm;
+            height: 2.5cm;
+            z-index: 1000;
         }
 
         .footer-text {
