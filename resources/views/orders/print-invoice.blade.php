@@ -17,184 +17,310 @@
         body {
             margin: 0;
             padding: 0;
-            background: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+            font-size: 14px;
+            color: #333;
         }
 
-        .invoice-16 {
-            padding: 0;
-            background: white;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-        }
-
-        .invoice-16 .invoice-inner-9 {
+        .invoice-container {
             width: 21cm;
             min-height: 29.7cm;
-            position: relative;
-            padding: 1.5cm 1cm;
-            margin: 0;
+            margin: 0 auto;
             background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
-        .invoice-16 .invoice-top {
-            padding: 0 30px 20px;
+        .invoice-content {
+            flex: 1;
+            padding: 2cm 1.5cm 1cm 1.5cm;
+            padding-bottom: 3cm; /* Space for footer */
         }
 
-        .invoice-16 .invoice-info {
-            padding: 0 30px 20px;
+        /* Header with logo */
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        .invoice-16 .order-summary {
-            padding: 0 30px;
+        .logo-container {
+            margin-bottom: 10px;
         }
 
-        .invoice-16 .default-table {
-            margin-bottom: 50px;
+        .logo-container img {
+            height: 80px;
+            width: auto;
         }
 
-        .invoice-16 .default-table td,
-        .invoice-16 .default-table th {
-            border: 1px solid #ECEDF2;
+        .company-name {
+            color: #003366;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 5px 0;
         }
 
-        .invoice-16 .default-table thead th {
-            background: #F5F7FC;
-            color: #910706;
-            font-weight: 500;
+        .company-name .electro {
+            color: #cc0000;
+        }
+
+        /* Company and client info */
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 40px 0;
+        }
+
+        .company-info, .client-info {
+            flex: 1;
+        }
+
+        .company-info {
             text-align: left;
-            padding: 15px;
         }
 
-        .invoice-16 .default-table tbody td {
-            padding: 15px;
+        .client-info {
+            text-align: right;
         }
 
-        .invoice-16 .invoice-information-footer {
+        .info-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .info-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* Invoice details */
+        .invoice-details {
+            margin: 30px 0;
+        }
+
+        .invoice-number {
+            color: #cc0000;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .invoice-date {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        /* Table styles */
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            page-break-inside: auto;
+        }
+
+        .invoice-table thead {
+            background-color: #f8f8f8;
+            border-bottom: 2px solid #cc0000;
+        }
+
+        .invoice-table th {
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+            color: #cc0000;
+        }
+
+        .invoice-table tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            page-break-inside: avoid;
+        }
+
+        .invoice-table td {
+            padding: 12px;
+            font-size: 13px;
+            vertical-align: top;
+        }
+
+        .text-center {
+            text-align: center !important;
+        }
+
+        .text-right {
+            text-align: right !important;
+        }
+
+        /* Total row */
+        .total-row {
+            border-top: 2px solid #cc0000;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .total-row td {
+            padding: 15px 12px;
+        }
+
+        /* Footer */
+        .invoice-footer {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            border-top: 1px solid #ECEDF2;
+            padding: 20px;
             text-align: center;
+            border-top: 2px solid #e0e0e0;
+            background: white;
+            font-size: 12px;
+            color: #666;
         }
 
+        .footer-text {
+            line-height: 1.6;
+        }
+
+        /* Page number */
+        .page-info {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 11px;
+            color: #999;
+        }
+
+        /* Prevent overlap */
         @media print {
             body {
                 background: white;
             }
 
-            .invoice-16 {
-                padding: 0;
-                height: 100%;
+            .invoice-table tbody tr {
+                page-break-inside: avoid;
             }
 
-            .invoice-16 .invoice-inner-9 {
-                box-shadow: none;
+            .invoice-content {
+                min-height: calc(29.7cm - 3cm); /* Account for footer height */
             }
+        }
 
-            .invoice-btn-section {
-                display: none;
-            }
+        /* Gift badge */
+        .badge-gift {
+            background-color: #28a745;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 5px;
         }
     </style>
 </head>
 <body>
-<div class="invoice-16 invoice-content">
-    <div class="invoice-inner-9">
-        <div class="invoice-top">
-            <div class="row">
-                <div class="logo" style="display: flex; justify-content: center; align-items: center; margin-bottom: 40px">
-                    <img src="{{ asset('logo.jpeg') }}" alt="logo" style="height:100px;">
+<div class="invoice-container">
+    <div class="invoice-content">
+        <!-- Header with Logo -->
+        <div class="header-section">
+            <div class="logo-container">
+                <img src="{{ asset('logo.jpeg') }}" alt="Platinium Electro Logo">
+            </div>
+            <div class="company-name">
+                PLATINIUM <span class="electro">ELECTRO</span>
+            </div>
+        </div>
+
+        <!-- Company and Client Information -->
+        <div class="info-section">
+            <div class="company-info">
+                <div class="info-title">STE PLATINIUM ELECTRO</div>
+                <div class="info-text">
+                    AVENUE ATLAS TAHLA<br>
+                    TAHLA<br>
+                    Maroc
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-9">
-                    <h4 class="inv-title-1">STE PLATINIUM ELECTRO</h4>
-                    <p class="inv-from-1">AVENUE ATLAS TAHLA <br/>TAHLA<br/>Maroc</p>
-                </div>
-                <div class="col-sm-3">
-                    <h4 class="inv-title-1">Vendeur :</h4>
-                    <p class="inv-from-1">{{ $order->user->name }}</p>
+            <div class="client-info">
+                <div class="info-title">Vendeur :</div>
+                <div class="info-text">{{ $order->user->name }}</div>
+            </div>
+        </div>
+
+        <!-- Invoice Details -->
+        <div class="invoice-details">
+            <div class="invoice-number">FACTURE : {{ $order->invoice_no }}</div>
+            <div class="invoice-date">
+                <strong>Date de facture :</strong> {{ $order->order_date->format('d M Y') }}
+            </div>
+        </div>
+
+        <!-- Client Information -->
+        <div class="info-section">
+            <div class="company-info">
+                <!-- Empty for alignment -->
+            </div>
+            <div class="client-info">
+                <div class="info-title">Client :</div>
+                <div class="info-text">
+                    {{ $order->customer->name }}<br>
+                    @if($order->customer->phone)
+                        {{ $order->customer->phone }}<br>
+                    @endif
+                    @if($order->customer->email)
+                        {{ $order->customer->email }}<br>
+                    @endif
+                    @if($order->customer->address)
+                        {{ $order->customer->address }}
+                    @endif
                 </div>
             </div>
         </div>
-        <div class="invoice-info">
-            <div class="row">
-                <div class="col-sm-9">
-                    <div class="invoice">
-                        <h4 style="color:#910706">
-                            FACTURE : <span>{{ $order->invoice_no }}</span>
-                        </h4>
-                    </div>
-                    <div class="invoice-number">
-                        <h4 class="inv-title-1">Date de facture :</h4>
-                        <p class="invo-addr-1">{{ $order->order_date->format('d M Y') }}</p>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <h4 class="inv-title-1">Client :</h4>
-                    <p class="inv-from-1">{{ $order->customer->name }}</p>
-                    <p class="inv-from-1">{{ $order->customer->phone }}</p>
-                    <p class="inv-from-1">{{ $order->customer->email }}</p>
-                    <p class="inv-from-2">{{ $order->customer->address }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="order-summary">
-            <div class="table-outer">
-                <table class="default-table invoice-table">
-                    <thead>
+
+        <!-- Products Table -->
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th style="width: 50%">Description</th>
+                    <th class="text-center" style="width: 15%">Quantité</th>
+                    <th class="text-right" style="width: 17.5%">Prix unitaire</th>
+                    <th class="text-right" style="width: 17.5%">Prix total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($order->details as $item)
                     <tr>
-                        <th style="width: 40%">Description</th>
-                        <th class="text-center" style="width: 20%">Quantité</th>
-                        <th class="text-center" style="width: 20%">Prix unitaire</th>
-                        <th class="text-center" style="width: 20%">Prix total</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach ($order->details as $item)
-                        <tr>
-                            <td>
-                                {{ $item->product->name }}
-                                @if($item->unitcost == 0)
-                                    <span class="badge bg-success" style="font-size: 10px; padding: 3px 5px;">Gift</span>
-                                @endif
-                            </td>
-                            <td class="text-center">{{ $item->quantity }}</td>
-                            <td class="text-center">{{ Number::currency($item->unitcost, 'MAD') }}</td>
-                            <td class="text-center">{{ Number::currency($item->total, 'MAD') }}</td>
-                        </tr>
-                    @endforeach
-{{--                    <tr>--}}
-{{--                        <td colspan="3" class="text-end"><strong>Total HT</strong></td>--}}
-{{--                        <td class="text-center">--}}
-{{--                            <strong>{{ Number::currency($order->sub_total, 'MAD') }}</strong>--}}
-{{--                        </td>--}}
-{{--                    </tr>--}}
-{{--                    <tr>--}}
-{{--                        <td colspan="3" class="text-end"><strong>Tax</strong></td>--}}
-{{--                        <td class="text-center">--}}
-{{--                            <strong>{{ Number::currency($order->vat, 'MAD') }}</strong>--}}
-{{--                        </td>--}}
-{{--                    </tr>--}}
-                    <tr>
-                        <td colspan="3" class="text-end"><strong>Total</strong></td>
-                        <td class="text-center">
-                            <strong>{{ Number::currency($order->total, 'MAD') }}</strong>
+                        <td>
+                            {{ $item->product->name }}
+                            @if($item->unitcost == 0)
+                                <span class="badge-gift">Gift</span>
+                            @endif
                         </td>
+                        <td class="text-center">{{ $item->quantity }}</td>
+                        <td class="text-right">{{ Number::currency($item->unitcost, 'MAD') }}</td>
+                        <td class="text-right">{{ Number::currency($item->total, 'MAD') }}</td>
                     </tr>
-                    </tbody>
-                </table>
-            </div>
+                @endforeach
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="3" class="text-right">Total</td>
+                    <td class="text-right">{{ Number::currency($order->total, 'MAD') }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- Footer -->
+    <div class="invoice-footer">
+        <div class="footer-text">
+            AVENUE ATLAS TAHLA - MAROC<br>
+            Tél: +212 697-940615<br>
+            ICE: 003299107000084 | IF: 53784335
         </div>
-        <div class="invoice-information-footer">
-            <p class="inv-from-1">
-                AVENUE ATLAS TAHLA - MAROC<br/>
-                Tél: +212 697-940615<br/>
-                ICE: 003299107000084 | IF: 53784335
-            </p>
-        </div>
+    </div>
+
+    <!-- Page Number -->
+    <div class="page-info">
+        1 of 1
     </div>
 </div>
 <script>
