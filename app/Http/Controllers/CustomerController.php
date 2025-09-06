@@ -133,4 +133,14 @@ class CustomerController extends Controller
             'payments' => $customer->payments,
         ]);
     }
+
+    public function exportPendingPayments($uuid)
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
+        
+        $customer = Customer::where('uuid', $uuid)->with('payments')->firstOrFail();
+        
+        $export = new \App\Exports\PendingPaymentsExport($customer);
+        return $export->export();
+    }
 }

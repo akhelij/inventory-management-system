@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('/quotations', QuotationController::class);
     Route::resource('/customers', CustomerController::class);
+    Route::get('/customers/{customer}/export-pending-payments', [CustomerController::class, 'exportPendingPayments'])->name('customers.export-pending-payments');
     Route::resource('/suppliers', SupplierController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/warehouses', WarehouseController::class);
