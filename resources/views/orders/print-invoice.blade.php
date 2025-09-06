@@ -11,7 +11,7 @@
     <style>
         @page {
             size: A4;
-            margin: 0;
+            margin: 0 0 2cm 0; /* Add bottom margin for footer */
         }
 
         body {
@@ -24,18 +24,15 @@
 
         .invoice-container {
             width: 21cm;
-            min-height: 29.7cm;
+            min-height: 27.7cm; /* Reduced to account for footer space */
             margin: 0 auto;
             background: white;
             position: relative;
-            display: flex;
-            flex-direction: column;
         }
 
         .invoice-content {
-            flex: 1;
-            padding: 2cm 1.5cm 1cm 1.5cm;
-            padding-bottom: 3cm; /* Space for footer */
+            padding: 2cm 1.5cm 4cm 1.5cm; /* Increased bottom padding for footer */
+            min-height: calc(100% - 6cm);
         }
 
         /* Header with logo */
@@ -119,6 +116,7 @@
             margin: 30px 0;
             page-break-inside: auto;
         }
+        
 
         .invoice-table thead {
             background-color: #f8f8f8;
@@ -165,11 +163,11 @@
 
         /* Footer */
         .invoice-footer {
-            position: absolute;
+            position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
             border-top: 2px solid #e0e0e0;
             background: white;
@@ -183,9 +181,7 @@
 
         /* Page number */
         .page-info {
-            position: absolute;
-            bottom: 10px;
-            right: 20px;
+            margin-top: 5px;
             font-size: 11px;
             color: #999;
         }
@@ -198,10 +194,6 @@
 
             .invoice-table tbody tr {
                 page-break-inside: avoid;
-            }
-
-            .invoice-content {
-                min-height: calc(29.7cm - 3cm); /* Account for footer height */
             }
         }
 
@@ -308,19 +300,17 @@
             </tfoot>
         </table>
     </div>
-
-    <!-- Footer -->
+    
+    <!-- Footer - Fixed at bottom -->
     <div class="invoice-footer">
         <div class="footer-text">
             AVENUE ATLAS TAHLA - MAROC<br>
             Tél: +212 697-940615<br>
             ICE: 003299107000084 | IF: 53784335
         </div>
-    </div>
-
-    <!-- Page Number -->
-    <div class="page-info">
-        1 of 1
+        <div class="page-info">
+            Page 1 of 1
+        </div>
     </div>
 </div>
 <script>
