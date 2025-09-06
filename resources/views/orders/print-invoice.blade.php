@@ -11,7 +11,7 @@
     <style>
         @page {
             size: A4;
-            margin: 0 0 2cm 0; /* Add bottom margin for footer */
+            margin: 0;
         }
 
         body {
@@ -24,15 +24,15 @@
 
         .invoice-container {
             width: 21cm;
-            min-height: 27.7cm; /* Reduced to account for footer space */
+            min-height: 29.7cm;
             margin: 0 auto;
             background: white;
             position: relative;
         }
 
         .invoice-content {
-            padding: 2cm 1.5cm 4cm 1.5cm; /* Increased bottom padding for footer */
-            min-height: calc(100% - 6cm);
+            padding: 2cm 1.5cm 2.5cm 1.5cm; /* Moderate bottom padding for footer */
+            min-height: calc(100% - 4.5cm);
         }
 
         /* Header with logo */
@@ -167,12 +167,13 @@
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 15px;
+            padding: 10px 15px;
             text-align: center;
-            border-top: 2px solid #e0e0e0;
+            border-top: 1px solid #e0e0e0;
             background: white;
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
+            height: 2cm;
         }
 
         .footer-text {
@@ -181,8 +182,8 @@
 
         /* Page number */
         .page-info {
-            margin-top: 5px;
-            font-size: 11px;
+            margin-top: 3px;
+            font-size: 10px;
             color: #999;
         }
 
