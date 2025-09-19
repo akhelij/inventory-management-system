@@ -24,6 +24,11 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\RepairController;
+use App\Http\Controllers\SectionController;
+use App\Http\Controllers\ProgressController;
+use App\Models\Order;
+use App\Models\OrderDetails;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +94,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/orders/update/{order}', [OrderController::class, 'update'])->name('orders.update');
     Route::get('/orders/update_status/{order}/{order_status}', [OrderController::class, 'updateStatus']);
     Route::post('/orders/update_status/{order}/{order_status}', [OrderController::class, 'updateStatus']);
+    Route::post('/orders/recalculate-totals', [OrderController::class, 'recalculateTotals'])->name('orders.recalculate-totals');
     Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     // DUES
@@ -174,6 +180,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/', function () {
+    return redirect('/login');
+});
+
 
 Route::get('test/', function () {
     return view('test');

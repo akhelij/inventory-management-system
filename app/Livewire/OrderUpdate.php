@@ -19,6 +19,7 @@ class OrderUpdate extends Component
     public function delete($id)
     {
         OrderDetails::where('id', $id)->delete();
+        $this->updateOrder(); // Immediately recalculate totals after deletion
     }
 
     public function updateQuantity($product_id, $quantity)
@@ -28,6 +29,7 @@ class OrderUpdate extends Component
             'quantity' => $quantity,
             'total' => $quantity * $order_details->unitcost,
         ]);
+        $this->updateOrder(); // Immediately recalculate totals after quantity update
     }
 
     public function updateOrder()
@@ -40,12 +42,15 @@ class OrderUpdate extends Component
             $total += $item->total;
         }
 
+        // Calculate due amount considering existing payments
+        $due = $total - ($order->pay ?? 0);
+
         $order->update([
             'total_products' => $details->count(),
             'sub_total' => $total,
             'vat' => 0,
             'total' => $total,
-            'due' => $total,
+            'due' => $due,
         ]);
 
         return $order;

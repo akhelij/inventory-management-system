@@ -211,12 +211,15 @@ class OrderItemController extends Controller
             $total += $item->total;
         }
         
+        // Calculate due amount considering existing payments
+        $due = $total - ($order->pay ?? 0);
+        
         $order->update([
             'total_products' => $details->count(),
             'sub_total' => $total,
             'vat' => 0,
             'total' => $total,
-            'due' => $total,
+            'due' => $due,
         ]);
         
         return $order;

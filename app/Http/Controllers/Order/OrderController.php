@@ -293,4 +293,66 @@ class OrderController extends Controller
             'orders' => $orders,
         ]);
     }
+
+    public function recalculateTotals(Request $request)
+    {
+        abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
+        
+        try {
+            $orderIds = $request->input('order_ids', []);
+            
+            if (empty($orderIds)) {
+                // If no specific orders provided, recalculate all
+                $orders = Order::all();
+            } else {
+                $orders = Order::whereIn('id', $orderIds)->get();
+            }
+            
+            $updatedCount = 0;
+            $results = [];
+            
+            foreach ($orders as $order) {
+                $oldTotal = $order->total;
+                
+                // Get all order details
+                $details = OrderDetails::where('order_id', $order->id)->get();
+                
+                // Calculate new total
+                $newTotal = 0;
+                foreach ($details as $item) {
+                    $newTotal += $item->total;
+                }
+                
+                // Calculate due amount considering existing payments
+                $due = $newTotal - ($order->pay ?? 0);
+                
+                // Update order
+                $order->update([
+                    'total_products' => $details->count(),
+                    'sub_total' => $newTotal,
+                    'vat' => 0,
+                    'total' => $newTotal,
+                    'due' => $due,
+                ]);
+                
+                if ($oldTotal != $newTotal) {
+                    $updatedCount++;
+                    $results[] = "Order #{$order->id} (Invoice: {$order->invoice_no}): Total updated from {$oldTotal} to {$newTotal}";
+                }
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Order totals recalculated successfully',
+                'orders_updated' => $updatedCount,
+                'total_orders' => $orders->count(),
+                'details' => $results
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error recalculating totals: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
