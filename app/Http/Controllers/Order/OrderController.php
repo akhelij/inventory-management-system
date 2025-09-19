@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Order;
 
 use App\Enums\OrderStatus;
 use App\Enums\PermissionEnum;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderStoreRequest;
+use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderDetails;
@@ -185,10 +185,19 @@ class OrderController extends Controller
             ->with('success', 'Order status has been updated!');
     }
 
-    public function update(Order $order)
+    public function update(Request $request, Order $order)
     {
         abort_if($order->order_status != null, 403, 'Only pending orders can be updated');
         abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
+
+        // Validate the request data
+        $validated = $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'purchase_date' => 'required|date',
+            'payment_type' => 'required|in:HandCash,Cheque,Exchange',
+            'author_id' => 'nullable|exists:users,id',
+            'tagged_user_id' => 'nullable|exists:users,id',
+        ]);
 
         $details = OrderDetails::where('order_id', $order->id)->get();
         
@@ -205,17 +214,32 @@ class OrderController extends Controller
             $total += $item->total;
         }
 
-        $order->update([
+        // Update order with both form data and calculated totals
+        $updateData = [
+            'customer_id' => $validated['customer_id'],
+            'purchase_date' => $validated['purchase_date'],
+            'payment_type' => $validated['payment_type'],
             'total_products' => $details->count(),
             'sub_total' => $total,
             'vat' => 0,
             'total' => $total,
             'due' => $total,
-        ]);
+        ];
+
+        // Add optional fields if provided
+        if (isset($validated['author_id'])) {
+            $updateData['user_id'] = $validated['author_id'];
+        }
+        
+        if (isset($validated['tagged_user_id'])) {
+            $updateData['tagged_user_id'] = $validated['tagged_user_id'];
+        }
+
+        $order->update($updateData);
 
         return redirect()
             ->route('orders.index')
-            ->with('success', 'Order has been completed!');
+            ->with('success', 'Order has been updated successfully!');
     }
 
     public function destroy($uuid)

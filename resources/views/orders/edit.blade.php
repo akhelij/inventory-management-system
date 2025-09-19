@@ -199,18 +199,21 @@
                             </div>
                         </div>
                         <div class="card-body d-flex flex-column flex-grow-1" style="overflow-y: auto;">
-                            <div class="row gx-3 mb-3">
-                                <div class="col-md-4">
-                                    <label for="purchase_date" class="small my-1">
-                                        {{ __('Date') }}
-                                        <span class="text-danger">*</span>
-                                    </label>
+                            <form method="POST" action="{{ route('orders.update', $order) }}" id="orderUpdateForm">
+                                @csrf
+                                @method('PUT')
+                                <div class="row gx-3 mb-3">
+                                    <div class="col-md-4">
+                                        <label for="purchase_date" class="small my-1">
+                                            {{ __('Date') }}
+                                            <span class="text-danger">*</span>
+                                        </label>
 
-                                    <input name="purchase_date" id="purchase_date" type="date"
-                                           class="form-control example-date-input @error('purchase_date') is-invalid @enderror"
-                                           value="{{ old('purchase_date') ?? now()->format('Y-m-d') }}"
-                                           required
-                                    >
+                                        <input name="purchase_date" id="purchase_date" type="date"
+                                               class="form-control example-date-input @error('purchase_date') is-invalid @enderror"
+                                               value="{{ old('purchase_date') ?? $order->purchase_date ?? now()->format('Y-m-d') }}"
+                                               required
+                                        >
 
                                     @error('purchase_date')
                                     <div class="invalid-feedback">
@@ -326,7 +329,7 @@
                                     </div>
                                     @enderror
                                 </div>
-                            </div>
+                            </form>
 
                             <div class="table-responsive flex-grow-1" x-data="orderItemsManager({{ $order->id }})">
                                 <table class="table table-striped table-bordered align-middle">
@@ -411,8 +414,11 @@
 
                         </div>
                         <div class="card-footer text-end">
-                            <a href="{{ route('orders.index') }}" class="btn btn-success mx-1">
-                                <i class="fas fa-check me-1"></i> {{ __('Back to Orders') }}
+                            <button type="submit" form="orderUpdateForm" class="btn btn-primary mx-1">
+                                <i class="fas fa-save me-1"></i> {{ __('Update Order') }}
+                            </button>
+                            <a href="{{ route('orders.index') }}" class="btn btn-secondary mx-1">
+                                <i class="fas fa-arrow-left me-1"></i> {{ __('Back to Orders') }}
                             </a>
                         </div>
                     </div>
