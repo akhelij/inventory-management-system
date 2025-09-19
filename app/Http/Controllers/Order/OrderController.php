@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
+use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
