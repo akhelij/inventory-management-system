@@ -176,6 +176,18 @@ class OrderController extends Controller
             abort(403, 'Customer is out of limit');
         }
 
+        // Validate stock availability before approving
+        if ($order_status == OrderStatus::APPROVED) {
+            $stockService = app(\App\Services\StockService::class);
+            $stockCheck = $stockService->canApproveOrder($order);
+            
+            if (!$stockCheck['can_approve']) {
+                return redirect()
+                    ->back()
+                    ->with('error', 'Cannot approve order due to insufficient stock: ' . implode(', ', $stockCheck['issues']));
+            }
+        }
+
         $order->update([
             'order_status' => $order_status,
             'reason' => $request->reason,
@@ -250,15 +262,13 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             $order = Order::where('uuid', $uuid)->firstOrFail();
-            if ($order->order_status != null) {
-                $details = OrderDetails::where('order_id', $order->id)->get();
-                foreach ($details as $detail) {
-                    $product = Product::find($detail->product_id);
-                    $product->update([
-                        'quantity' => $product->quantity + $detail->quantity,
-                    ]);
-                }
+            
+            // Use StockService to restore stock if order affected it
+            if ($order->stock_affected) {
+                $stockService = app(\App\Services\StockService::class);
+                $stockService->restoreStockForOrder($order);
             }
+            
             $order->delete();
             DB::commit();
 

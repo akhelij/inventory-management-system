@@ -24,6 +24,12 @@ class OrderUpdate extends Component
 
     public function updateQuantity($product_id, $quantity)
     {
+        // Check if quantity exceeds available stock and show warning
+        $product = \App\Models\Product::find($product_id);
+        if ($product && $quantity > $product->quantity) {
+            session()->flash('warning', "Warning: Requested quantity ({$quantity}) exceeds available stock ({$product->quantity}) for {$product->name}. Order may not be approvable.");
+        }
+
         $order_details = OrderDetails::where('order_id', $this->order_id)->where('product_id', $product_id)->first();
         $order_details->update([
             'quantity' => $quantity,

@@ -2,35 +2,26 @@
 
 namespace App\Observers;
 
+use App\Enums\OrderStatus;
 use App\Models\Order;
-use App\Models\Product;
-use App\Services\CartService;
+use App\Services\StockService;
+use Illuminate\Support\Facades\Log;
 
 class OrderObserver
 {
+    protected $stockService;
+
+    public function __construct(StockService $stockService)
+    {
+        $this->stockService = $stockService;
+    }
+
     /**
      * Handle the Order "created" event.
      */
     public function created(Order $order): void
     {
-        if ($order->order_status == 1) {
-            $user = $order->user;
-            if ($user) {
-                // Get cart items using the new CartService
-                $cartItems = app(CartService::class)->content($user->id);
-                
-                foreach ($cartItems as $item) {
-                    $product = Product::find($item->id);
-                    if ($product) {
-                        $product->quantity = $product->quantity - $item->qty;
-                        $product->save();
-                    }
-                }
-                
-                // Clear the cart after processing
-                app(CartService::class)->clearCart($user->id);
-            }
-        }
+        // Stock is not affected on creation, only when approved
     }
 
     /**
@@ -38,11 +29,37 @@ class OrderObserver
      */
     public function updated(Order $order): void
     {
-        if ($order->wasChanged('order_status') && $order->order_status == 1) {
-            foreach ($order->details as $item) {
-                $product = Product::find($item->product_id);
-                $product->quantity = $product->quantity - $item->quantity;
-                $product->save();
+        if ($order->wasChanged('order_status')) {
+            $oldStatus = $order->getOriginal('order_status');
+            $newStatus = $order->order_status;
+
+            // Order approved - deduct stock
+            if ($newStatus == OrderStatus::APPROVED && !$order->stock_affected) {
+                try {
+                    $this->stockService->deductStockForOrder($order);
+                } catch (\Exception $e) {
+                    // Log error but don't fail the order update
+                    Log::error("Failed to deduct stock for order {$order->id}: " . $e->getMessage());
+                }
+            }
+
+            // Order canceled - restore stock if it was previously deducted
+            if ($newStatus == OrderStatus::CANCELED && $order->stock_affected) {
+                try {
+                    $this->stockService->restoreStockForOrder($order);
+                } catch (\Exception $e) {
+                    // Log error but don't fail the order update
+                    Log::error("Failed to restore stock for order {$order->id}: " . $e->getMessage());
+                }
+            }
+
+            // Order changed from approved to pending - restore stock
+            if ($oldStatus == OrderStatus::APPROVED && $newStatus == OrderStatus::PENDING && $order->stock_affected) {
+                try {
+                    $this->stockService->restoreStockForOrder($order);
+                } catch (\Exception $e) {
+                    Log::error("Failed to restore stock for order {$order->id}: " . $e->getMessage());
+                }
             }
         }
     }

@@ -36,6 +36,7 @@ class Order extends Model
         'user_id',
         'tagged_user_id',
         'uuid',
+        'stock_affected',
     ];
 
     protected $appends = ['status', 'status_color', 'is_updatable_status'];
@@ -46,6 +47,7 @@ class Order extends Model
             'order_date' => 'date',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
+            'stock_affected' => 'boolean',
         ];
     }
 
