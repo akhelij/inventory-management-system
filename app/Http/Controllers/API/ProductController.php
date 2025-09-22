@@ -17,7 +17,8 @@ class ProductController extends Controller
         
         $products = Product::query()
             ->with(['category', 'warehouse', 'unit'])
-            ->where('quantity', '>', 0);
+            ->where('quantity', '>', 0)
+            ->whereNull('deleted_at');
         
         if ($search) {
             $products->where(function($query) use ($search) {

@@ -75,6 +75,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('products/import/', [ProductImportController::class, 'create'])->name('products.import.view');
     Route::post('products/import/', [ProductImportController::class, 'store'])->name('products.import.store');
     Route::get('products/export/', [ProductExportController::class, 'create'])->name('products.export.store');
+    Route::get('products/trashed', [ProductController::class, 'trashed'])->name('products.trashed');
+    Route::patch('products/{product}/restore', [ProductController::class, 'restore'])->name('products.restore');
+    Route::delete('products/{product}/force-delete', [ProductController::class, 'forceDelete'])->name('products.force-delete');
     Route::resource('/products', ProductController::class);
 
     Route::post('invoice/create/', [InvoiceController::class, 'create'])->name('invoice.create');

@@ -9,12 +9,12 @@ class ProductController
 {
     public function index(Request $request)
     {
-
-        $products = Product::all();
+        $products = Product::whereNull('deleted_at')->get();
 
         if ($request->has('category_id')) {
             $products = Product::query()
                 ->where('category_id', $request->get('category_id'))
+                ->whereNull('deleted_at')
                 ->get();
         }
 

@@ -184,6 +184,50 @@ class ProductController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::DELETE_PRODUCTS), 403);
         $product = Product::where('uuid', $uuid)->firstOrFail();
+
+        // Soft delete the product (image will remain for potential restoration)
+        $product->delete();
+
+        return redirect()
+            ->route('products.index')
+            ->with('success', 'Product has been deleted!');
+    }
+
+    /**
+     * Show soft deleted products
+     */
+    public function trashed()
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
+        $trashedProducts = Product::onlyTrashed()->count();
+
+        return view('products.trashed', [
+            'trashedProducts' => $trashedProducts,
+        ]);
+    }
+
+    /**
+     * Restore a soft deleted product
+     */
+    public function restore($uuid)
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
+        $product = Product::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
+        $product->restore();
+
+        return redirect()
+            ->route('products.trashed')
+            ->with('success', 'Product has been restored!');
+    }
+
+    /**
+     * Permanently delete a soft deleted product
+     */
+    public function forceDelete($uuid)
+    {
+        abort_unless(auth()->user()->can(PermissionEnum::DELETE_PRODUCTS), 403);
+        $product = Product::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
+        
         /**
          * Delete photo if exists.
          */
@@ -194,10 +238,10 @@ class ProductController extends Controller
             }
         }
 
-        $product->delete();
+        $product->forceDelete();
 
         return redirect()
-            ->route('products.index')
-            ->with('success', 'Product has been deleted!');
+            ->route('products.trashed')
+            ->with('success', 'Product has been permanently deleted!');
     }
 }
