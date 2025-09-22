@@ -25,6 +25,11 @@
                         <x-icon.plus />
                         {{ __('Export_products') }}
                     </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="{{ route('products.trashed') }}" class="dropdown-item">
+                        <i class="fas fa-trash me-2"></i>
+                        {{ __('View Trashed Products') }}
+                    </a>
                 </div>
             </div>
         </div>
