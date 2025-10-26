@@ -73,7 +73,8 @@
         /* Table styles */
         .invoice-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin: 30px 0;
             page-break-inside: auto;
         }
@@ -90,20 +91,24 @@
             font-weight: bold;
             font-size: 13px;
             color: #cc0000;
+            border-bottom: 2px solid #cc0000;
         }
 
         .invoice-table tbody tr {
-            border-bottom: 1px solid #e0e0e0;
-            page-break-inside: avoid;
-            break-inside: avoid;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
             page-break-before: auto;
             page-break-after: auto;
+            display: table-row;
+            orphans: 3;
+            widows: 3;
         }
 
         .invoice-table td {
             padding: 10px;
             font-size: 12px;
             vertical-align: top;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .text-center {
@@ -153,11 +158,21 @@
         }
 
         @media print {
+            @page {
+                margin: 1cm;
+            }
+            
             body {
                 background: white;
             }
 
             .invoice-table tbody tr {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                display: table-row !important;
+            }
+            
+            .invoice-table tbody tr td {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }

@@ -112,7 +112,8 @@
         /* Table styles */
         .invoice-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin: 30px 0;
             margin-bottom: 50px; /* Extra space before footer */
             page-break-inside: auto;
@@ -131,20 +132,29 @@
             font-weight: bold;
             font-size: 14px;
             color: #cc0000;
+            border-bottom: 2px solid #cc0000;
         }
 
         .invoice-table tbody tr {
-            border-bottom: 1px solid #e0e0e0;
-            page-break-inside: avoid;
-            break-inside: avoid;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
             page-break-before: auto;
             page-break-after: auto;
+            display: table-row;
+            orphans: 3;
+            widows: 3;
         }
 
         .invoice-table td {
             padding: 12px;
             font-size: 13px;
             vertical-align: top;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .invoice-table tfoot {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
 
         .text-center {
@@ -160,6 +170,9 @@
             border-top: 2px solid #cc0000;
             font-weight: bold;
             font-size: 16px;
+            page-break-before: avoid;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
         }
 
         .total-row td {
@@ -168,7 +181,7 @@
 
         /* Footer */
         .invoice-footer {
-            position: fixed;
+            position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
@@ -179,7 +192,6 @@
             font-size: 11px;
             color: #666;
             height: 2.5cm;
-            z-index: 1000;
         }
 
         .footer-text {
@@ -195,11 +207,21 @@
 
         /* Prevent overlap */
         @media print {
+            @page {
+                margin: 1cm;
+            }
+            
             body {
                 background: white;
             }
 
             .invoice-table tbody tr {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                display: table-row !important;
+            }
+            
+            .invoice-table tbody tr td {
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
@@ -210,6 +232,12 @@
             
             .invoice-table tfoot {
                 display: table-footer-group;
+                page-break-inside: avoid;
+            }
+            
+            .invoice-footer {
+                position: fixed;
+                bottom: 0;
             }
         }
 
@@ -331,6 +359,46 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Add spacer class for page-break adjustment
+        const style = document.createElement('style');
+        style.textContent = `
+            .page-break-spacer {
+                height: auto;
+                page-break-before: always;
+                display: table-row;
+            }
+            .page-break-spacer td {
+                border: none !important;
+                padding: 0 !important;
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Calculate page breaks and add spacers if needed
+        function adjustPageBreaks() {
+            const pageHeight = 1123; // A4 height in pixels at 96 DPI minus margins
+            const rows = document.querySelectorAll('.invoice-table tbody tr');
+            let currentPageHeight = document.querySelector('.invoice-content').offsetTop;
+            
+            rows.forEach(function(row, index) {
+                const rowTop = row.offsetTop;
+                const rowHeight = row.offsetHeight;
+                const rowBottom = rowTop + rowHeight;
+                
+                // Check if row crosses page boundary
+                const currentPage = Math.floor(rowTop / pageHeight);
+                const rowEndPage = Math.floor(rowBottom / pageHeight);
+                
+                if (currentPage !== rowEndPage && rowHeight < 200) {
+                    // Row is being split across pages, add spacer before it
+                    row.style.pageBreakBefore = 'always';
+                }
+            });
+        }
+        
+        // Run adjustment before print
+        adjustPageBreaks();
+        
         setTimeout(function() {
             window.print();
         }, 500);
