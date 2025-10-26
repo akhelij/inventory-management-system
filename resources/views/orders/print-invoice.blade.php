@@ -31,8 +31,8 @@
         }
 
         .invoice-content {
-            padding: 2cm 1.5cm 3cm 1.5cm; /* Increased bottom padding to prevent overlap */
-            min-height: calc(100% - 5cm);
+            padding: 1.5cm 1.5cm 4cm 1.5cm; /* Bottom padding for footer */
+            min-height: calc(29.7cm - 4cm);
         }
 
         /* Header with logo */
@@ -114,8 +114,8 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin: 30px 0;
-            margin-bottom: 50px; /* Extra space before footer */
+            margin: 20px 0;
+            margin-bottom: 30px;
             page-break-inside: auto;
         }
         
@@ -208,11 +208,46 @@
         /* Prevent overlap */
         @media print {
             @page {
-                margin: 1cm;
+                size: A4;
+                margin: 1.5cm 1.5cm 3.5cm 1.5cm;
             }
             
             body {
                 background: white;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .invoice-container {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .invoice-content {
+                padding: 0.5cm 0;
+                min-height: auto;
+            }
+
+            .header-section {
+                margin-bottom: 20px;
+            }
+            
+            .info-section {
+                margin: 20px 0;
+            }
+            
+            .invoice-details {
+                margin: 20px 0;
+            }
+            
+            .invoice-table {
+                margin: 15px 0;
+            }
+            
+            .invoice-table th,
+            .invoice-table td {
+                padding: 8px 12px;
             }
 
             .invoice-table tbody tr {
@@ -238,6 +273,9 @@
             .invoice-footer {
                 position: fixed;
                 bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
             }
         }
 
@@ -359,46 +397,6 @@
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add spacer class for page-break adjustment
-        const style = document.createElement('style');
-        style.textContent = `
-            .page-break-spacer {
-                height: auto;
-                page-break-before: always;
-                display: table-row;
-            }
-            .page-break-spacer td {
-                border: none !important;
-                padding: 0 !important;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Calculate page breaks and add spacers if needed
-        function adjustPageBreaks() {
-            const pageHeight = 1123; // A4 height in pixels at 96 DPI minus margins
-            const rows = document.querySelectorAll('.invoice-table tbody tr');
-            let currentPageHeight = document.querySelector('.invoice-content').offsetTop;
-            
-            rows.forEach(function(row, index) {
-                const rowTop = row.offsetTop;
-                const rowHeight = row.offsetHeight;
-                const rowBottom = rowTop + rowHeight;
-                
-                // Check if row crosses page boundary
-                const currentPage = Math.floor(rowTop / pageHeight);
-                const rowEndPage = Math.floor(rowBottom / pageHeight);
-                
-                if (currentPage !== rowEndPage && rowHeight < 200) {
-                    // Row is being split across pages, add spacer before it
-                    row.style.pageBreakBefore = 'always';
-                }
-            });
-        }
-        
-        // Run adjustment before print
-        adjustPageBreaks();
-        
         setTimeout(function() {
             window.print();
         }, 500);

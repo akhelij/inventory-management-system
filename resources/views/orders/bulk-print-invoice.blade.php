@@ -32,8 +32,8 @@
 
         .invoice-content {
             flex: 1;
-            padding: 2cm 1.5cm 1cm 1.5cm;
-            padding-bottom: 3cm;
+            padding: 1.5cm 1.5cm 4cm 1.5cm;
+            min-height: calc(29.7cm - 4cm);
         }
 
         /* Header with logo */
@@ -75,7 +75,7 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin: 30px 0;
+            margin: 20px 0;
             page-break-inside: auto;
         }
 
@@ -159,11 +159,42 @@
 
         @media print {
             @page {
-                margin: 1cm;
+                size: A4;
+                margin: 1.5cm 1.5cm 3.5cm 1.5cm;
             }
             
             body {
                 background: white;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .invoice-container {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .invoice-content {
+                padding: 0.5cm 0;
+                min-height: auto;
+            }
+            
+            .header-section {
+                margin-bottom: 20px;
+            }
+            
+            .report-title {
+                margin: 15px 0;
+            }
+            
+            .invoice-table {
+                margin: 15px 0;
+            }
+            
+            .invoice-table th,
+            .invoice-table td {
+                padding: 6px 10px;
             }
 
             .invoice-table tbody tr {
@@ -180,9 +211,13 @@
             .invoice-table thead {
                 display: table-header-group;
             }
-
-            .invoice-content {
-                min-height: calc(29.7cm - 3cm);
+            
+            .invoice-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
             }
 
             .invoice-btn-section {
