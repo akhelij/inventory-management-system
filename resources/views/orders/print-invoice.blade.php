@@ -122,6 +122,7 @@
         .invoice-table thead {
             background-color: #f8f8f8;
             border-bottom: 2px solid #cc0000;
+            page-break-after: avoid;
         }
 
         .invoice-table th {
@@ -135,6 +136,9 @@
         .invoice-table tbody tr {
             border-bottom: 1px solid #e0e0e0;
             page-break-inside: avoid;
+            break-inside: avoid;
+            page-break-before: auto;
+            page-break-after: auto;
         }
 
         .invoice-table td {
@@ -196,7 +200,16 @@
             }
 
             .invoice-table tbody tr {
-                page-break-inside: avoid;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            
+            .invoice-table thead {
+                display: table-header-group;
+            }
+            
+            .invoice-table tfoot {
+                display: table-footer-group;
             }
         }
 
