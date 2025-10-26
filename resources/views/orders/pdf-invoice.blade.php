@@ -175,7 +175,7 @@
     </div>
 
     <!-- Invoice Title and Date -->
-    <div class="invoice-title">FACTURE : {{ $order->invoice_no }}</div>
+    <div class="invoice-number">FACTURE : {{ $order->invoice_no }}</div>
     <div class="invoice-date">
         <strong>Date de facture :</strong> {{ $order->order_date->format('d M Y') }}
     </div>
