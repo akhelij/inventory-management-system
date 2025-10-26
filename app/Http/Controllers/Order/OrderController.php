@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -287,21 +288,29 @@ class OrderController extends Controller
     public function downloadInvoice($uuid)
     {
         abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
-        $order = Order::with(['customer', 'details'])->where('uuid', $uuid)->firstOrFail();
+        $order = Order::with(['customer', 'details.product', 'user'])->where('uuid', $uuid)->firstOrFail();
 
-        return view('orders.print-invoice', [
+        $pdf = Pdf::loadView('orders.pdf-invoice', [
             'order' => $order,
         ]);
+        
+        $pdf->setPaper('a4', 'portrait');
+        
+        return $pdf->stream('invoice-' . $order->invoice_no . '.pdf');
     }
 
     public function bulkDownloadInvoice(Request $request)
     {
         abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
-        $orders = Order::with(['customer', 'details', 'user'])->whereIn('id', $request->order_ids)->get();
+        $orders = Order::with(['customer', 'details.product', 'user'])->whereIn('id', $request->order_ids)->get();
 
-        return view('orders.bulk-print-invoice', [
+        $pdf = Pdf::loadView('orders.pdf-bulk-invoice', [
             'orders' => $orders,
         ]);
+        
+        $pdf->setPaper('a4', 'portrait');
+        
+        return $pdf->stream('orders-report-' . now()->format('Y-m-d') . '.pdf');
     }
 
     public function recalculateTotals(Request $request)
