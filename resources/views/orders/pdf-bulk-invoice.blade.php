@@ -6,7 +6,7 @@
     <title>Rapport des Commandes</title>
     <style>
         @page {
-            margin: 1.5cm;
+            margin: 1cm 2cm;
         }
 
         * {
@@ -20,6 +20,7 @@
             font-size: 10pt;
             color: #333;
             line-height: 1.4;
+            padding: 0 1cm;
         }
 
         .header-section {
@@ -27,6 +28,11 @@
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #cc0000;
+        }
+
+        .logo-img {
+            height: 70px;
+            margin-bottom: 10px;
         }
 
         .logo-text {
@@ -111,6 +117,7 @@
 <body>
     <!-- Header -->
     <div class="header-section">
+        <img src="{{ public_path('logo.jpeg') }}" alt="Logo" class="logo-img">
         <div class="logo-text">
             PLATINIUM <span class="electro">ELECTRO</span>
         </div>
