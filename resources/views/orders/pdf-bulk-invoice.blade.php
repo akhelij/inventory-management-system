@@ -6,7 +6,7 @@
     <title>Rapport des Commandes</title>
     <style>
         @page {
-            margin: 1cm 2cm;
+            margin: 1.5cm 2cm;
         }
 
         * {
@@ -44,6 +44,12 @@
 
         .logo-text .electro {
             color: #cc0000;
+        }
+
+        .company-subtitle {
+            font-size: 9pt;
+            color: #666;
+            line-height: 1.6;
         }
 
         .report-title {
@@ -97,21 +103,6 @@
             margin-left: 5px;
         }
 
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 9pt;
-            color: #666;
-            padding: 10px 0;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .footer-content {
-            line-height: 1.6;
-        }
     </style>
 </head>
 <body>
@@ -120,6 +111,11 @@
         <img src="{{ public_path('logo.jpeg') }}" alt="Logo" class="logo-img">
         <div class="logo-text">
             PLATINIUM <span class="electro">ELECTRO</span>
+        </div>
+        <div class="company-subtitle">
+            AVENUE ATLAS TAHLA - MAROC<br>
+            Tél: +212 697-940615<br>
+            ICE: 003299107000084 | IF: 53784335
         </div>
     </div>
 
@@ -160,13 +156,5 @@
             @endforeach
         </tbody>
     </table>
-
-    <!-- Footer -->
-    <div class="footer">
-        <div class="footer-content">
-            AVENUE ATLAS TAHLA - MAROC | Tél: +212 697-940615<br>
-            ICE: 003299107000084 | IF: 53784335
-        </div>
-    </div>
 </body>
 </html>
