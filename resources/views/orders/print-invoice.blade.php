@@ -298,9 +298,6 @@
             <div class="logo-container">
                 <img src="{{ asset('logo.jpeg') }}" alt="Platinium Electro Logo">
             </div>
-            <div class="company-name">
-                PLATINIUM <span class="electro">ELECTRO</span>
-            </div>
         </div>
 
         <!-- Company and Client Information -->
