@@ -109,9 +109,6 @@
     <!-- Header -->
     <div class="header-section">
         <img src="{{ public_path('logo.jpeg') }}" alt="Logo" class="logo-img">
-        <div class="logo-text">
-            PLATINIUM <span class="electro">ELECTRO</span>
-        </div>
         <div class="company-subtitle">
             AVENUE ATLAS TAHLA - MAROC<br>
             Tél: +212 697-940615<br>

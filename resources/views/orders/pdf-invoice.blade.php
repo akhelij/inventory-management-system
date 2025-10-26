@@ -100,6 +100,13 @@
             line-height: 1.5;
         }
 
+        .invoice-number {
+            color: #cc0000;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
         .products-table {
             width: 100%;
             border-collapse: collapse;
@@ -160,9 +167,6 @@
     <!-- Header -->
     <div class="header-section">
         <img src="{{ public_path('logo.jpeg') }}" alt="Logo" class="logo-img">
-        <div class="logo-text">
-            PLATINIUM <span class="electro">ELECTRO</span>
-        </div>
         <div class="company-subtitle">
             AVENUE ATLAS TAHLA - MAROC<br>
             Tél: +212 697-940615<br>
