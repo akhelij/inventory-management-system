@@ -536,6 +536,7 @@
                             return response.json().then(data => {
                                 if (response.status === 400) {
                                     if (data.message.includes('already in your cart')) {
+                                        window.showErrorToast('This product already exists in your order');
                                         throw new Error('Item already in cart');
                                     } else if (data.message.includes('exceeds available stock')) {
                                         window.showErrorToast(data.message);
@@ -582,7 +583,10 @@
                         if (!response.ok) {
                             return response.json().then(data => {
                                 if (response.status === 400) {
-                                    if (data.message.includes('exceeds available stock')) {
+                                    if (data.message.includes('already in your cart')) {
+                                        window.showErrorToast('This product already exists in your order');
+                                        throw new Error('Item already in cart');
+                                    } else if (data.message.includes('exceeds available stock')) {
                                         window.showErrorToast(data.message);
                                         throw new Error('Stock limit exceeded');
                                     }
@@ -596,7 +600,7 @@
                         document.dispatchEvent(new CustomEvent('cart-updated', { detail: data.cart }));
                     })
                     .catch(error => {
-                        if (error.message !== 'Stock limit exceeded') {
+                        if (error.message !== 'Item already in cart' && error.message !== 'Stock limit exceeded') {
                             console.error('Error adding free item:', error);
                         }
                     })
