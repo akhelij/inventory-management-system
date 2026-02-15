@@ -541,27 +541,31 @@
                     })
                     .then(response => {
                         if (!response.ok) {
-                            if (response.status === 422) {
-                                // Validation error - likely item already exists
-                                return response.json().then(data => {
-                                    window.showInfoToast(data.message || 'This item is already in the order');
-                                    throw new Error('Item already exists');
-                                });
-                            }
-                            throw new Error(`Error ${response.status}: ${response.statusText}`);
+                            return response.json().then(data => {
+                                if (response.status === 400) {
+                                    if (data.message.includes('already in the order')) {
+                                        window.showErrorToast('This product already exists in your order');
+                                        throw new Error('Item already in order');
+                                    } else if (data.message.includes('exceeds available stock')) {
+                                        window.showErrorToast(data.message);
+                                        throw new Error('Stock limit exceeded');
+                                    }
+                                }
+                                throw new Error(`Error ${response.status}: ${data.message || response.statusText}`);
+                            });
                         }
                         return response.json();
                     })
                     .then(data => {
                         window.showSuccessToast('Item added successfully');
-                        
+
                         // Trigger an event to refresh the order items
-                        // This will be handled by orderItemsManager.init() 
+                        // This will be handled by orderItemsManager.init()
                         // which sets up listeners for this event
                         document.dispatchEvent(new CustomEvent('order-items-updated'));
                     })
                     .catch(error => {
-                        if (error.message !== 'Item already exists') {
+                        if (error.message !== 'Item already in order' && error.message !== 'Stock limit exceeded') {
                             console.error('Error adding to order:', error);
                             window.showErrorToast('Error adding item to order');
                         }
@@ -570,10 +574,10 @@
                         this.isAddingToOrder = false;
                     });
                 },
-                
+
                 addFreeItem(product) {
                     this.isAddingToOrder = true;
-                    
+
                     // Create form data for the new free item
                     const formData = new FormData();
                     formData.append('product_id', product.id);
@@ -581,7 +585,7 @@
                     formData.append('unitcost', 0); // Free item
                     formData.append('is_free', 1);
                     formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
-                    
+
                     // Send a direct API request to add the free item
                     fetch(`/api/orders/${this.orderId}/items`, {
                         method: 'POST',
@@ -589,25 +593,29 @@
                     })
                     .then(response => {
                         if (!response.ok) {
-                            if (response.status === 422) {
-                                // Validation error - likely item already exists
-                                return response.json().then(data => {
-                                    window.showInfoToast(data.message || 'This item is already in the order');
-                                    throw new Error('Item already exists');
-                                });
-                            }
-                            throw new Error(`Error ${response.status}: ${response.statusText}`);
+                            return response.json().then(data => {
+                                if (response.status === 400) {
+                                    if (data.message.includes('already in the order')) {
+                                        window.showErrorToast('This product already exists in your order');
+                                        throw new Error('Item already in order');
+                                    } else if (data.message.includes('exceeds available stock')) {
+                                        window.showErrorToast(data.message);
+                                        throw new Error('Stock limit exceeded');
+                                    }
+                                }
+                                throw new Error(`Error ${response.status}: ${data.message || response.statusText}`);
+                            });
                         }
                         return response.json();
                     })
                     .then(data => {
                         window.showSuccessToast('Free item added successfully');
-                        
+
                         // Trigger an event to refresh the order items
                         document.dispatchEvent(new CustomEvent('order-items-updated'));
                     })
                     .catch(error => {
-                        if (error.message !== 'Item already exists') {
+                        if (error.message !== 'Item already in order' && error.message !== 'Stock limit exceeded') {
                             console.error('Error adding free item to order:', error);
                             window.showErrorToast('Error adding free item to order');
                         }
