@@ -18,10 +18,11 @@ abstract class TestCase extends BaseTestCase
 
     public function createUser()
     {
-        return User::factory()->create([
-            'name' => 'admin',
-            'email' => 'admin@admin.com',
-        ]);
+        return User::where('email', 'admin@admin.com')->first()
+            ?? User::factory()->create([
+                'name' => 'admin',
+                'email' => 'admin@admin.com',
+            ]);
     }
 
     public function createProduct()
@@ -47,10 +48,13 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    public function createCustomer()
+    public function createCustomer(?User $user = null)
     {
+        $user = $user ?? User::first() ?? $this->createUser();
+
         return Customer::factory()->create([
             'name' => 'Customer 1',
+            'user_id' => $user->id,
         ]);
     }
 

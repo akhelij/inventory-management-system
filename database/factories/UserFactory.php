@@ -24,6 +24,7 @@ class UserFactory extends Factory
             'password' => bcrypt('password'),
             'remember_token' => Str::random(10),
             'username' => fake()->word(),
+            'uuid' => Str::uuid(),
         ];
     }
 
