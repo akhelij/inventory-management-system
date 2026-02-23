@@ -147,6 +147,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('payments/{payment}/cash-in', [PaymentController::class, 'cash_in'])->name('payments.cash_in');
     Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
+    // Payment Allocation Routes (JSON API)
+    Route::post('api/orders/{order}/payments/{payment}', [\App\Http\Controllers\OrderPaymentController::class, 'store'])
+        ->name('order-payments.store');
+    Route::delete('api/orders/{order}/payments/{payment}', [\App\Http\Controllers\OrderPaymentController::class, 'destroy'])
+        ->name('order-payments.destroy');
+
     Route::get('/lang/{lang}', function ($lang) {
         // Validate the language
         $supportedLocales = ['en', 'fr'];
