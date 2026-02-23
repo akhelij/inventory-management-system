@@ -39,6 +39,16 @@ class Payment extends Model
             ->withTimestamps();
     }
 
+    public function getUnallocatedAmountAttribute(): float
+    {
+        return $this->amount - $this->orders()->sum('order_payment.allocated_amount');
+    }
+
+    public function getIsFullyAllocatedAttribute(): bool
+    {
+        return $this->unallocated_amount <= 0;
+    }
+
     public static function boot()
     {
         parent::boot();
