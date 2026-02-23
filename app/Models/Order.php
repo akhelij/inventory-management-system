@@ -96,6 +96,16 @@ class Order extends Model
             ->withTimestamps();
     }
 
+    public function recalculatePayments(): void
+    {
+        $totalAllocated = $this->payments()->sum('order_payment.allocated_amount');
+
+        $this->update([
+            'pay' => $totalAllocated,
+            'due' => $this->total - $totalAllocated,
+        ]);
+    }
+
     public function scopeSearch($query, $value): void
     {
         $query->where('invoice_no', 'like', "%{$value}%")
