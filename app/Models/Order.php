@@ -9,6 +9,7 @@ use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ObservedBy([OrderObserver::class])]
@@ -86,6 +87,23 @@ class Order extends Model
     public function details(): HasMany
     {
         return $this->hasMany(OrderDetails::class);
+    }
+
+    public function payments(): BelongsToMany
+    {
+        return $this->belongsToMany(Payment::class, 'order_payment')
+            ->withPivot('allocated_amount', 'user_id')
+            ->withTimestamps();
+    }
+
+    public function recalculatePayments(): void
+    {
+        $totalAllocated = $this->payments()->sum('order_payment.allocated_amount');
+
+        $this->update([
+            'pay' => $totalAllocated,
+            'due' => $this->total - $totalAllocated,
+        ]);
     }
 
     public function scopeSearch($query, $value): void

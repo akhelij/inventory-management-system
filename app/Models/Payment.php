@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[ObservedBy([PaymentObserver::class])]
 class Payment extends Model
@@ -29,6 +30,23 @@ class Payment extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function orders(): BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'order_payment')
+            ->withPivot('allocated_amount', 'user_id')
+            ->withTimestamps();
+    }
+
+    public function getUnallocatedAmountAttribute(): float
+    {
+        return $this->amount - $this->orders()->sum('order_payment.allocated_amount');
+    }
+
+    public function getIsFullyAllocatedAttribute(): bool
+    {
+        return $this->unallocated_amount <= 0;
     }
 
     public static function boot()
