@@ -12,64 +12,42 @@ class ProductList extends Component
 {
     use WithPagination;
 
-    public $perPage = 15;
+    public int $perPage = 15;
 
-    public $search = '';
+    public string $search = '';
 
-    public $sortField = 'id';
+    public string $sortField = 'id';
 
-    public $sortAsc = false;
+    public bool $sortAsc = false;
 
-    public $product;
+    public ?int $order_id = null;
 
-    public $id;
-
-    public $name;
-
-    public $price;
-
-    public $order_id;
-
-    public function mount($order_id = null)
+    public function mount(?int $order_id = null): void
     {
         $this->order_id = $order_id;
     }
 
-    public function sortBy($field): void
+    public function sortBy(string $field): void
     {
-        if ($this->sortField === $field) {
-            $this->sortAsc = ! $this->sortAsc;
-
-        } else {
-            $this->sortAsc = true;
-        }
-
+        $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
         $this->sortField = $field;
     }
 
-    public function addCartItem($id, $name, $price)
+    public function addCartItem(int $id, string $name, float $price): void
     {
         if ($this->order_id) {
             $this->updateOrderDetails($id, $price);
         }
 
-        // Use our new CartService to add item to cart
-        app(CartService::class)->addItem(
-            auth()->id(),
-            $id,
-            $name,
-            $price,
-            1
-        );
+        app(CartService::class)->addItem(auth()->id(), $id, $name, $price, 1);
 
-        // Emit an event to notify other components that the cart has been updated
         $this->dispatch('item-added');
     }
-    
-    public function updateOrderDetails($product_id, $unitcost)
+
+    public function updateOrderDetails(int $product_id, float $unitcost): void
     {
         if (! $this->order_id) {
-            $this->addCartItem();
+            return;
         }
 
         $order_details = OrderDetails::where('order_id', $this->order_id)
@@ -91,13 +69,12 @@ class ProductList extends Component
             ]);
         }
 
-        // Emit an event to notify other components that the cart has been updated
         $this->dispatch('item-added');
     }
 
     public function render()
     {
-        return view('livewire.tables.product-list')->with([
+        return view('livewire.tables.product-list', [
             'products' => Product::query()
                 ->with(['category', 'warehouse', 'unit'])
                 ->where('quantity', '>', 0)

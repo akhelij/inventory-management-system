@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\CartService;
 use App\Traits\HasActivityLogs;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -41,14 +43,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'role',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
 
     public function getRoleAttribute()
     {
@@ -73,7 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function cart(): HasOne
     {
-        return $this->hasOne(Cart::class, 'user_id', 'id')->where('instance', 'default');
+        return $this->hasOne(Cart::class)->where('instance', 'default');
     }
 
     public function orders(): HasMany
@@ -86,26 +83,15 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Warehouse::class);
     }
 
-    /**
-     * Get the user's cart from the database
-     * 
-     * @return \Illuminate\Support\Collection
-     */
-    public function getCart()
+    public function getCart(): Collection
     {
-        $cartService = app(\App\Services\CartService::class);
-        return $cartService->content($this->id);
+        return app(CartService::class)->content($this->id);
     }
-    
-    /**
-     * Clear the user's cart from the database
-     * 
-     * @return bool
-     */
-    public function clearCart()
+
+    public function clearCart(): bool
     {
-        $cartService = app(\App\Services\CartService::class);
-        $cartService->clearCart($this->id);
+        app(CartService::class)->clearCart($this->id);
+
         return true;
     }
 }

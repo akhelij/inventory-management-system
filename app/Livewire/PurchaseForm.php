@@ -10,7 +10,7 @@ use Livewire\Component;
 
 class PurchaseForm extends Component
 {
-    #[Validate('Required')]
+    #[Validate('required')]
     public int $taxes = 0;
 
     public array $invoiceProducts = [];
@@ -25,17 +25,15 @@ class PurchaseForm extends Component
 
     public function render(): View
     {
-        $total = 0;
+        $subtotal = collect($this->invoiceProducts)
+            ->filter(fn (array $product) => $product['is_saved'] && $product['product_price'] && $product['quantity'])
+            ->sum(fn (array $product) => $product['product_price'] * $product['quantity']);
 
-        foreach ($this->invoiceProducts as $invoiceProduct) {
-            if ($invoiceProduct['is_saved'] && $invoiceProduct['product_price'] && $invoiceProduct['quantity']) {
-                $total += $invoiceProduct['product_price'] * $invoiceProduct['quantity'];
-            }
-        }
+        $taxRate = is_numeric($this->taxes) ? $this->taxes : 0;
 
         return view('livewire.purchase-form', [
-            'subtotal' => $total,
-            'total' => $total * (1 + (is_numeric($this->taxes) ? $this->taxes : 0) / 100),
+            'subtotal' => $subtotal,
+            'total' => $subtotal * (1 + $taxRate / 100),
         ]);
     }
 
@@ -58,7 +56,7 @@ class PurchaseForm extends Component
         ];
     }
 
-    public function editProduct($index): void
+    public function editProduct(int $index): void
     {
         foreach ($this->invoiceProducts as $key => $invoiceProduct) {
             if (! $invoiceProduct['is_saved']) {
@@ -71,7 +69,7 @@ class PurchaseForm extends Component
         $this->invoiceProducts[$index]['is_saved'] = false;
     }
 
-    public function saveProduct($index): void
+    public function saveProduct(int $index): void
     {
         $this->resetErrorBag();
 
@@ -82,7 +80,7 @@ class PurchaseForm extends Component
         $this->invoiceProducts[$index]['is_saved'] = true;
     }
 
-    public function removeProduct($index): void
+    public function removeProduct(int $index): void
     {
         unset($this->invoiceProducts[$index]);
 

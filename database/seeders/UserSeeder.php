@@ -8,12 +8,9 @@ use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        $users = collect([
+        $users = [
             [
                 'name' => 'Admin',
                 'email' => 'admin@admin.com',
@@ -30,11 +27,11 @@ class UserSeeder extends Seeder
                 'created_at' => now(),
                 'uuid' => Str::uuid(),
             ],
-        ]);
+        ];
 
-        $users->each(function ($user) {
+        foreach ($users as $user) {
             User::insert($user);
-        });
+        }
 
         $roles = ['admin', 'magasinier', 'commercial'];
         foreach (User::all() as $index => $user) {

@@ -3,6 +3,7 @@
 namespace App\Livewire\Tables;
 
 use App\Models\Product;
+use App\Models\Unit;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -10,29 +11,23 @@ class ProductByUnitTable extends Component
 {
     use WithPagination;
 
-    public $perPage = 25;
+    public int $perPage = 25;
 
-    public $search = '';
+    public string $search = '';
 
-    public $sortField = 'name';
+    public string $sortField = 'name';
 
-    public $sortAsc = true;
+    public bool $sortAsc = true;
 
-    public $unit = null;
+    public Unit $unit;
 
-    public function sortBy($field): void
+    public function sortBy(string $field): void
     {
-        if ($this->sortField === $field) {
-            $this->sortAsc = ! $this->sortAsc;
-
-        } else {
-            $this->sortAsc = true;
-        }
-
+        $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
         $this->sortField = $field;
     }
 
-    public function mount($unit)
+    public function mount(Unit $unit): void
     {
         $this->unit = $unit;
     }

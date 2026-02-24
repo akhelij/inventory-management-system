@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class CustomersTable extends PowerGridComponent
@@ -26,13 +24,14 @@ final class CustomersTable extends PowerGridComponent
     public function setUp(): array
     {
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 
-            Header::make()->showSearchInput(),
+            PowerGrid::header()
+                ->showSearchInput(),
 
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage($this->perPage, $this->perPageValues)
                 ->showRecordCount(),
         ];
@@ -43,28 +42,20 @@ final class CustomersTable extends PowerGridComponent
         return Customer::query();
     }
 
-    public function relationSearch(): array
+    public function fields(): PowerGridFields
     {
-        return [];
-    }
-
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('name')
-
-            /** Example of custom column using a closure **/
-            ->addColumn('name_lower', fn (Customer $model) => strtolower(e($model->name)))
-
-            ->addColumn('email')
-            ->addColumn('phone')
-            ->addColumn('address')
-            ->addColumn('photo')
-            ->addColumn('account_holder')
-            ->addColumn('account_number')
-            ->addColumn('bank_name')
-            ->addColumn('created_at_formatted', fn (Customer $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('name')
+            ->add('name_lower', fn (Customer $model) => strtolower(e($model->name)))
+            ->add('email')
+            ->add('phone')
+            ->add('address')
+            ->add('photo')
+            ->add('account_holder')
+            ->add('account_number')
+            ->add('bank_name')
+            ->add('created_at_formatted', fn (Customer $model) => Carbon::parse($model->created_at)->format('d/m/Y H:i:s'));
     }
 
     public function columns(): array
@@ -73,16 +64,19 @@ final class CustomersTable extends PowerGridComponent
             Column::make('Id', 'id')
                 ->headerAttribute('text-left')
                 ->bodyAttribute('text-left'),
+
             Column::make('Name', 'name')
                 ->headerAttribute('text-left')
                 ->bodyAttribute('text-left')
                 ->sortable()
                 ->searchable(),
+
             Column::make('Email', 'email')
                 ->headerAttribute('text-left')
                 ->bodyAttribute('text-left')
                 ->sortable()
                 ->searchable(),
+
             Column::action('Action')
                 ->headerAttribute('align-middle text-center', styleAttr: 'width: 150px;')
                 ->bodyAttribute('align-middle text-center d-flex justify-content-around'),
@@ -91,12 +85,10 @@ final class CustomersTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-
-        ];
+        return [];
     }
 
-    public function actions(\App\Models\Customer $row): array
+    public function actions(Customer $row): array
     {
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))

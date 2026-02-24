@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class SuppliersTable extends PowerGridComponent
 {
@@ -23,13 +21,14 @@ final class SuppliersTable extends PowerGridComponent
     public function setUp(): array
     {
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 
-            Header::make()->showSearchInput(),
+            PowerGrid::header()
+                ->showSearchInput(),
 
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage($this->perPage, $this->perPageValues)
                 ->showRecordCount(),
         ];
@@ -40,14 +39,14 @@ final class SuppliersTable extends PowerGridComponent
         return Supplier::query();
     }
 
-    public function addColumns(): PowerGridColumns
+    public function fields(): PowerGridFields
     {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('name')
-            ->addColumn('name_lower', fn (Supplier $model) => strtolower(e($model->name)))
-            ->addColumn('created_at')
-            ->addColumn('created_at_formatted', fn (Supplier $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('name')
+            ->add('name_lower', fn (Supplier $model) => strtolower(e($model->name)))
+            ->add('created_at')
+            ->add('created_at_formatted', fn (Supplier $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
@@ -83,18 +82,10 @@ final class SuppliersTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    #[\Livewire\Attributes\On('edit')]
-    public function edit($rowId): void
-    {
-        $this->js('alert('.$rowId.')');
-    }
-
-    public function actions(\App\Models\Supplier $row): array
+    public function actions(Supplier $row): array
     {
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))
@@ -117,16 +108,4 @@ final class SuppliersTable extends PowerGridComponent
                 ->method('delete'),
         ];
     }
-
-    /*
-    public function actionRules(\App\Models\Supplier $row): array
-    {
-       return [
-            // Hide button edit for ID 1
-            Rule::button('edit')
-                ->when(fn($row) => $row->id === 1)
-                ->hide(),
-        ];
-    }
-    */
 }

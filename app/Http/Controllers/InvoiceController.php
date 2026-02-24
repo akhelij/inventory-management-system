@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Invoice\StoreInvoiceRequest;
 use App\Models\Customer;
-use Illuminate\Support\Collection;
+use Illuminate\View\View;
 
 class InvoiceController extends Controller
 {
-    public function create()
+    public function create(): View
     {
-        $carts = auth()->check() ? auth()->user()->getCart() : collect();
-        $customers = Customer::all();
-
-        return view('invoices.create', compact('carts', 'customers'));
+        return view('invoices.create', [
+            'carts' => auth()->check() ? auth()->user()->getCart() : collect(),
+            'customers' => Customer::all(),
+        ]);
     }
 }

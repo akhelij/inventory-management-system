@@ -3,20 +3,17 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ProductController
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $products = Product::whereNull('deleted_at')->get();
-
-        if ($request->has('category_id')) {
-            $products = Product::query()
-                ->where('category_id', $request->get('category_id'))
-                ->whereNull('deleted_at')
-                ->get();
-        }
+        $products = Product::query()
+            ->whereNull('deleted_at')
+            ->when($request->has('category_id'), fn ($query) => $query->where('category_id', $request->get('category_id')))
+            ->get();
 
         return response()->json($products);
     }

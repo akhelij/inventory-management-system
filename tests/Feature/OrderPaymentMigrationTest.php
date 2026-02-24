@@ -2,20 +2,20 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderPaymentMigrationTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_order_payment_table_exists(): void
+    #[Test]
+    public function order_payment_table_exists(): void
     {
         $this->assertTrue(Schema::hasTable('order_payment'));
     }
 
-    public function test_order_payment_table_has_expected_columns(): void
+    #[Test]
+    public function order_payment_table_has_expected_columns(): void
     {
         $this->assertTrue(Schema::hasColumns('order_payment', [
             'id',

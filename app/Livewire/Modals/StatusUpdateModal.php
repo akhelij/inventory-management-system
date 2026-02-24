@@ -4,25 +4,24 @@ namespace App\Livewire\Modals;
 
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class StatusUpdateModal extends Component
 {
-    public $ticketId = null;
+    public ?int $ticketId = null;
 
-    public $newStatus = null;
+    public ?string $newStatus = null;
 
-    public $currentStatus = null;
+    public ?string $currentStatus = null;
 
-    public $statusComment = '';
+    public string $statusComment = '';
 
-    protected $listeners = ['prepareStatusUpdate'];
-
-    protected $rules = [
+    protected array $rules = [
         'statusComment' => 'required|string|min:3',
     ];
 
-    protected $statuses = [
+    private const STATUSES = [
         'RECEIVED' => 'Received',
         'IN_PROGRESS' => 'In Progress',
         'REPAIRED' => 'Repaired',
@@ -30,7 +29,8 @@ class StatusUpdateModal extends Component
         'DELIVERED' => 'Delivered',
     ];
 
-    public function prepareStatusUpdate($data)
+    #[On('prepareStatusUpdate')]
+    public function prepareStatusUpdate(array $data): void
     {
         $this->ticketId = $data['ticketId'];
         $this->currentStatus = $data['currentStatus'];
@@ -38,7 +38,7 @@ class StatusUpdateModal extends Component
         $this->statusComment = '';
     }
 
-    public function updateStatus()
+    public function updateStatus(): void
     {
         $this->validate();
 
@@ -46,9 +46,7 @@ class StatusUpdateModal extends Component
             $ticket = RepairTicket::findOrFail($this->ticketId);
 
             DB::transaction(function () use ($ticket) {
-                $ticket->update([
-                    'status' => $this->newStatus,
-                ]);
+                $ticket->update(['status' => $this->newStatus]);
 
                 request()->merge(['status_comment' => $this->statusComment]);
             });
@@ -60,17 +58,16 @@ class StatusUpdateModal extends Component
 
             session()->flash('success', __('Status updated successfully'));
             $this->dispatch('statusUpdated');
-
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             session()->flash('error', __('Error updating status'));
         }
 
         $this->reset(['ticketId', 'newStatus', 'statusComment', 'currentStatus']);
     }
 
-    public function getStatusName($status)
+    public function getStatusName(?string $status): string
     {
-        return $this->statuses[$status] ?? $status;
+        return self::STATUSES[$status] ?? $status ?? '';
     }
 
     public function render()

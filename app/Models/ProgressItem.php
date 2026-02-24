@@ -16,21 +16,21 @@ class ProgressItem extends Model
         'status',
         'payment_status',
         'amount_paid',
-        'is_visible'
+        'is_visible',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'amount_paid' => 'decimal:2',
-        'is_visible' => 'boolean'
+        'is_visible' => 'boolean',
     ];
 
-    public function getRemainingAmountAttribute()
+    public function getRemainingAmountAttribute(): float
     {
         return $this->price - $this->amount_paid;
     }
 
-    public function updatePaymentStatus()
+    public function updatePaymentStatus(): void
     {
         if ($this->amount_paid <= 0) {
             $this->payment_status = 'unpaid';
@@ -38,13 +38,12 @@ class ProgressItem extends Model
             $this->payment_status = 'partially_paid';
         } else {
             $this->payment_status = 'paid';
-            
-            // Auto-hide paid and completed features
+
             if ($this->status === 'completed') {
                 $this->is_visible = false;
             }
         }
-        
+
         $this->save();
     }
 }

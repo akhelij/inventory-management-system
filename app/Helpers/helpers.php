@@ -3,16 +3,14 @@
 if (! function_exists('settings')) {
     function settings()
     {
-        $settings = cache()->remember('settings', 24 * 60, function () {
+        return cache()->remember('settings', 24 * 60, function () {
             // return \Modules\Setting\Entities\Setting::firstOrFail();
         });
-
-        return $settings;
     }
 }
 
 if (! function_exists('format_currency')) {
-    function format_currency($value, $format = true)
+    function format_currency($value, bool $format = true): string|int|float
     {
         if (! $format) {
             return $value;
@@ -21,43 +19,36 @@ if (! function_exists('format_currency')) {
         $settings = settings();
         $position = $settings->default_currency_position ?? '2';
         $symbol = $settings->currency->symbol ?? ' $';
-        $decimal_separator = $settings->currency->decimal_separator ?? '.';
-        $thousand_separator = $settings->currency->thousand_separator ?? ',';
+        $decimalSeparator = $settings->currency->decimal_separator ?? '.';
+        $thousandSeparator = $settings->currency->thousand_separator ?? ',';
 
-        if ($position == 'prefix') {
-            $formatted_value = $symbol.number_format((float) $value, 2, $decimal_separator, $thousand_separator);
-        } else {
-            $formatted_value = number_format((float) $value, 2, $decimal_separator, $thousand_separator).$symbol;
-        }
+        $formatted = number_format((float) $value, 2, $decimalSeparator, $thousandSeparator);
 
-        return $formatted_value;
+        return $position === 'prefix'
+            ? $symbol.$formatted
+            : $formatted.$symbol;
     }
 }
 
 if (! function_exists('make_reference_id')) {
-    function make_reference_id($prefix, $number)
+    function make_reference_id(string $prefix, int|string $number): string
     {
-        $padded_text = $prefix.'-'.str_pad($number, 5, 0, STR_PAD_LEFT);
-
-        return $padded_text;
+        return $prefix.'-'.str_pad($number, 5, '0', STR_PAD_LEFT);
     }
 }
 
 if (! function_exists('array_merge_numeric_values')) {
-    function array_merge_numeric_values()
+    function array_merge_numeric_values(array ...$arrays): array
     {
-        $arrays = func_get_args();
         $merged = [];
+
         foreach ($arrays as $array) {
             foreach ($array as $key => $value) {
                 if (! is_numeric($value)) {
                     continue;
                 }
-                if (! isset($merged[$key])) {
-                    $merged[$key] = $value;
-                } else {
-                    $merged[$key] += $value;
-                }
+
+                $merged[$key] = ($merged[$key] ?? 0) + $value;
             }
         }
 

@@ -5,32 +5,31 @@ namespace App\Http\Controllers\Product;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ProductImportController extends Controller
 {
-    public function create()
+    public function create(): View
     {
         return view('products.import');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'file' => 'required|file|mimes:xls,xlsx',
         ]);
 
-        $the_file = $request->file('file');
-
         try {
-            $spreadsheet = IOFactory::load($the_file->getRealPath());
+            $spreadsheet = IOFactory::load($request->file('file')->getRealPath());
             $sheet = $spreadsheet->getActiveSheet();
-            $row_limit = $sheet->getHighestDataRow();
-            $row_range = range(2, $row_limit);
-            $startcount = 2;
+            $rowRange = range(2, $sheet->getHighestDataRow());
+
             $data = [];
-            foreach ($row_range as $row) {
+            foreach ($rowRange as $row) {
                 $data[] = [
                     'name' => $sheet->getCell('A'.$row)->getValue(),
                     'slug' => $sheet->getCell('B'.$row)->getValue(),
@@ -44,7 +43,6 @@ class ProductImportController extends Controller
                     'product_image' => $sheet->getCell('J'.$row)->getValue(),
                     'notes' => $sheet->getCell('K'.$row)->getValue(),
                 ];
-                $startcount++;
             }
 
             foreach ($data as $product) {
@@ -55,15 +53,8 @@ class ProductImportController extends Controller
             }
         } catch (Exception $e) {
             throw $e;
-
-            // $error_code = $e->errorInfo[1];
-            return redirect()
-                ->route('products.index')
-                ->with('error', $e->getMessage());
         }
 
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Data product has been imported!');
+        return to_route('products.index')->with('success', 'Data product has been imported!');
     }
 }

@@ -13,54 +13,50 @@ use App\Models\Supplier;
 use Carbon\Carbon;
 use Exception;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
-use Str;
 
 class PurchaseController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('purchases.index', [
             'purchases' => Purchase::where('user_id', auth()->id())->count(),
         ]);
     }
 
-    public function approvedPurchases()
+    public function approvedPurchases(): View
     {
-        $purchases = Purchase::with(['supplier'])
-            ->where('status', PurchaseStatus::APPROVED)->get(); // 1 = approved
-
         return view('purchases.approved-purchases', [
-            'purchases' => $purchases,
+            'purchases' => Purchase::with('supplier')->where('status', PurchaseStatus::APPROVED)->get(),
         ]);
     }
 
-    public function show($uuid)
+    public function show(string $uuid): View
     {
         $purchase = Purchase::where('uuid', $uuid)->firstOrFail();
-        // N+1 Problem if load 'createdBy', 'updatedBy',
-        $purchase->loadMissing(['supplier', 'details'])->get();
+        $purchase->loadMissing(['supplier', 'details']);
 
         return view('purchases.show', [
             'purchase' => $purchase,
         ]);
     }
 
-    public function edit($uuid)
+    public function edit(string $uuid): View
     {
-        $purchase = Purchase::where('uuid', $uuid)->firstOrFail();
-        // N+1 Problem if load 'createdBy', 'updatedBy',
-        $purchase->with(['supplier', 'details'])->get();
+        $purchase = Purchase::where('uuid', $uuid)->with(['supplier', 'details'])->firstOrFail();
 
         return view('purchases.edit', [
             'purchase' => $purchase,
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('purchases.create', [
             'categories' => Category::where('user_id', auth()->id())->select(['id', 'name'])->get(),
@@ -68,7 +64,7 @@ class PurchaseController extends Controller
         ]);
     }
 
-    public function store(StorePurchaseRequest $request)
+    public function store(StorePurchaseRequest $request): RedirectResponse
     {
         $purchase = Purchase::create([
             'purchase_no' => IdGenerator::generate([
@@ -78,8 +74,7 @@ class PurchaseController extends Controller
                 'prefix' => 'PRS-',
             ]),
             'status' => PurchaseStatus::PENDING->value,
-            'created_by' => auth()->user()->id,
-            'supplier_id.required' => $request->required,
+            'created_by' => auth()->id(),
             'supplier_id' => $request->supplier_id,
             'date' => $request->date,
             'total_amount' => $request->total_amount,
@@ -87,31 +82,23 @@ class PurchaseController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        /*
-         * TODO: Must validate that
-         */
-        if (! $request->invoiceProducts == null) {
-            $pDetails = [];
-
+        if ($request->invoiceProducts) {
             foreach ($request->invoiceProducts as $product) {
-                $pDetails['purchase_id'] = $purchase['id'];
-                $pDetails['product_id'] = $product['product_id'];
-                $pDetails['quantity'] = $product['quantity'];
-                $pDetails['unitcost'] = $product['unitcost'];
-                $pDetails['total'] = $product['total'];
-                $pDetails['created_at'] = Carbon::now();
-
-                // PurchaseDetails::insert($pDetails);
-                $purchase->details()->insert($pDetails);
+                $purchase->details()->insert([
+                    'purchase_id' => $purchase->id,
+                    'product_id' => $product['product_id'],
+                    'quantity' => $product['quantity'],
+                    'unitcost' => $product['unitcost'],
+                    'total' => $product['total'],
+                    'created_at' => Carbon::now(),
+                ]);
             }
         }
 
-        return redirect()
-            ->route('purchases.index')
-            ->with('success', 'Purchase has been created!');
+        return to_route('purchases.index')->with('success', 'Purchase has been created!');
     }
 
-    public function update($uuid, Request $request)
+    public function update(string $uuid, Request $request): RedirectResponse
     {
         $purchase = Purchase::where('uuid', $uuid)->firstOrFail();
         $products = PurchaseDetails::where('purchase_id', $purchase->id)->get();
@@ -121,72 +108,55 @@ class PurchaseController extends Controller
                 ->update(['quantity' => DB::raw('quantity+'.$product->quantity)]);
         }
 
-        Purchase::findOrFail($purchase->id)
-            ->update([
-                'status' => PurchaseStatus::APPROVED,
-                'updated_by' => auth()->user()->id,
-            ]);
+        $purchase->update([
+            'status' => PurchaseStatus::APPROVED,
+            'updated_by' => auth()->id(),
+        ]);
 
-        return redirect()
-            ->route('purchases.index')
-            ->with('success', 'Purchase has been approved!');
+        return to_route('purchases.index')->with('success', 'Purchase has been approved!');
     }
 
-    public function destroy($uuid)
+    public function destroy(string $uuid): RedirectResponse
     {
-        $purchase = Purchase::where('uuid', $uuid)->firstOrFail();
-        $purchase->delete();
+        Purchase::where('uuid', $uuid)->firstOrFail()->delete();
 
-        return redirect()
-            ->route('purchases.index')
-            ->with('success', 'Purchase has been deleted!');
+        return to_route('purchases.index')->with('success', 'Purchase has been deleted!');
     }
 
-    public function dailyPurchaseReport()
+    public function dailyPurchaseReport(): View
     {
-        $purchases = Purchase::with(['supplier'])
-            // ->where('purchase_status', 1)
-            ->where('date', today()->format('Y-m-d'))->get();
-
         return view('purchases.details-purchase', [
-            'purchases' => $purchases,
+            'purchases' => Purchase::with('supplier')->where('date', today()->format('Y-m-d'))->get(),
         ]);
     }
 
-    public function getPurchaseReport()
+    public function getPurchaseReport(): View
     {
         return view('purchases.report-purchase');
     }
 
-    public function exportPurchaseReport(Request $request)
+    public function exportPurchaseReport(Request $request): void
     {
-        $rules = [
+        $validated = $request->validate([
             'start_date' => 'required|string|date_format:Y-m-d',
             'end_date' => 'required|string|date_format:Y-m-d',
-        ];
-
-        $validatedData = $request->validate($rules);
-
-        $sDate = $validatedData['start_date'];
-        $eDate = $validatedData['end_date'];
+        ]);
 
         $purchases = DB::table('purchase_details')
             ->join('products', 'purchase_details.product_id', '=', 'products.id')
             ->join('purchases', 'purchase_details.purchase_id', '=', 'purchases.id')
-            ->whereBetween('purchases.purchase_date', [$sDate, $eDate])
+            ->whereBetween('purchases.purchase_date', [$validated['start_date'], $validated['end_date']])
             ->where('purchases.purchase_status', '1')
-            ->select('purchases.purchase_no', 'purchases.purchase_date', 'purchases.supplier_id', 'products.code', 'products.name', 'purchase_details.quantity', 'purchase_details.unitcost', 'purchase_details.total')
+            ->select(
+                'purchases.purchase_no', 'purchases.purchase_date', 'purchases.supplier_id',
+                'products.code', 'products.name',
+                'purchase_details.quantity', 'purchase_details.unitcost', 'purchase_details.total'
+            )
             ->get();
 
         $purchase_array[] = [
-            'Date',
-            'No Purchase',
-            'Supplier',
-            'Product Code',
-            'Product',
-            'Quantity',
-            'Unitcost',
-            'Total',
+            'Date', 'No Purchase', 'Supplier', 'Product Code',
+            'Product', 'Quantity', 'Unitcost', 'Total',
         ];
 
         foreach ($purchases as $purchase) {
@@ -205,7 +175,7 @@ class PurchaseController extends Controller
         $this->exportExcel($purchase_array);
     }
 
-    public function exportExcel($products)
+    public function exportExcel(array $products): void
     {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '4000M');
@@ -214,15 +184,15 @@ class PurchaseController extends Controller
             $spreadSheet = new Spreadsheet;
             $spreadSheet->getActiveSheet()->getDefaultColumnDimension()->setWidth(20);
             $spreadSheet->getActiveSheet()->fromArray($products);
-            $Excel_writer = new Xls($spreadSheet);
+            $writer = new Xls($spreadSheet);
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="purchase-report.xls"');
             header('Cache-Control: max-age=0');
             ob_end_clean();
-            $Excel_writer->save('php://output');
+            $writer->save('php://output');
             exit();
-        } catch (Exception $e) {
-            return $e;
+        } catch (Exception) {
+            return;
         }
     }
 }

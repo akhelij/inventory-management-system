@@ -12,10 +12,6 @@ class Category extends Model
 {
     use HasActivityLogs, HasFactory;
 
-    protected $guarded = [
-        'id',
-    ];
-
     protected $fillable = [
         'name',
         'slug',
@@ -23,17 +19,14 @@ class Category extends Model
         'user_id',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class, 'category_id', 'id');
+        return $this->hasMany(Product::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function scopeSearch($query, $value): void
@@ -45,13 +38,5 @@ class Category extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
-    }
-
-    /**
-     * Get the user that owns the Category
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

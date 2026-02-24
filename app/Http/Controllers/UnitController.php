@@ -5,35 +5,34 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Unit\StoreUnitRequest;
 use App\Http\Requests\Unit\UpdateUnitRequest;
 use App\Models\Unit;
-use Str;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class UnitController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $units = Unit::select(['id', 'name', 'slug', 'short_code'])
-            ->get();
-
         return view('units.index', [
-            'units' => $units,
+            'units' => Unit::select(['id', 'name', 'slug', 'short_code'])->get(),
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('units.create');
     }
 
-    public function show(Unit $unit)
+    public function show(Unit $unit): View
     {
-        $unit->loadMissing('products')->get();
+        $unit->loadMissing('products');
 
         return view('units.show', [
             'unit' => $unit,
         ]);
     }
 
-    public function store(StoreUnitRequest $request)
+    public function store(StoreUnitRequest $request): RedirectResponse
     {
         Unit::create([
             'user_id' => auth()->id(),
@@ -42,37 +41,33 @@ class UnitController extends Controller
             'short_code' => $request->short_code,
         ]);
 
-        return redirect()
-            ->route('units.index')
-            ->with('success', 'Unit has been created!');
+        return to_route('units.index')->with('success', 'Unit has been created!');
     }
 
-    public function edit(Unit $unit)
+    public function edit(Unit $unit): View
     {
         return view('units.edit', [
             'unit' => $unit,
         ]);
     }
 
-    public function update(UpdateUnitRequest $request, $slug)
+    public function update(UpdateUnitRequest $request, string $slug): RedirectResponse
     {
         $unit = Unit::where(['user_id' => auth()->id(), 'slug' => $slug])->firstOrFail();
-        $unit->name = $request->name;
-        $unit->slug = Str::slug($request->name);
-        $unit->short_code = $request->short_code;
-        $unit->save();
 
-        return redirect()
-            ->route('units.index')
-            ->with('success', 'Unit has been updated!');
+        $unit->update([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'short_code' => $request->short_code,
+        ]);
+
+        return to_route('units.index')->with('success', 'Unit has been updated!');
     }
 
-    public function destroy(Unit $unit)
+    public function destroy(Unit $unit): RedirectResponse
     {
         $unit->delete();
 
-        return redirect()
-            ->route('units.index')
-            ->with('success', 'Unit has been deleted!');
+        return to_route('units.index')->with('success', 'Unit has been deleted!');
     }
 }

@@ -12,10 +12,6 @@ class Purchase extends Model
 {
     use HasFactory;
 
-    protected $guarded = [
-        'id',
-    ];
-
     protected $fillable = [
         'supplier_id',
         'date',
@@ -28,29 +24,24 @@ class Purchase extends Model
         'uuid',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'date' => 'date',
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'status' => PurchaseStatus::class,
-        ];
-    }
+    protected $casts = [
+        'date' => 'date',
+        'status' => PurchaseStatus::class,
+    ];
 
     public function supplier(): BelongsTo
     {
-        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
+        return $this->belongsTo(Supplier::class);
     }
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by', 'id');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function updatedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by', 'id');
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     public function details(): HasMany
@@ -58,17 +49,14 @@ class Purchase extends Model
         return $this->hasMany(PurchaseDetails::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function scopeSearch($query, $value): void
     {
         $query->where('purchase_no', 'like', "%{$value}%")
             ->orWhere('status', 'like', "%{$value}%");
-    }
-
-    /**
-     * Get the user that owns the Category
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

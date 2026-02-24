@@ -10,30 +10,25 @@ class UnitTable extends Component
 {
     use WithPagination;
 
-    public $perPage = 25;
+    public int $perPage = 25;
 
-    public $search = '';
+    public string $search = '';
 
-    public $sortField = 'name';
+    public string $sortField = 'name';
 
-    public $sortAsc = true;
+    public bool $sortAsc = true;
 
-    public function sortBy($field): void
+    public function sortBy(string $field): void
     {
-        if ($this->sortField === $field) {
-            $this->sortAsc = ! $this->sortAsc;
-
-        } else {
-            $this->sortAsc = true;
-        }
-
+        $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
         $this->sortField = $field;
     }
 
     public function render()
     {
         return view('livewire.tables.unit-table', [
-            'units' => Unit::where('user_id', auth()->id())->with('products')
+            'units' => Unit::where('user_id', auth()->id())
+                ->with('products')
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
                 ->paginate($this->perPage),

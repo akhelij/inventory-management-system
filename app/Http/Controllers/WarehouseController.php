@@ -3,32 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Warehouse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class WarehouseController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
         return view('warehouses.index', [
             'warehouses' => Warehouse::paginate(20),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         return view('warehouses.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -36,35 +29,24 @@ class WarehouseController extends Controller
 
         Warehouse::create($request->all());
 
-        return redirect()
-            ->route('warehouses.index')
-            ->with('success', 'Warehouse has been created!');
+        return to_route('warehouses.index')->with('success', 'Warehouse has been created!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Warehouse $warehouse)
+    public function show(Warehouse $warehouse): View
     {
         return view('warehouses.show', [
             'warehouse' => $warehouse,
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Warehouse $warehouse)
+    public function edit(Warehouse $warehouse): View
     {
         return view('warehouses.edit', [
             'warehouse' => $warehouse,
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Warehouse $warehouse)
+    public function update(Request $request, Warehouse $warehouse): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -72,20 +54,13 @@ class WarehouseController extends Controller
 
         $warehouse->update($request->all());
 
-        return redirect()
-            ->route('warehouses.index')
-            ->with('success', 'Warehouse has been updated!');
+        return to_route('warehouses.index')->with('success', 'Warehouse has been updated!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Warehouse $warehouse)
+    public function destroy(Warehouse $warehouse): RedirectResponse
     {
         $warehouse->delete();
 
-        return redirect()
-            ->route('warehouses.index')
-            ->with('success', 'Warehouse has been deleted!');
+        return to_route('warehouses.index')->with('success', 'Warehouse has been deleted!');
     }
 }

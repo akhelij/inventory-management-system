@@ -4,51 +4,50 @@ namespace App\Livewire;
 
 use App\Models\Order;
 use App\Models\OrderDetails;
+use App\Models\Product;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class OrderUpdate extends Component
 {
-    public $order_id;
+    public int $order_id;
 
-    public function mount($order_id)
+    public function mount(int $order_id): void
     {
         $this->order_id = $order_id;
     }
 
-    public function delete($id)
+    public function delete(int $id): void
     {
         OrderDetails::where('id', $id)->delete();
-        $this->updateOrder(); // Immediately recalculate totals after deletion
+        $this->updateOrder();
     }
 
-    public function updateQuantity($product_id, $quantity)
+    public function updateQuantity(int $product_id, int $quantity): void
     {
-        // Check if quantity exceeds available stock and show warning
-        $product = \App\Models\Product::find($product_id);
+        $product = Product::find($product_id);
+
         if ($product && $quantity > $product->quantity) {
             session()->flash('warning', "Warning: Requested quantity ({$quantity}) exceeds available stock ({$product->quantity}) for {$product->name}. Order may not be approvable.");
         }
 
-        $order_details = OrderDetails::where('order_id', $this->order_id)->where('product_id', $product_id)->first();
+        $order_details = OrderDetails::where('order_id', $this->order_id)
+            ->where('product_id', $product_id)
+            ->first();
+
         $order_details->update([
             'quantity' => $quantity,
             'total' => $quantity * $order_details->unitcost,
         ]);
-        $this->updateOrder(); // Immediately recalculate totals after quantity update
+
+        $this->updateOrder();
     }
 
-    public function updateOrder()
+    public function updateOrder(): Order
     {
         $order = Order::find($this->order_id);
         $details = OrderDetails::where('order_id', $this->order_id)->get();
-        $total = 0;
-
-        foreach ($details as $item) {
-            $total += $item->total;
-        }
-
-        // Calculate due amount considering existing payments
+        $total = $details->sum('total');
         $due = $total - ($order->pay ?? 0);
 
         $order->update([
@@ -68,6 +67,6 @@ class OrderUpdate extends Component
         $order_details = OrderDetails::where('order_id', $this->order_id)->get();
         $order = $this->updateOrder();
 
-        return view('livewire.order-update')->with(compact('order_details', 'order'));
+        return view('livewire.order-update', compact('order_details', 'order'));
     }
 }

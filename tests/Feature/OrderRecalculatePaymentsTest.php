@@ -5,23 +5,30 @@ namespace Tests\Feature;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Payment;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderRecalculatePaymentsTest extends TestCase
 {
-    use RefreshDatabase;
+    private User $user;
 
-    public function test_recalculate_updates_pay_and_due(): void
+    protected function setUp(): void
     {
-        $user = $this->createUser();
-        $this->actingAs($user);
-        $customer = $this->createCustomer($user);
+        parent::setUp();
 
-        $order = Order::create([
+        $this->user = $this->createUser();
+        $this->actingAs($this->user);
+    }
+
+    private function createOrder(array $overrides = []): Order
+    {
+        $customer = $this->createCustomer($this->user);
+
+        return Order::create(array_merge([
             'uuid' => Str::uuid(),
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
             'customer_id' => $customer->id,
             'order_date' => now(),
             'order_status' => OrderStatus::APPROVED,
@@ -29,26 +36,36 @@ class OrderRecalculatePaymentsTest extends TestCase
             'sub_total' => 10000,
             'vat' => 0,
             'total' => 10000,
-            'invoice_no' => 'INV-RECALC-001',
+            'invoice_no' => 'INV-RECALC-'.Str::random(4),
             'payment_type' => 'HandCash',
             'pay' => 0,
             'due' => 10000,
-        ]);
+        ], $overrides));
+    }
 
-        $payment = Payment::create([
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
+    private function createPayment(int $customerId, array $overrides = []): Payment
+    {
+        return Payment::create(array_merge([
+            'user_id' => $this->user->id,
+            'customer_id' => $customerId,
             'date' => now(),
-            'nature' => 'CHQ-RECALC-001',
+            'nature' => 'CHQ-RECALC-'.Str::random(4),
             'payment_type' => 'Cheque',
             'echeance' => now()->addMonth(),
             'amount' => 7000,
             'cashed_in' => true,
-        ]);
+        ], $overrides));
+    }
+
+    #[Test]
+    public function recalculate_updates_pay_and_due(): void
+    {
+        $order = $this->createOrder();
+        $payment = $this->createPayment($order->customer_id);
 
         $order->payments()->attach($payment->id, [
             'allocated_amount' => 7000,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
 
         $order->recalculatePayments();
@@ -58,24 +75,12 @@ class OrderRecalculatePaymentsTest extends TestCase
         $this->assertEquals(3000, $order->due);
     }
 
-    public function test_recalculate_with_no_allocations(): void
+    #[Test]
+    public function recalculate_with_no_allocations(): void
     {
-        $user = $this->createUser();
-        $this->actingAs($user);
-        $customer = $this->createCustomer($user);
-
-        $order = Order::create([
-            'uuid' => Str::uuid(),
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
-            'order_date' => now(),
-            'order_status' => OrderStatus::APPROVED,
-            'total_products' => 1,
+        $order = $this->createOrder([
             'sub_total' => 5000,
-            'vat' => 0,
             'total' => 5000,
-            'invoice_no' => 'INV-RECALC-002',
-            'payment_type' => 'HandCash',
             'pay' => 3000,
             'due' => 2000,
         ]);
@@ -87,57 +92,24 @@ class OrderRecalculatePaymentsTest extends TestCase
         $this->assertEquals(5000, $order->due);
     }
 
-    public function test_recalculate_with_multiple_allocations(): void
+    #[Test]
+    public function recalculate_with_multiple_allocations(): void
     {
-        $user = $this->createUser();
-        $this->actingAs($user);
-        $customer = $this->createCustomer($user);
+        $order = $this->createOrder();
 
-        $order = Order::create([
-            'uuid' => Str::uuid(),
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
-            'order_date' => now(),
-            'order_status' => OrderStatus::APPROVED,
-            'total_products' => 1,
-            'sub_total' => 10000,
-            'vat' => 0,
-            'total' => 10000,
-            'invoice_no' => 'INV-RECALC-003',
-            'payment_type' => 'HandCash',
-            'pay' => 0,
-            'due' => 10000,
-        ]);
-
-        $payment1 = Payment::create([
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
-            'date' => now(),
-            'nature' => 'CHQ-RECALC-002',
-            'payment_type' => 'Cheque',
-            'echeance' => now()->addMonth(),
-            'amount' => 4000,
-            'cashed_in' => true,
-        ]);
-
-        $payment2 = Payment::create([
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
-            'date' => now(),
-            'nature' => 'CHQ-RECALC-003',
-            'payment_type' => 'HandCash',
-            'echeance' => now()->addMonth(),
+        $payment1 = $this->createPayment($order->customer_id, ['amount' => 4000]);
+        $payment2 = $this->createPayment($order->customer_id, [
             'amount' => 3000,
-            'cashed_in' => true,
+            'payment_type' => 'HandCash',
         ]);
 
         $order->payments()->attach($payment1->id, [
             'allocated_amount' => 4000,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
         $order->payments()->attach($payment2->id, [
             'allocated_amount' => 3000,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
 
         $order->recalculatePayments();

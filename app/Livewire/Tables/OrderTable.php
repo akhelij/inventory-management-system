@@ -13,44 +13,39 @@ class OrderTable extends Component
 {
     use WithPagination;
 
-    public $perPage = 25;
+    public int $perPage = 25;
 
-    public $search = '';
+    public string $search = '';
 
-    public $sortField = 'invoice_no';
+    public string $sortField = 'invoice_no';
 
-    public $sortAsc = false;
+    public bool $sortAsc = false;
 
-    public $startDate = null;
+    public ?string $startDate = null;
 
-    public $endDate = null;
+    public ?string $endDate = null;
 
-    public $order_ids = [];
+    public array $order_ids = [];
 
-    // New properties for status update
-    public $showWarningModal = false;
+    public bool $showWarningModal = false;
 
-    public $selectedOrder = null;
+    public ?Order $selectedOrder = null;
 
-    public $newStatus = null;
+    public mixed $newStatus = null;
 
-    public $statusReason = '';
+    public string $statusReason = '';
 
-    public $isOverLimit = false;
+    public bool $isOverLimit = false;
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
-    public function sortBy($field): void
+    public function sortBy(string $field): void
     {
-        if ($this->sortField === $field) {
-            $this->sortAsc = ! $this->sortAsc;
-        } else {
-            $this->sortAsc = true;
-        }
+        $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
         $this->sortField = $field;
     }
 
-    public function selectOrder($orderId)
+    public function selectOrder(int $orderId): void
     {
         if (in_array($orderId, $this->order_ids)) {
             $this->order_ids = array_diff($this->order_ids, [$orderId]);
@@ -59,7 +54,7 @@ class OrderTable extends Component
         }
     }
 
-    public function initiateStatusUpdate($orderId, $newStatus)
+    public function initiateStatusUpdate(int $orderId, mixed $newStatus): void
     {
         $this->selectedOrder = Order::find($orderId);
         $this->newStatus = $newStatus;
@@ -78,7 +73,7 @@ class OrderTable extends Component
         $this->updateOrderStatus();
     }
 
-    public function updateOrderStatus($force = false)
+    public function updateOrderStatus(bool $force = false): void
     {
         if (! $this->selectedOrder) {
             return;
@@ -108,12 +103,12 @@ class OrderTable extends Component
         }
     }
 
-    public function forceApprove()
+    public function forceApprove(): void
     {
         $this->updateOrderStatus(true);
     }
 
-    public function cancelStatusUpdate()
+    public function cancelStatusUpdate(): void
     {
         $this->reset(['showWarningModal', 'selectedOrder', 'newStatus', 'statusReason', 'isOverLimit']);
     }
@@ -122,9 +117,7 @@ class OrderTable extends Component
     {
         $query = Order::query();
 
-        $query->when(auth()->user()->warehouse_id != null, function ($q) {
-            return $q->where('user_id', auth()->id());
-        });
+        $query->when(auth()->user()->warehouse_id != null, fn ($q) => $q->where('user_id', auth()->id()));
 
         if (! auth()->user()->hasRole('admin')) {
             $query->where('user_id', auth()->id())

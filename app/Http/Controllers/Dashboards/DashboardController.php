@@ -10,101 +10,80 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Quotation;
 use Carbon\Carbon;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $orders = Order::where('user_id', auth()->id())->count();
-        $products = Product::count();
-
-        $purchases = Purchase::where('user_id', auth()->id())->count();
-        $todayPurchases = Purchase::where('date', today()->format('Y-m-d'))->count();
-        $todayProducts = Product::where('created_at', today()->format('Y-m-d'))->count();
-        $todayQuotations = Quotation::where('created_at', today()->format('Y-m-d'))->count();
-        $todayOrders = Order::where('created_at', today()->format('Y-m-d'))->count();
-
-        $categories = Category::count();
-        $quotations = Quotation::where('user_id', auth()->id())->count();
-
-        $analytics = $this->getAnalytics();
-        $customer_stats = $this->getCustomerStats();
+        $today = today()->format('Y-m-d');
 
         return view('dashboard', [
-            'products' => $products,
-            'orders' => $orders,
-            'purchases' => $purchases,
-            'todayPurchases' => $todayPurchases,
-            'todayProducts' => $todayProducts,
-            'todayQuotations' => $todayQuotations,
-            'todayOrders' => $todayOrders,
-            'categories' => $categories,
-            'quotations' => $quotations,
-        ] + $analytics + $customer_stats);
+            'products' => Product::count(),
+            'orders' => Order::where('user_id', auth()->id())->count(),
+            'purchases' => Purchase::where('user_id', auth()->id())->count(),
+            'todayPurchases' => Purchase::where('date', $today)->count(),
+            'todayProducts' => Product::where('created_at', $today)->count(),
+            'todayQuotations' => Quotation::where('created_at', $today)->count(),
+            'todayOrders' => Order::where('created_at', $today)->count(),
+            'categories' => Category::count(),
+            'quotations' => Quotation::where('user_id', auth()->id())->count(),
+        ] + $this->getAnalytics() + $this->getCustomerStats());
     }
 
-    public function getAnalytics()
+    public function getAnalytics(): array
     {
-        // Set up time periods
         $endDate = Carbon::now();
         $startDate = $endDate->copy()->subDays(30);
         $previousStartDate = $startDate->copy()->subDays(30);
 
-        // Current period orders
         $currentPeriodOrders = Order::query()
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
-        // Previous period orders
         $previousPeriodOrders = Order::query()
             ->whereBetween('created_at', [$previousStartDate, $startDate])
             ->get();
 
-        // Calculate metrics
-        $currentPeriodMetrics = [
-            'total_orders' => $currentPeriodOrders->count(),
-            'revenue' => $currentPeriodOrders->sum('total'),
-            'completed_orders' => $currentPeriodOrders->where('pay', '>', 0)->count(),
-        ];
+        $currentTotal = $currentPeriodOrders->count();
+        $currentRevenue = $currentPeriodOrders->sum('total');
+        $completedOrders = $currentPeriodOrders->where('pay', '>', 0)->count();
 
-        $previousPeriodMetrics = [
-            'total_orders' => $previousPeriodOrders->count(),
-            'revenue' => $previousPeriodOrders->sum('total'),
-        ];
+        $previousTotal = $previousPeriodOrders->count();
+        $previousRevenue = $previousPeriodOrders->sum('total');
 
-        // Calculate percentages and rates
-        $salesGrowth = $previousPeriodMetrics['total_orders'] > 0
-            ? (($currentPeriodMetrics['total_orders'] - $previousPeriodMetrics['total_orders']) / $previousPeriodMetrics['total_orders']) * 100
+        $salesGrowth = $previousTotal > 0
+            ? (($currentTotal - $previousTotal) / $previousTotal) * 100
             : 100;
 
-        $conversionRate = $currentPeriodMetrics['total_orders'] > 0
-            ? ($currentPeriodMetrics['completed_orders'] / $currentPeriodMetrics['total_orders']) * 100
+        $conversionRate = $currentTotal > 0
+            ? ($completedOrders / $currentTotal) * 100
             : 0;
 
-        $revenueGrowth = $previousPeriodMetrics['revenue'] > 0
-            ? (($currentPeriodMetrics['revenue'] - $previousPeriodMetrics['revenue']) / $previousPeriodMetrics['revenue']) * 100
+        $revenueGrowth = $previousRevenue > 0
+            ? (($currentRevenue - $previousRevenue) / $previousRevenue) * 100
             : 100;
 
         return [
             'sales_growth_percentage' => round($salesGrowth, 2),
             'conversion_rate' => round($conversionRate, 2),
-            'revenue_amount' => $currentPeriodMetrics['revenue'],
+            'revenue_amount' => $currentRevenue,
             'revenue_growth_percentage' => round($revenueGrowth, 2),
         ];
     }
 
-    public function getCustomerStats()
+    public function getCustomerStats(): array
     {
         $totalCustomers = Customer::count();
-        $lastThirtyDaysCustomers = Customer::where('created_at', '>=', Carbon::now()->subDays(30))->count();
+        $newCustomers = Customer::where('created_at', '>=', Carbon::now()->subDays(30))->count();
 
         $percentageIncrease = $totalCustomers > 0
-            ? ($lastThirtyDaysCustomers / $totalCustomers) * 100
+            ? ($newCustomers / $totalCustomers) * 100
             : 0;
 
         return [
             'total_customers' => $totalCustomers,
-            'new_customers_30days' => $lastThirtyDaysCustomers,
+            'new_customers_30days' => $newCustomers,
             'percentage_of_total' => round($percentageIncrease, 2),
         ];
     }

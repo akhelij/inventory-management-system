@@ -6,42 +6,42 @@ use App\Enums\PermissionEnum;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Models\Category;
-use Str;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CATEGORIES), 403);
-        $categories = Category::count();
 
         return view('categories.index', [
-            'categories' => $categories,
+            'categories' => Category::count(),
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CATEGORIES), 403);
 
         return view('categories.create');
     }
 
-    public function store(StoreCategoryRequest $request)
+    public function store(StoreCategoryRequest $request): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CATEGORIES), 403);
+
         Category::create([
             'user_id' => auth()->id(),
             'name' => $request->name,
             'slug' => Str::slug($request->name),
         ]);
 
-        return redirect()
-            ->route('categories.index')
-            ->with('success', 'Category has been created!');
+        return to_route('categories.index')->with('success', 'Category has been created!');
     }
 
-    public function show(Category $category)
+    public function show(Category $category): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CATEGORIES), 403);
 
@@ -50,7 +50,7 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function edit(Category $category)
+    public function edit(Category $category): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CATEGORIES), 403);
 
@@ -59,26 +59,24 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CATEGORIES), 403);
+
         $category->update([
             'name' => $request->name,
             'slug' => Str::slug($request->name),
         ]);
 
-        return redirect()
-            ->route('categories.index')
-            ->with('success', 'Category has been updated!');
+        return to_route('categories.index')->with('success', 'Category has been updated!');
     }
 
-    public function destroy(Category $category)
+    public function destroy(Category $category): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::DELETE_CATEGORIES), 403);
+
         $category->delete();
 
-        return redirect()
-            ->route('categories.index')
-            ->with('success', 'Category has been deleted!');
+        return to_route('categories.index')->with('success', 'Category has been deleted!');
     }
 }

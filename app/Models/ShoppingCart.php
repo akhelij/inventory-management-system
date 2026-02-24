@@ -4,78 +4,49 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ShoppingCart extends Model
 {
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
     protected $table = 'shoppingcart';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'identifier',
         'instance',
         'content',
     ];
 
-    /**
-     * Get the user that owns the cart.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'identifier', 'id');
     }
 
-    /**
-     * Get the cart content as a collection.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function getContent()
+    public function getContent(): Collection
     {
         try {
-            // Decode and unserialize the content
             $decoded = base64_decode($this->content);
-            
-            // For debugging
-            \Illuminate\Support\Facades\Log::info('Cart content (raw): ' . $this->content);
-            \Illuminate\Support\Facades\Log::info('Cart content (decoded): ' . $decoded);
-            
+
+            Log::info('Cart content (raw): '.$this->content);
+            Log::info('Cart content (decoded): '.$decoded);
+
             $unserialized = unserialize($decoded);
-            
-            // If it's already a collection, return it
-            if ($unserialized instanceof \Illuminate\Support\Collection) {
-                return $unserialized;
-            }
-            
-            // Otherwise, create a new collection from the result
-            return collect($unserialized);
+
+            return $unserialized instanceof Collection ? $unserialized : collect($unserialized);
         } catch (\Exception $e) {
-            // Log the error for debugging
-            \Illuminate\Support\Facades\Log::error('Cart deserialization error: ' . $e->getMessage());
+            Log::error('Cart deserialization error: '.$e->getMessage());
+
             return collect();
         }
     }
-    
-    /**
-     * Clear the cart for a specific user
-     *
-     * @param int $userId
-     * @return bool
-     */
-    public static function clearCart($userId)
+
+    public static function clearCart(int $userId): bool
     {
         try {
-            return self::where('identifier', $userId)->delete();
+            return (bool) static::where('identifier', $userId)->delete();
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Error clearing cart: ' . $e->getMessage());
+            Log::error('Error clearing cart: '.$e->getMessage());
+
             return false;
         }
     }

@@ -10,23 +10,17 @@ class PurchaseTable extends Component
 {
     use WithPagination;
 
-    public $perPage = 25;
+    public int $perPage = 25;
 
-    public $search = '';
+    public string $search = '';
 
-    public $sortField = 'purchase_no';
+    public string $sortField = 'purchase_no';
 
-    public $sortAsc = false;
+    public bool $sortAsc = false;
 
-    public function sortBy($field): void
+    public function sortBy(string $field): void
     {
-        if ($this->sortField === $field) {
-            $this->sortAsc = ! $this->sortAsc;
-
-        } else {
-            $this->sortAsc = true;
-        }
-
+        $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
         $this->sortField = $field;
     }
 

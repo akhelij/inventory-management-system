@@ -3,23 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Driver;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DriverController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('drivers.index', [
             'drivers' => Driver::paginate(20),
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('drivers.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -29,19 +31,17 @@ class DriverController extends Controller
 
         Driver::create($request->all());
 
-        return redirect()
-            ->route('drivers.index')
-            ->with('success', 'Driver has been created!');
+        return to_route('drivers.index')->with('success', 'Driver has been created!');
     }
 
-    public function edit(Driver $driver)
+    public function edit(Driver $driver): View
     {
         return view('drivers.edit', [
             'driver' => $driver,
         ]);
     }
 
-    public function update(Request $request, Driver $driver)
+    public function update(Request $request, Driver $driver): RedirectResponse
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -51,17 +51,13 @@ class DriverController extends Controller
 
         $driver->update($request->all());
 
-        return redirect()
-            ->route('drivers.index')
-            ->with('success', 'Driver has been updated!');
+        return to_route('drivers.index')->with('success', 'Driver has been updated!');
     }
 
-    public function destroy(Driver $driver)
+    public function destroy(Driver $driver): RedirectResponse
     {
         $driver->delete();
 
-        return redirect()
-            ->route('drivers.index')
-            ->with('success', 'Driver has been deleted!');
+        return to_route('drivers.index')->with('success', 'Driver has been deleted!');
     }
 }

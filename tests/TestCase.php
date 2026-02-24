@@ -8,15 +8,14 @@ use App\Models\Product;
 use App\Models\Supplier;
 use App\Models\Unit;
 use App\Models\User;
-use Illuminate\Foundation\Testing\Concerns\InteractsWithExceptionHandling;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use InteractsWithExceptionHandling, RefreshDatabase;
+    use RefreshDatabase;
 
-    public function createUser()
+    protected function createUser(): User
     {
         return User::where('email', 'admin@admin.com')->first()
             ?? User::factory()->create([
@@ -25,7 +24,7 @@ abstract class TestCase extends BaseTestCase
             ]);
     }
 
-    public function createProduct()
+    protected function createProduct(): Product
     {
         return Product::factory()->create([
             'name' => 'Test Product',
@@ -34,21 +33,21 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    protected function createCategory()
+    protected function createCategory(): Category
     {
         return Category::factory()->create([
             'name' => 'Speakers',
         ]);
     }
 
-    protected function createUnit()
+    protected function createUnit(): Unit
     {
         return Unit::factory()->create([
             'name' => 'piece',
         ]);
     }
 
-    public function createCustomer(?User $user = null)
+    protected function createCustomer(?User $user = null): Customer
     {
         $user = $user ?? User::first() ?? $this->createUser();
 
@@ -58,7 +57,7 @@ abstract class TestCase extends BaseTestCase
         ]);
     }
 
-    public function createSupplier()
+    protected function createSupplier(): Supplier
     {
         return Supplier::create([
             'name' => 'Thomann',

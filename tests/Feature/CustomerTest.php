@@ -2,48 +2,47 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CustomerTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_unauthenticated_user_cant_has_access(): void
+    #[Test]
+    public function unauthenticated_user_cannot_access(): void
     {
-        $response = $this->get('customers/');
-
-        $response
-            ->assertStatus(302)
+        $this->get('customers/')
             ->assertRedirect('login/');
     }
 
-    public function test_logged_user_has_access_to_url(): void
+    #[Test]
+    public function logged_user_has_access_to_url(): void
     {
         $this->withoutExceptionHandling();
 
-        // Create Unit
         $this->createCustomer();
         $this->assertDatabaseCount('customers', 1)
             ->assertDatabaseHas('customers', ['name' => 'Customer 1']);
 
         $user = $this->createUser();
-        $response = $this->actingAs($user)
-            ->get('customers/');
 
-        $response->assertStatus(200)
+        $this->actingAs($user)
+            ->get('customers/')
+            ->assertOk()
             ->assertViewIs('customers.index');
     }
 
-    public function test_user_can_use_create_view(): void
+    #[Test]
+    public function user_can_use_create_view(): void
     {
         $user = $this->createUser();
-        $response = $this->actingAs($user)->get('customers/create');
 
-        $response->assertViewIs('customers.create');
+        $this->actingAs($user)
+            ->get('customers/create')
+            ->assertViewIs('customers.create');
     }
 
-    public function test_user_can_delete_customer(): void
+    #[Test]
+    public function user_can_delete_customer(): void
     {
         $this->withoutExceptionHandling();
 
@@ -58,30 +57,29 @@ class CustomerTest extends TestCase
         $this->delete('/customers/'.$customer->id);
 
         $this->assertDatabaseCount('customers', 0);
-
     }
 
-    public function test_user_can_see_show_view(): void
+    #[Test]
+    public function user_can_see_show_view(): void
     {
         $user = $this->createUser();
         $customer = $this->createCustomer();
 
-        $response = $this->actingAs($user)->get('customers/'.$customer->id);
-
-        $response
-            ->assertStatus(200)
+        $this->actingAs($user)
+            ->get('customers/'.$customer->id)
+            ->assertOk()
             ->assertViewIs('customers.show');
     }
 
-    public function test_user_can_see_edit_view(): void
+    #[Test]
+    public function user_can_see_edit_view(): void
     {
         $user = $this->createUser();
         $customer = $this->createCustomer();
 
-        $response = $this->actingAs($user)->get('customers/'.$customer->id.'/edit');
-
-        $response
-            ->assertStatus(200)
+        $this->actingAs($user)
+            ->get('customers/'.$customer->id.'/edit')
+            ->assertOk()
             ->assertViewIs('customers.edit');
     }
 }

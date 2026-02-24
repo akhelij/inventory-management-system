@@ -4,53 +4,55 @@ namespace App\Enums;
 
 enum PermissionEnum
 {
-    const READ_USERS = 'read users';
+    public const READ_USERS = 'read users';
 
-    const CREATE_USERS = 'create users';
+    public const CREATE_USERS = 'create users';
 
-    const UPDATE_USERS = 'update users';
+    public const UPDATE_USERS = 'update users';
 
-    const DELETE_USERS = 'delete users';
+    public const DELETE_USERS = 'delete users';
 
-    const READ_ROLES_PERMISSIONS = 'read roles & permissions';
+    public const READ_ROLES_PERMISSIONS = 'read roles & permissions';
 
-    const CREATE_ROLES_PERMISSIONS = 'create roles & permissions';
+    public const CREATE_ROLES_PERMISSIONS = 'create roles & permissions';
 
-    const UPDATE_ROLES_PERMISSIONS = 'update roles & permissions';
+    public const UPDATE_ROLES_PERMISSIONS = 'update roles & permissions';
 
-    const DELETE_ROLES_PERMISSIONS = 'delete roles & permissions';
+    public const DELETE_ROLES_PERMISSIONS = 'delete roles & permissions';
 
-    const READ_PRODUCTS = 'read products';
+    public const READ_PRODUCTS = 'read products';
 
-    const CREATE_PRODUCTS = 'create products';
+    public const CREATE_PRODUCTS = 'create products';
 
-    const UPDATE_PRODUCTS = 'update products';
+    public const UPDATE_PRODUCTS = 'update products';
 
-    const DELETE_PRODUCTS = 'delete products';
+    public const DELETE_PRODUCTS = 'delete products';
 
-    const READ_ORDERS = 'read orders';
+    public const READ_ORDERS = 'read orders';
 
-    const CREATE_ORDERS = 'create orders';
+    public const CREATE_ORDERS = 'create orders';
 
-    const UPDATE_ORDERS = 'update orders';
+    public const UPDATE_ORDERS = 'update orders';
 
-    const DELETE_ORDERS = 'delete orders';
+    public const DELETE_ORDERS = 'delete orders';
 
-    const READ_CATEGORIES = 'read categories';
+    public const UPDATE_ORDERS_STATUS = 'update orders status';
 
-    const CREATE_CATEGORIES = 'create categories';
+    public const READ_CATEGORIES = 'read categories';
 
-    const UPDATE_CATEGORIES = 'update categories';
+    public const CREATE_CATEGORIES = 'create categories';
 
-    const DELETE_CATEGORIES = 'delete categories';
+    public const UPDATE_CATEGORIES = 'update categories';
 
-    const READ_CUSTOMERS = 'read customers';
+    public const DELETE_CATEGORIES = 'delete categories';
 
-    const CREATE_CUSTOMERS = 'create customers';
+    public const READ_CUSTOMERS = 'read customers';
 
-    const UPDATE_CUSTOMERS = 'update customers';
+    public const CREATE_CUSTOMERS = 'create customers';
 
-    const DELETE_CUSTOMERS = 'delete customers';
+    public const UPDATE_CUSTOMERS = 'update customers';
+
+    public const DELETE_CUSTOMERS = 'delete customers';
 
     public const READ_REPAIRS = 'read repairtickets';
 
@@ -60,7 +62,5 @@ enum PermissionEnum
 
     public const DELETE_REPAIRS = 'delete repairtickets';
 
-    const ACTIVITY_LOGS = 'activity logs';
-
-    const UPDATE_ORDERS_STATUS = 'update orders status';
+    public const ACTIVITY_LOGS = 'activity logs';
 }

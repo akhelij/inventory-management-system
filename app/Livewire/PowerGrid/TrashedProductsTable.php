@@ -6,25 +6,24 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class TrashedProductsTable extends PowerGridComponent
 {
     public function setUp(): array
     {
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 
-            Header::make()->showSearchInput(),
+            PowerGrid::header()
+                ->showSearchInput(),
 
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
@@ -36,22 +35,16 @@ final class TrashedProductsTable extends PowerGridComponent
             ->with(['category', 'unit']);
     }
 
-    public function addColumns(): PowerGridColumns
+    public function fields(): PowerGridFields
     {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('name')
-            ->addColumn('category_name', function (Product $product) {
-                return $product->category->name ?? 'N/A';
-            })
-            ->addColumn('quantity')
-            ->addColumn('unit_name', function (Product $product) {
-                return $product->unit->short_code ?? 'N/A';
-            })
-            ->addColumn('selling_price')
-            ->addColumn('deleted_at_formatted', function (Product $product) {
-                return $product->deleted_at->format('Y-m-d H:i:s');
-            });
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('name')
+            ->add('category_name', fn (Product $product) => $product->category->name ?? 'N/A')
+            ->add('quantity')
+            ->add('unit_name', fn (Product $product) => $product->unit->short_code ?? 'N/A')
+            ->add('selling_price')
+            ->add('deleted_at_formatted', fn (Product $product) => $product->deleted_at->format('Y-m-d H:i:s'));
     }
 
     public function columns(): array
@@ -102,12 +95,10 @@ final class TrashedProductsTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    public function actions(\App\Models\Product $row): array
+    public function actions(Product $row): array
     {
         return [
             Button::make('restore', '<i class="fas fa-undo"></i>')

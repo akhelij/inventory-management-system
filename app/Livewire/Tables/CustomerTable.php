@@ -11,22 +11,17 @@ class CustomerTable extends Component
 {
     use WithPagination;
 
-    public $perPage = 15;
+    public int $perPage = 15;
 
-    public $search = '';
+    public string $search = '';
 
-    public $sortField = 'name';
+    public string $sortField = 'name';
 
-    public $sortAsc = false;
+    public bool $sortAsc = false;
 
-    public function sortBy($field): void
+    public function sortBy(string $field): void
     {
-        if ($this->sortField === $field) {
-            $this->sortAsc = ! $this->sortAsc;
-        } else {
-            $this->sortAsc = true;
-        }
-
+        $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
         $this->sortField = $field;
     }
 
@@ -45,7 +40,6 @@ class CustomerTable extends Component
             $query = $query->where('have_unpaid_checks', true);
         }
 
-        // Manually create a paginator for the filtered customers
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $currentItems = $query->slice(($currentPage - 1) * $this->perPage, $this->perPage)->values();
         $customers = new LengthAwarePaginator($currentItems, $query->count(), $this->perPage, $currentPage);

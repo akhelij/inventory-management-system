@@ -12,40 +12,29 @@ class OrderPaymentController extends Controller
     public function store(Order $order, Payment $payment): JsonResponse
     {
         if ($order->customer_id !== $payment->customer_id) {
-            return response()->json([
-                'message' => 'Payment and order must belong to the same customer.',
-            ], 422);
+            return response()->json(['message' => 'Payment and order must belong to the same customer.'], 422);
         }
 
-        if (!$payment->cashed_in) {
-            return response()->json([
-                'message' => 'Only cashed-in payments can be allocated.',
-            ], 422);
+        if (! $payment->cashed_in) {
+            return response()->json(['message' => 'Only cashed-in payments can be allocated.'], 422);
         }
 
         if ($order->order_status !== OrderStatus::APPROVED) {
-            return response()->json([
-                'message' => 'Only approved orders can receive payment allocations.',
-            ], 422);
+            return response()->json(['message' => 'Only approved orders can receive payment allocations.'], 422);
         }
 
         if ($order->due <= 0) {
-            return response()->json([
-                'message' => 'Order is already fully paid.',
-            ], 422);
+            return response()->json(['message' => 'Order is already fully paid.'], 422);
         }
 
         if ($order->payments()->where('payment_id', $payment->id)->exists()) {
-            return response()->json([
-                'message' => 'This payment is already allocated to this order.',
-            ], 422);
+            return response()->json(['message' => 'This payment is already allocated to this order.'], 422);
         }
 
         $unallocated = $payment->unallocated_amount;
+
         if ($unallocated <= 0) {
-            return response()->json([
-                'message' => 'Payment is fully allocated.',
-            ], 422);
+            return response()->json(['message' => 'Payment is fully allocated.'], 422);
         }
 
         $allocatedAmount = min($unallocated, $order->due);
@@ -56,7 +45,6 @@ class OrderPaymentController extends Controller
         ]);
 
         $order->recalculatePayments();
-
         $order->load('payments');
         $payment->refresh();
 
@@ -78,18 +66,12 @@ class OrderPaymentController extends Controller
 
     public function destroy(Order $order, Payment $payment): JsonResponse
     {
-        $pivotRecord = $order->payments()->where('payment_id', $payment->id)->first();
-
-        if (!$pivotRecord) {
-            return response()->json([
-                'message' => 'Allocation not found.',
-            ], 404);
+        if (! $order->payments()->where('payment_id', $payment->id)->exists()) {
+            return response()->json(['message' => 'Allocation not found.'], 404);
         }
 
         $order->payments()->detach($payment->id);
-
         $order->recalculatePayments();
-
         $order->load('payments');
         $payment->refresh();
 

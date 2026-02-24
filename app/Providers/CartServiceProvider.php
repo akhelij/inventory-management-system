@@ -7,20 +7,11 @@ use Illuminate\Support\ServiceProvider;
 
 class CartServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
     public function register(): void
     {
-        // Register the CartService as a singleton
-        $this->app->singleton('cart', function ($app) {
-            return new CartService();
-        });
+        $this->app->singleton('cart', fn () => new CartService);
     }
 
-    /**
-     * Bootstrap services.
-     */
     public function boot(): void
     {
         //

@@ -62,28 +62,22 @@ class RepairTicket extends Model
         return $this->hasMany(RepairStatusHistory::class);
     }
 
-    public function scopeSearch($query, $term = null)
+    public function scopeSearch($query, ?string $term = null)
     {
-        if ($term) {
-            return $query->where(function ($query) use ($term) {
-                $query->where('ticket_number', 'like', "%{$term}%")
-                    ->orWhere('serial_number', 'like', "%{$term}%")
-                    ->orWhere('problem_description', 'like', "%{$term}%")
-                    ->orWhere('status', 'like', "%{$term}%")
-                    ->orWhereHas('customer', function ($query) use ($term) {
-                        $query->where('name', 'like', "%{$term}%")
-                            ->orWhere('phone', 'like', "%{$term}%");
-                    })
-                    ->orWhereHas('product', function ($query) use ($term) {
-                        $query->where('name', 'like', "%{$term}%")
-                            ->orWhere('model', 'like', "%{$term}%");
-                    })
-                    ->orWhereHas('technician', function ($query) use ($term) {
-                        $query->where('name', 'like', "%{$term}%");
-                    });
-            });
+        if (! $term) {
+            return $query;
         }
 
-        return $query;
+        return $query->where(function ($query) use ($term) {
+            $query->where('ticket_number', 'like', "%{$term}%")
+                ->orWhere('serial_number', 'like', "%{$term}%")
+                ->orWhere('problem_description', 'like', "%{$term}%")
+                ->orWhere('status', 'like', "%{$term}%")
+                ->orWhereHas('customer', fn ($q) => $q->where('name', 'like', "%{$term}%")
+                    ->orWhere('phone', 'like', "%{$term}%"))
+                ->orWhereHas('product', fn ($q) => $q->where('name', 'like', "%{$term}%")
+                    ->orWhere('model', 'like', "%{$term}%"))
+                ->orWhereHas('technician', fn ($q) => $q->where('name', 'like', "%{$term}%"));
+        });
     }
 }

@@ -5,30 +5,29 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Supplier\StoreSupplierRequest;
 use App\Http\Requests\Supplier\UpdateSupplierRequest;
 use App\Models\Supplier;
-use Str;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class SupplierController extends Controller
 {
-    public function index()
+    public function index(): View
     {
-        $suppliers = Supplier::where('user_id', auth()->id())->count();
-
         return view('suppliers.index', [
-            'suppliers' => $suppliers,
+            'suppliers' => Supplier::where('user_id', auth()->id())->count(),
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('suppliers.create');
     }
 
-    public function store(StoreSupplierRequest $request)
+    public function store(StoreSupplierRequest $request): RedirectResponse
     {
-        $image = '';
-        if ($request->hasFile('photo')) {
-            $image = $request->file('photo')->store('supliers', 'public');
-        }
+        $image = $request->hasFile('photo')
+            ? $request->file('photo')->store('supliers', 'public')
+            : '';
 
         Supplier::create([
             'user_id' => auth()->id(),
@@ -45,45 +44,35 @@ class SupplierController extends Controller
             'address' => $request->address,
         ]);
 
-        return redirect()
-            ->route('suppliers.index')
-            ->with('success', 'New supplier has been created!');
+        return to_route('suppliers.index')->with('success', 'New supplier has been created!');
     }
 
-    public function show($uuid)
+    public function show(string $uuid): View
     {
         $supplier = Supplier::where('uuid', $uuid)->firstOrFail();
-        $supplier->loadMissing('purchases')->get();
+        $supplier->loadMissing('purchases');
 
         return view('suppliers.show', [
             'supplier' => $supplier,
         ]);
     }
 
-    public function edit($uuid)
+    public function edit(string $uuid): View
     {
-        $supplier = Supplier::where('uuid', $uuid)->firstOrFail();
-
         return view('suppliers.edit', [
-            'supplier' => $supplier,
+            'supplier' => Supplier::where('uuid', $uuid)->firstOrFail(),
         ]);
     }
 
-    public function update(UpdateSupplierRequest $request, $uuid)
+    public function update(UpdateSupplierRequest $request, string $uuid): RedirectResponse
     {
         $supplier = Supplier::where('uuid', $uuid)->firstOrFail();
 
-        /**
-         * Handle upload image with Storage.
-         */
         $image = $supplier->photo;
         if ($request->hasFile('photo')) {
-
-            // Delete Old Photo
             if ($supplier->photo) {
                 unlink(public_path('storage/').$supplier->photo);
             }
-
             $image = $request->file('photo')->store('supliers', 'public');
         }
 
@@ -100,25 +89,19 @@ class SupplierController extends Controller
             'address' => $request->address,
         ]);
 
-        return redirect()
-            ->route('suppliers.index')
-            ->with('success', 'Supplier has been updated!');
+        return to_route('suppliers.index')->with('success', 'Supplier has been updated!');
     }
 
-    public function destroy($uuid)
+    public function destroy(string $uuid): RedirectResponse
     {
         $supplier = Supplier::where('uuid', $uuid)->firstOrFail();
-        /**
-         * Delete photo if exists.
-         */
+
         if ($supplier->photo) {
             unlink(public_path('storage/suppliers/').$supplier->photo);
         }
 
         $supplier->delete();
 
-        return redirect()
-            ->route('suppliers.index')
-            ->with('success', 'Supplier has been deleted!');
+        return to_route('suppliers.index')->with('success', 'Supplier has been deleted!');
     }
 }

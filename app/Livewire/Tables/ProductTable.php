@@ -10,31 +10,25 @@ class ProductTable extends Component
 {
     use WithPagination;
 
-    public $perPage = 25;
+    public int $perPage = 25;
 
-    public $search = '';
+    public string $search = '';
 
-    public $sortField = 'id';
+    public string $sortField = 'id';
 
-    public $sortAsc = false;
+    public bool $sortAsc = false;
 
     public $warehouses;
 
-    public $warehouse_id = null;
+    public ?int $warehouse_id = null;
 
-    public function sortBy($field): void
+    public function sortBy(string $field): void
     {
-        if ($this->sortField === $field) {
-            $this->sortAsc = ! $this->sortAsc;
-
-        } else {
-            $this->sortAsc = true;
-        }
-
+        $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
         $this->sortField = $field;
     }
 
-    public function filterByWarehouse($warehouseId)
+    public function filterByWarehouse(?int $warehouseId): void
     {
         $this->warehouse_id = $warehouseId;
     }
@@ -45,12 +39,8 @@ class ProductTable extends Component
             'products' => Product::with(['category', 'warehouse', 'unit'])
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
-                ->when($this->warehouse_id, function ($query) {
-                    return $query->where('warehouse_id', $this->warehouse_id);
-                })
-                ->when(auth()->user()->warehouse_id != null, function ($q) {
-                    return $q->where('warehouse_id', auth()->user()->warehouse_id);
-                })
+                ->when($this->warehouse_id, fn ($query) => $query->where('warehouse_id', $this->warehouse_id))
+                ->when(auth()->user()->warehouse_id != null, fn ($q) => $q->where('warehouse_id', auth()->user()->warehouse_id))
                 ->paginate($this->perPage),
         ]);
     }

@@ -7,20 +7,20 @@ use Livewire\Component;
 
 class ProductRefill extends Component
 {
-    public $product;
+    public Product $product;
 
-    public $refillQuantity = 0;
+    public int $refillQuantity = 0;
 
-    protected $rules = [
+    protected array $rules = [
         'refillQuantity' => 'required|numeric|min:1',
     ];
 
-    public function mount(Product $product)
+    public function mount(Product $product): void
     {
         $this->product = $product;
     }
 
-    public function refillStock()
+    public function refillStock(): void
     {
         $this->validate();
 
@@ -30,27 +30,15 @@ class ProductRefill extends Component
         $this->js('
             const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("refillModal"));
             modal.hide();
-            
-            // Remove all modal-backdrop fade show elements
-            const modalBackdrops = document.querySelectorAll(".modal-backdrop.fade.show");
-            modalBackdrops.forEach(backdrop => {
-                backdrop.remove();
-            });
-            
-            // Also remove any other modal backdrops that might exist
-            const otherBackdrops = document.querySelectorAll(".modal-backdrop");
-            otherBackdrops.forEach(backdrop => {
-                backdrop.remove();
-            });
-            
-            // Restore body scrolling
+
+            document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+
             document.body.classList.remove("modal-open");
             document.body.style.overflow = "";
             document.body.style.paddingRight = "";
-            
+
             document.getElementById("quantity").value = "'.$this->product->quantity.'";
 
-            // Add success message
             const alertHtml = `
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     '.__('Stock has been refilled successfully').'
@@ -59,12 +47,9 @@ class ProductRefill extends Component
             `;
             document.getElementById("stock-message").innerHTML = alertHtml;
 
-            // Remove alert after 5 seconds
             setTimeout(() => {
                 const alert = document.getElementById("stock-message").querySelector(".alert");
-                if (alert) {
-                    alert.remove();
-                }
+                if (alert) alert.remove();
             }, 5000);
         ');
 

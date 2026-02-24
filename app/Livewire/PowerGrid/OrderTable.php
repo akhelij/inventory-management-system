@@ -7,28 +7,24 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Facades\Filter;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class OrderTable extends PowerGridComponent
 {
     public function setUp(): array
     {
-        // $this->showCheckBox();
-
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 
-            Header::make()->showSearchInput(),
+            PowerGrid::header()
+                ->showSearchInput(),
 
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
@@ -39,14 +35,14 @@ final class OrderTable extends PowerGridComponent
         return Order::query();
     }
 
-    public function addColumns(): PowerGridColumns
+    public function fields(): PowerGridFields
     {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('invoice_no')
-            ->addColumn('name_lower', fn (Order $model) => strtolower(e($model->name)))
-            ->addColumn('created_at')
-            ->addColumn('created_at_formatted', fn (Order $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('invoice_no')
+            ->add('name_lower', fn (Order $model) => strtolower(e($model->name)))
+            ->add('created_at')
+            ->add('created_at_formatted', fn (Order $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
@@ -72,13 +68,10 @@ final class OrderTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-            // Filter::inputText('name'),
-            // Filter::datepicker('created_at_formatted', 'created_at'),
-        ];
+        return [];
     }
 
-    public function actions(\App\Models\Order $row): array
+    public function actions(Order $row): array
     {
         return [
             Button::add('edit')
@@ -95,7 +88,6 @@ final class OrderTable extends PowerGridComponent
             Button::make('new-modal')
                 ->slot(file_get_contents('assets/svg/eye.svg'))
                 ->class('btn btn-icon'),
-            // ->openModal('new', []),
         ];
     }
 }

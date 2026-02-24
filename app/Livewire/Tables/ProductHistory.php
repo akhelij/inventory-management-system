@@ -9,17 +9,17 @@ class ProductHistory extends Component
 {
     public $product;
 
-    public $startDate;
+    public string $startDate;
 
-    public $endDate;
+    public string $endDate;
 
     public $entries;
 
-    public $totalIncoming = 0;
+    public int $totalIncoming = 0;
 
-    public $totalOutgoing = 0;
+    public int $totalOutgoing = 0;
 
-    public function mount($product)
+    public function mount($product): void
     {
         $this->product = $product;
         $this->startDate = Carbon::now()->subMonth()->format('Y-m-d');
@@ -27,54 +27,48 @@ class ProductHistory extends Component
         $this->loadEntries();
     }
 
-    public function updatedStartDate()
+    public function updatedStartDate(): void
     {
         $this->loadEntries();
     }
 
-    public function updatedEndDate()
+    public function updatedEndDate(): void
     {
         $this->loadEntries();
     }
 
-    private function loadEntries()
+    private function loadEntries(): void
     {
-        $query = $this->product->activities()
-            ->where('event', 'updated')
-            ->whereRaw("JSON_EXTRACT(properties, '$.attributes.quantity') IS NOT NULL")
-            ->when($this->startDate, function ($query) {
-                return $query->whereDate('created_at', '>=', $this->startDate);
-            })
-            ->when($this->endDate, function ($query) {
-                return $query->whereDate('created_at', '<=', $this->endDate);
-            })
-            ->orderBy('created_at', 'desc');
-
-        // Reset totals
         $this->totalIncoming = 0;
         $this->totalOutgoing = 0;
 
-        $this->entries = $query->get()->map(function ($activity) {
-            $properties = json_decode($activity->properties);
-            $oldQuantity = $properties->old->quantity ?? null;
-            $newQuantity = $properties->attributes->quantity;
-            $difference = $oldQuantity !== null ? $newQuantity - $oldQuantity : 0;
+        $this->entries = $this->product->activities()
+            ->where('event', 'updated')
+            ->whereRaw("JSON_EXTRACT(properties, '$.attributes.quantity') IS NOT NULL")
+            ->when($this->startDate, fn ($query) => $query->whereDate('created_at', '>=', $this->startDate))
+            ->when($this->endDate, fn ($query) => $query->whereDate('created_at', '<=', $this->endDate))
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($activity) {
+                $properties = json_decode($activity->properties);
+                $oldQuantity = $properties->old->quantity ?? null;
+                $newQuantity = $properties->attributes->quantity;
+                $difference = $oldQuantity !== null ? $newQuantity - $oldQuantity : 0;
 
-            // Update totals
-            if ($difference > 0) {
-                $this->totalIncoming += $difference;
-            } else {
-                $this->totalOutgoing += abs($difference);
-            }
+                if ($difference > 0) {
+                    $this->totalIncoming += $difference;
+                } else {
+                    $this->totalOutgoing += abs($difference);
+                }
 
-            return [
-                'date' => $activity->created_at->format('Y-m-d H:i:s'),
-                'old_quantity' => $oldQuantity,
-                'new_quantity' => $newQuantity,
-                'difference' => $difference,
-                'user' => $activity->causer->name ?? 'Unknown',
-            ];
-        });
+                return [
+                    'date' => $activity->created_at->format('Y-m-d H:i:s'),
+                    'old_quantity' => $oldQuantity,
+                    'new_quantity' => $newQuantity,
+                    'difference' => $difference,
+                    'user' => $activity->causer->name ?? 'Unknown',
+                ];
+            });
     }
 
     public function render()

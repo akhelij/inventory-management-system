@@ -5,15 +5,14 @@ namespace Tests\Feature;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Payment;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PaymentObserverTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_cashing_in_payment_does_not_modify_orders(): void
+    #[Test]
+    public function cashing_in_payment_does_not_modify_orders(): void
     {
         $user = $this->createUser();
         $this->actingAs($user);
@@ -46,13 +45,11 @@ class PaymentObserverTest extends TestCase
             'cashed_in' => false,
         ]);
 
-        // Cash in the payment
         $payment->update([
             'cashed_in' => true,
             'cashed_in_at' => now(),
         ]);
 
-        // Order should NOT be modified by the observer
         $order->refresh();
         $this->assertEquals(OrderStatus::APPROVED, $order->order_status);
         $this->assertEquals(0, $order->pay);

@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum OrderStatus
 {
-    const PENDING = null;
+    public const PENDING = null;
 
-    const APPROVED = 1;
+    public const APPROVED = 1;
 
-    const CANCELED = 0;
+    public const CANCELED = 0;
 }

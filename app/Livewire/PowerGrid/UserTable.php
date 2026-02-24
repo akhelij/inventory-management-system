@@ -7,12 +7,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class UserTable extends PowerGridComponent
@@ -25,18 +23,15 @@ final class UserTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        // $this->showCheckBox();
-
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 
-            Header::make()
+            PowerGrid::header()
                 ->showSearchInput(),
-            // ->showToggleColumns(),
 
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage($this->perPage, $this->perPageValues)
                 ->showRecordCount(),
         ];
@@ -47,27 +42,23 @@ final class UserTable extends PowerGridComponent
         return User::query();
     }
 
-    public function relationSearch(): array
+    public function fields(): PowerGridFields
     {
-        return [];
-    }
-
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('photo')
-            ->addColumn('photo_lower', fn (User $model) => strtolower(e($model->photo)))
-            ->addColumn('name')
-            ->addColumn('username')
-            ->addColumn('email')
-            ->addColumn('created_at_formatted', fn (User $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('photo')
+            ->add('photo_lower', fn (User $model) => strtolower(e($model->photo)))
+            ->add('name')
+            ->add('username')
+            ->add('email')
+            ->add('created_at_formatted', fn (User $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
     {
         return [
             Column::make('Id', 'id'),
+
             Column::make('Photo', 'photo')
                 ->sortable()
                 ->searchable(),
@@ -97,20 +88,13 @@ final class UserTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-            //            Filter::inputText('photo')->operators(['contains']),
-            //            Filter::inputText('name')->operators(['contains']),
-            //            Filter::inputText('username')->operators(['contains']),
-            //            Filter::inputText('email')->operators(['contains']),
-            //            Filter::datetimepicker('created_at'),
-        ];
+        return [];
     }
 
     public function actions(User $row): array
     {
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))
-//                ->slot('Show')
                 ->class('btn btn-outline-info btn-icon w-100')
                 ->tooltip('Show User Details')
                 ->route('users.show', ['user' => $row])

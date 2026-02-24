@@ -2,28 +2,26 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class RouteTest extends TestCase
 {
-    public function test_login_route(): void
+    #[Test]
+    public function login_route(): void
     {
-        $response = $this->get(route('login'));
-
-        $response->assertOk();
+        $this->get(route('login'))->assertOk();
     }
 
-    public function test_register_route(): void
+    #[Test]
+    public function register_route(): void
     {
-        $response = $this->get(route('register'));
-
-        $response->assertOk();
+        $this->get(route('register'))->assertOk();
     }
 
-    public function test_dashboard_route_redirect_unauthorized_user_to_login_page(): void
+    #[Test]
+    public function dashboard_route_redirects_unauthorized_user_to_login_page(): void
     {
-        $response = $this->get(route('dashboard'));
-
-        $response->assertRedirect('/login');
+        $this->get(route('dashboard'))->assertRedirect('/login');
     }
 }

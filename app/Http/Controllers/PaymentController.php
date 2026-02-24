@@ -4,26 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\Payment;
+use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class PaymentController extends Controller
 {
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create($customer_id)
+    public function create(int $customer_id): View
     {
-        $customer = Customer::findOrFail($customer_id);
-
         return view('payments.create', [
-            'customer' => $customer,
+            'customer' => Customer::findOrFail($customer_id),
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request, Customer $customer)
+    public function store(Request $request, Customer $customer): RedirectResponse
     {
         $request->validate([
             'date' => 'required|date_format:d/m/Y',
@@ -39,27 +34,21 @@ class PaymentController extends Controller
             'description' => 'nullable|string|max:1000',
         ]);
 
-        // Get all request data
         $data = $request->all();
-        
-        // Convert dates from d/m/Y to Y-m-d for database storage
-        $data['date'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
-        $data['echeance'] = \Carbon\Carbon::createFromFormat('d/m/Y', $request->echeance)->format('Y-m-d');
+        $data['date'] = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
+        $data['echeance'] = Carbon::createFromFormat('d/m/Y', $request->echeance)->format('Y-m-d');
 
         Payment::create($data);
 
-        return redirect()->route('customers.show', $customer->uuid);
+        return to_route('customers.show', $customer->uuid);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Payment $payment)
+    public function show(Payment $payment): View
     {
         return (new CustomerController)->show($payment->customer->uuid);
     }
 
-    public function cash_in(Payment $payment)
+    public function cash_in(Payment $payment): RedirectResponse
     {
         $payment->update([
             'cashed_in' => true,
@@ -67,26 +56,23 @@ class PaymentController extends Controller
             'reported' => false,
         ]);
 
-        return redirect()->route('customers.show', $payment->customer->uuid);
+        return to_route('customers.show', $payment->customer->uuid);
     }
 
-    public function report(Request $request, Payment $payment)
+    public function report(Request $request, Payment $payment): RedirectResponse
     {
         $payment->update([
             'reported' => true,
             'echeance' => $request->new_date,
         ]);
 
-        return redirect()->route('customers.show', $payment->customer->uuid);
+        return to_route('customers.show', $payment->customer->uuid);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Payment $payment)
+    public function destroy(Payment $payment): RedirectResponse
     {
         $payment->delete();
 
-        return redirect()->route('customers.show', $payment->customer->uuid);
+        return to_route('customers.show', $payment->customer->uuid);
     }
 }

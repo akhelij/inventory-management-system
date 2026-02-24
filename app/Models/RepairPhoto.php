@@ -11,24 +11,12 @@ class RepairPhoto extends Model
     use HasFactory;
 
     protected $fillable = [
-        'repair_ticket_id', 
+        'repair_ticket_id',
         'photo_path',
-        'photo_type'
+        'photo_type',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'photo_type' => 'string',
-    ];
-
-    /**
-     * Get the repair ticket that owns the photo
-     */
-    public function repairTicket()
+    public function repairTicket(): BelongsTo
     {
         return $this->belongsTo(RepairTicket::class);
     }

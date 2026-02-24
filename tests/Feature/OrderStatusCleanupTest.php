@@ -4,21 +4,19 @@ namespace Tests\Feature;
 
 use App\Enums\OrderStatus;
 use App\Models\Order;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderStatusCleanupTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_cleanup_logic_resets_status_two_orders(): void
+    #[Test]
+    public function cleanup_logic_resets_broken_status_two_orders(): void
     {
         $user = $this->createUser();
         $customer = $this->createCustomer($user);
 
-        // Create an order with status=2 (the broken state from old PaymentObserver)
         $order = Order::create([
             'uuid' => Str::uuid(),
             'user_id' => $user->id,
@@ -35,10 +33,8 @@ class OrderStatusCleanupTest extends TestCase
             'due' => 0,
         ]);
 
-        // Verify it's broken
         $this->assertEquals(2, $order->order_status);
 
-        // Apply the fix (same logic as the migration)
         DB::table('orders')
             ->where('order_status', 2)
             ->update([

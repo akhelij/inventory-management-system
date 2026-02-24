@@ -11,10 +11,6 @@ class Unit extends Model
 {
     use HasFactory;
 
-    protected $guarded = [
-        'id',
-    ];
-
     protected $fillable = [
         'name',
         'slug',
@@ -22,17 +18,14 @@ class Unit extends Model
         'user_id',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     public function products(): HasMany
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function scopeSearch($query, $value): void
@@ -45,13 +38,5 @@ class Unit extends Model
     public function getRouteKeyName(): string
     {
         return 'slug';
-    }
-
-    /**
-     * Get the user that owns the Category
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

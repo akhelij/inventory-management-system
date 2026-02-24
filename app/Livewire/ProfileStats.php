@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Enums\OrderStatus;
-use App\Models\Order;
 use Carbon\Carbon;
 use Livewire\Component;
 
@@ -11,23 +10,23 @@ class ProfileStats extends Component
 {
     public $user;
 
-    public $startDate;
+    public string $startDate;
 
-    public $endDate;
+    public string $endDate;
 
     public $sales;
 
-    public $totalSales = 0;
+    public int $totalSales = 0;
 
-    public $totalAmount = 0;
+    public float $totalAmount = 0;
 
-    public $approvedSales = 0;
+    public int $approvedSales = 0;
 
-    public $pendingSales = 0;
+    public int $pendingSales = 0;
 
-    public $canceledSales = 0;
+    public int $canceledSales = 0;
 
-    public function mount($user)
+    public function mount($user): void
     {
         $this->user = $user;
         $this->startDate = Carbon::now()->subYear()->format('Y-m-d');
@@ -35,58 +34,48 @@ class ProfileStats extends Component
         $this->loadSales();
     }
 
-    public function updatedStartDate()
+    public function updatedStartDate(): void
     {
         $this->loadSales();
     }
 
-    public function updatedEndDate()
+    public function updatedEndDate(): void
     {
         $this->loadSales();
     }
 
-    private function loadSales()
+    private function loadSales(): void
     {
-        $query = $this->user->orders()
-            ->when($this->startDate, function ($query) {
-                return $query->whereDate('order_date', '>=', $this->startDate);
-            })
-            ->when($this->endDate, function ($query) {
-                return $query->whereDate('order_date', '<=', $this->endDate);
-            })
-            ->orderBy('order_date', 'desc');
-
-        // Reset all counters
         $this->totalSales = 0;
         $this->totalAmount = 0;
         $this->approvedSales = 0;
         $this->pendingSales = 0;
         $this->canceledSales = 0;
 
-        $this->sales = $query->get()->map(function ($order) {
-            // Update counters based on order status
-            $this->totalSales++;
+        $this->sales = $this->user->orders()
+            ->when($this->startDate, fn ($query) => $query->whereDate('order_date', '>=', $this->startDate))
+            ->when($this->endDate, fn ($query) => $query->whereDate('order_date', '<=', $this->endDate))
+            ->orderBy('order_date', 'desc')
+            ->get()
+            ->map(function ($order) {
+                $this->totalSales++;
 
-            switch ($order->order_status) {
-                case OrderStatus::APPROVED:
+                if ($order->order_status === OrderStatus::APPROVED) {
                     $this->approvedSales++;
                     $this->totalAmount += $order->total;
-                    break;
-                case OrderStatus::PENDING:
+                } elseif ($order->order_status === OrderStatus::PENDING) {
                     $this->pendingSales++;
-                    break;
-                case OrderStatus::CANCELED:
+                } elseif ($order->order_status === OrderStatus::CANCELED) {
                     $this->canceledSales++;
-                    break;
-            }
+                }
 
-            return [
-                'date' => $order->order_date->format('Y-m-d'),
-                'status' => $order->status,
-                'total' => $order->total,
-                'invoice_no' => $order->invoice_no,
-            ];
-        });
+                return [
+                    'date' => $order->order_date->format('Y-m-d'),
+                    'status' => $order->status,
+                    'total' => $order->total,
+                    'invoice_no' => $order->invoice_no,
+                ];
+            });
     }
 
     public function render()

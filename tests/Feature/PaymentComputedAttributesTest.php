@@ -5,71 +5,80 @@ namespace Tests\Feature;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Payment;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\User;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class PaymentComputedAttributesTest extends TestCase
 {
-    use RefreshDatabase;
+    private User $user;
 
-    public function test_unallocated_amount_with_no_allocations(): void
+    protected function setUp(): void
     {
-        $user = $this->createUser();
-        $this->actingAs($user);
-        $customer = $this->createCustomer($user);
+        parent::setUp();
 
-        $payment = Payment::create([
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
+        $this->user = $this->createUser();
+        $this->actingAs($this->user);
+    }
+
+    private function createPayment(int $customerId, array $overrides = []): Payment
+    {
+        return Payment::create(array_merge([
+            'user_id' => $this->user->id,
+            'customer_id' => $customerId,
             'date' => now(),
-            'nature' => 'CHQ-COMP-001',
+            'nature' => 'CHQ-COMP-'.Str::random(4),
             'payment_type' => 'Cheque',
             'echeance' => now()->addMonth(),
             'amount' => 5000,
             'cashed_in' => true,
-        ]);
+        ], $overrides));
+    }
+
+    private function createOrder(int $customerId, array $overrides = []): Order
+    {
+        return Order::create(array_merge([
+            'uuid' => Str::uuid(),
+            'user_id' => $this->user->id,
+            'customer_id' => $customerId,
+            'order_date' => now(),
+            'order_status' => OrderStatus::APPROVED,
+            'total_products' => 1,
+            'sub_total' => 5000,
+            'vat' => 0,
+            'total' => 5000,
+            'invoice_no' => 'INV-COMP-'.Str::random(4),
+            'payment_type' => 'HandCash',
+            'pay' => 0,
+            'due' => 5000,
+        ], $overrides));
+    }
+
+    #[Test]
+    public function unallocated_amount_with_no_allocations(): void
+    {
+        $customer = $this->createCustomer($this->user);
+        $payment = $this->createPayment($customer->id);
 
         $this->assertEquals(5000, $payment->unallocated_amount);
         $this->assertFalse($payment->is_fully_allocated);
     }
 
-    public function test_unallocated_amount_with_partial_allocation(): void
+    #[Test]
+    public function unallocated_amount_with_partial_allocation(): void
     {
-        $user = $this->createUser();
-        $this->actingAs($user);
-        $customer = $this->createCustomer($user);
-
-        $payment = Payment::create([
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
-            'date' => now(),
-            'nature' => 'CHQ-COMP-002',
-            'payment_type' => 'Cheque',
-            'echeance' => now()->addMonth(),
-            'amount' => 5000,
-            'cashed_in' => true,
-        ]);
-
-        $order = Order::create([
-            'uuid' => Str::uuid(),
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
-            'order_date' => now(),
-            'order_status' => OrderStatus::APPROVED,
-            'total_products' => 1,
+        $customer = $this->createCustomer($this->user);
+        $payment = $this->createPayment($customer->id);
+        $order = $this->createOrder($customer->id, [
             'sub_total' => 3000,
-            'vat' => 0,
             'total' => 3000,
-            'invoice_no' => 'INV-COMP-001',
-            'payment_type' => 'HandCash',
-            'pay' => 0,
             'due' => 3000,
         ]);
 
         $payment->orders()->attach($order->id, [
             'allocated_amount' => 3000,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
 
         $payment->refresh();
@@ -78,42 +87,16 @@ class PaymentComputedAttributesTest extends TestCase
         $this->assertFalse($payment->is_fully_allocated);
     }
 
-    public function test_is_fully_allocated_when_all_allocated(): void
+    #[Test]
+    public function is_fully_allocated_when_all_allocated(): void
     {
-        $user = $this->createUser();
-        $this->actingAs($user);
-        $customer = $this->createCustomer($user);
-
-        $payment = Payment::create([
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
-            'date' => now(),
-            'nature' => 'CHQ-COMP-003',
-            'payment_type' => 'Cheque',
-            'echeance' => now()->addMonth(),
-            'amount' => 5000,
-            'cashed_in' => true,
-        ]);
-
-        $order = Order::create([
-            'uuid' => Str::uuid(),
-            'user_id' => $user->id,
-            'customer_id' => $customer->id,
-            'order_date' => now(),
-            'order_status' => OrderStatus::APPROVED,
-            'total_products' => 1,
-            'sub_total' => 5000,
-            'vat' => 0,
-            'total' => 5000,
-            'invoice_no' => 'INV-COMP-002',
-            'payment_type' => 'HandCash',
-            'pay' => 0,
-            'due' => 5000,
-        ]);
+        $customer = $this->createCustomer($this->user);
+        $payment = $this->createPayment($customer->id);
+        $order = $this->createOrder($customer->id);
 
         $payment->orders()->attach($order->id, [
             'allocated_amount' => 5000,
-            'user_id' => $user->id,
+            'user_id' => $this->user->id,
         ]);
 
         $payment->refresh();

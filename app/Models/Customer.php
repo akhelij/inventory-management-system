@@ -12,12 +12,6 @@ class Customer extends Model
 {
     use HasActivityLogs, HasFactory;
 
-    //    const ALAMI = "electro@alami.com";
-
-    protected $guarded = [
-        'id',
-    ];
-
     protected $fillable = [
         'name',
         'email',
@@ -42,14 +36,6 @@ class Customer extends Model
     ];
 
     protected $with = ['user'];
-
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
 
     public function getIsOutOfLimitAttribute(): bool
     {
@@ -83,7 +69,7 @@ class Customer extends Model
 
     public function quotations(): HasMany
     {
-        return $this->HasMany(Quotation::class);
+        return $this->hasMany(Quotation::class);
     }
 
     public function user(): BelongsTo

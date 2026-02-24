@@ -6,14 +6,9 @@ use App\Models\Payment;
 
 class PaymentObserver
 {
-    public function created(Payment $payment): void
-    {
-        //
-    }
-
     public function updated(Payment $payment): void
     {
-        // Auto-cascade removed. Payment-to-order allocation is now manual
-        // via OrderPaymentController drag-and-drop on the customer page.
+        // Payment-to-order allocation is handled manually
+        // via OrderPaymentController on the customer page.
     }
 }

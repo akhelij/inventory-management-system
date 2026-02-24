@@ -17,14 +17,6 @@ class StockMovement extends Model
         'user_id',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
-
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);

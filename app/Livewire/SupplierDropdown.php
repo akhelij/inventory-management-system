@@ -11,22 +11,14 @@ class SupplierDropdown extends Component
 {
     public Collection $suppliers;
 
-    public Supplier $supplier;
+    public ?int $selectedSupplier = null;
 
-    public $selectedSupplier;
-
-    public function mount(Supplier $supplier)
+    public function mount(): void
     {
-        if (! $this->selectedSupplier === null) {
-            $this->selectedSupplier = array_values($supplier->pluck('id')->toArray());
-        }
-
-        $this->suppliers = Supplier::all()->map(function ($supplier) {
-            return [
-                'label' => $supplier->name,
-                'value' => $supplier->id,
-            ];
-        });
+        $this->suppliers = Supplier::all()->map(fn (Supplier $supplier) => [
+            'label' => $supplier->name,
+            'value' => $supplier->id,
+        ]);
     }
 
     public function render(): View

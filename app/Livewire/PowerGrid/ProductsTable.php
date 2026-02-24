@@ -6,27 +6,24 @@ use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Components\SetUp\Exportable;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class ProductsTable extends PowerGridComponent
 {
     public function setUp(): array
     {
-        // $this->showCheckBox();
-
         return [
-            Exportable::make('export')
+            PowerGrid::exportable('export')
                 ->striped()
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 
-            Header::make()->showSearchInput(),
+            PowerGrid::header()
+                ->showSearchInput(),
 
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
         ];
@@ -38,25 +35,18 @@ final class ProductsTable extends PowerGridComponent
             ->with(['category', 'unit']);
     }
 
-    public function addColumns(): PowerGridColumns
+    public function fields(): PowerGridFields
     {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('image')
-            ->addColumn('name')
-            ->addColumn('category_id', function (Product $product) {
-                return $product->category_id;
-            })
-            ->addColumn('category_name', function (Product $product) {
-                return $product->category->name;
-            })
-            ->addColumn('quantity')
-            ->addColumn('unit_id')
-            ->addColumn('unit_name', function (Product $product) {
-                return $product->unit->short_code;
-            })
-
-            ->addColumn('selling_price');
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('image')
+            ->add('name')
+            ->add('category_id', fn (Product $product) => $product->category_id)
+            ->add('category_name', fn (Product $product) => $product->category->name)
+            ->add('quantity')
+            ->add('unit_id')
+            ->add('unit_name', fn (Product $product) => $product->unit->short_code)
+            ->add('selling_price');
     }
 
     public function columns(): array
@@ -107,12 +97,10 @@ final class ProductsTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    public function actions(\App\Models\Product $row): array
+    public function actions(Product $row): array
     {
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))

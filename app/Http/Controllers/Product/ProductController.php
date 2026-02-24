@@ -10,36 +10,35 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Unit;
 use App\Models\Warehouse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 use Picqer\Barcode\BarcodeGeneratorHTML;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
-        $products = Product::count();
 
         return view('products.index', [
-            'products' => $products,
+            'products' => Product::count(),
             'warehouses' => Warehouse::all(),
         ]);
     }
 
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_PRODUCTS), 403);
-        $categories = Category::get(['id', 'name']);
-        $units = Unit::get(['id', 'name']);
 
-        if ($request->has('category')) {
-            $categories = Category::whereSlug($request->get('category'))->get();
-        }
+        $categories = $request->has('category')
+            ? Category::whereSlug($request->get('category'))->get()
+            : Category::get(['id', 'name']);
 
-        if ($request->has('unit')) {
-            $units = Unit::whereSlug($request->get('unit'))->get();
-        }
+        $units = $request->has('unit')
+            ? Unit::whereSlug($request->get('unit'))->get()
+            : Unit::get(['id', 'name']);
 
         return view('products.create', [
             'categories' => $categories,
@@ -48,16 +47,13 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_PRODUCTS), 403);
-        /**
-         * Handle upload image
-         */
-        $image = '';
-        if ($request->hasFile('product_image')) {
-            $image = $request->file('product_image')->store('products', 'public');
-        }
+
+        $image = $request->hasFile('product_image')
+            ? $request->file('product_image')->store('products', 'public')
+            : '';
 
         Product::create([
             'code' => strtoupper($request->code),
@@ -81,89 +77,60 @@ class ProductController extends Controller
         return to_route('products.index')->with('success', 'Product has been created!');
     }
 
-    /**
-     * Generate unique random product code between 5 to 12 characters
-     */
-    private function generateProductCode(): string
-    {
-        do {
-            // Generate random length between 5 and 12
-            $length = rand(5, 12);
-
-            // Define characters that can be used in the code
-            $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-
-            // Generate random string
-            $code = '';
-            for ($i = 0; $i < $length; $i++) {
-                $code .= $characters[rand(0, strlen($characters) - 1)];
-            }
-
-            // Check if the code already exists
-            $exists = Product::where('code', $code)->exists();
-        } while ($exists);
-
-        return $code;
-    }
-
-    public function show($uuid)
+    public function show(string $uuid): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
+
         $product = Product::where('uuid', $uuid)->firstOrFail();
 
         $product_entries = $product->activities()
             ->where('event', 'updated')
             ->whereRaw("JSON_EXTRACT(properties, '$.attributes.quantity') IS NOT NULL")
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
             ->get()
             ->map(function ($activity) {
                 $properties = json_decode($activity->properties);
                 $oldQuantity = $properties->old->quantity ?? null;
                 $newQuantity = $properties->attributes->quantity;
-                $difference = $oldQuantity !== null ? $newQuantity - $oldQuantity : 0;
 
                 return [
                     'date' => $activity->created_at->format('Y-m-d H:i:s'),
                     'old_quantity' => $oldQuantity,
                     'new_quantity' => $newQuantity,
-                    'difference' => $difference,
+                    'difference' => $oldQuantity !== null ? $newQuantity - $oldQuantity : 0,
                     'user' => $activity->causer->name ?? 'Unknown',
                 ];
             });
 
-        // Generate a barcode
         $generator = new BarcodeGeneratorHTML;
-        $barcode = $generator->getBarcode($product->code, $generator::TYPE_CODE_128);
 
         return view('products.show', [
             'product' => $product,
             'product_entries' => $product_entries,
-            'barcode' => $barcode,
+            'barcode' => $generator->getBarcode($product->code, $generator::TYPE_CODE_128),
         ]);
     }
 
-    public function edit($uuid)
+    public function edit(string $uuid): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
-        $product = Product::where('uuid', $uuid)->firstOrFail();
 
         return view('products.edit', [
             'categories' => Category::get(),
             'warehouses' => Warehouse::all(),
             'units' => Unit::get(),
-            'product' => $product,
+            'product' => Product::where('uuid', $uuid)->firstOrFail(),
         ]);
     }
 
-    public function update(UpdateProductRequest $request, $uuid)
+    public function update(UpdateProductRequest $request, string $uuid): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
+
         $product = Product::where('uuid', $uuid)->firstOrFail();
 
         $image = $product->product_image;
         if ($request->hasFile('product_image')) {
-
-            // Delete Old Photo
             if ($product->product_image) {
                 unlink(public_path('storage/').$product->product_image);
             }
@@ -175,73 +142,48 @@ class ProductController extends Controller
             'product_image' => $image,
         ]));
 
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Product has been updated!');
+        return to_route('products.index')->with('success', 'Product has been updated!');
     }
 
-    public function destroy($uuid)
+    public function destroy(string $uuid): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::DELETE_PRODUCTS), 403);
-        $product = Product::where('uuid', $uuid)->firstOrFail();
 
-        // Soft delete the product (image will remain for potential restoration)
-        $product->delete();
+        Product::where('uuid', $uuid)->firstOrFail()->delete();
 
-        return redirect()
-            ->route('products.index')
-            ->with('success', 'Product has been deleted!');
+        return to_route('products.index')->with('success', 'Product has been deleted!');
     }
 
-    /**
-     * Show soft deleted products
-     */
-    public function trashed()
+    public function trashed(): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_PRODUCTS), 403);
-        $trashedProducts = Product::onlyTrashed()->count();
 
         return view('products.trashed', [
-            'trashedProducts' => $trashedProducts,
+            'trashedProducts' => Product::onlyTrashed()->count(),
         ]);
     }
 
-    /**
-     * Restore a soft deleted product
-     */
-    public function restore($uuid)
+    public function restore(string $uuid): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_PRODUCTS), 403);
-        $product = Product::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
-        $product->restore();
 
-        return redirect()
-            ->route('products.trashed')
-            ->with('success', 'Product has been restored!');
+        Product::onlyTrashed()->where('uuid', $uuid)->firstOrFail()->restore();
+
+        return to_route('products.trashed')->with('success', 'Product has been restored!');
     }
 
-    /**
-     * Permanently delete a soft deleted product
-     */
-    public function forceDelete($uuid)
+    public function forceDelete(string $uuid): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::DELETE_PRODUCTS), 403);
+
         $product = Product::onlyTrashed()->where('uuid', $uuid)->firstOrFail();
-        
-        /**
-         * Delete photo if exists.
-         */
-        if ($product->product_image) {
-            // check if image exists in our file system
-            if (file_exists(public_path('storage/').$product->product_image)) {
-                unlink(public_path('storage/').$product->product_image);
-            }
+
+        if ($product->product_image && file_exists(public_path('storage/').$product->product_image)) {
+            unlink(public_path('storage/').$product->product_image);
         }
 
         $product->forceDelete();
 
-        return redirect()
-            ->route('products.trashed')
-            ->with('success', 'Product has been permanently deleted!');
+        return to_route('products.trashed')->with('success', 'Product has been permanently deleted!');
     }
 }

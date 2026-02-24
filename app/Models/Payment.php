@@ -13,14 +13,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 #[ObservedBy([PaymentObserver::class])]
 class Payment extends Model
 {
-    use HasActivityLogs;
-    use HasFactory;
+    use HasActivityLogs, HasFactory;
 
     protected $guarded = [];
 
-    protected $with = [
-        'customer',
-    ];
+    protected $with = ['customer'];
 
     public function user(): BelongsTo
     {
@@ -49,12 +46,8 @@ class Payment extends Model
         return $this->unallocated_amount <= 0;
     }
 
-    public static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-
-        static::creating(function ($payment) {
-            $payment->user_id = auth()->id();
-        });
+        static::creating(fn (Payment $payment) => $payment->user_id = auth()->id());
     }
 }

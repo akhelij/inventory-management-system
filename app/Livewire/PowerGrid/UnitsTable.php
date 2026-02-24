@@ -7,11 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class UnitsTable extends PowerGridComponent
@@ -25,9 +23,10 @@ final class UnitsTable extends PowerGridComponent
     public function setUp(): array
     {
         return [
-            Header::make()
+            PowerGrid::header()
                 ->showSearchInput(),
-            Footer::make()
+
+            PowerGrid::footer()
                 ->showPerPage($this->perPage, $this->perPageValues)
                 ->showRecordCount(),
         ];
@@ -38,20 +37,15 @@ final class UnitsTable extends PowerGridComponent
         return Unit::query();
     }
 
-    public function relationSearch(): array
+    public function fields(): PowerGridFields
     {
-        return [];
-    }
-
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('name')
-            ->addColumn('name_lower', fn (Unit $model) => strtolower(e($model->name)))
-            ->addColumn('slug')
-            ->addColumn('short_code')
-            ->addColumn('created_at_formatted', fn (Unit $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('name')
+            ->add('name_lower', fn (Unit $model) => strtolower(e($model->name)))
+            ->add('slug')
+            ->add('short_code')
+            ->add('created_at_formatted', fn (Unit $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
@@ -92,12 +86,10 @@ final class UnitsTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    public function actions(\App\Models\Unit $row): array
+    public function actions(Unit $row): array
     {
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))

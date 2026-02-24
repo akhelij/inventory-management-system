@@ -7,10 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PurchaseDetails extends Model
 {
-    protected $guarded = [
-        'id',
-    ];
-
     protected $fillable = [
         'purchase_id',
         'product_id',
@@ -20,14 +16,6 @@ class PurchaseDetails extends Model
     ];
 
     protected $with = ['product'];
-
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
 
     public function product(): BelongsTo
     {

@@ -6,17 +6,14 @@ use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class OrderCompleteController extends Controller
 {
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): View
     {
-        $orders = Order::where('order_status', OrderStatus::APPROVED)
-            ->latest()
-            ->get();
-
         return view('orders.complete-orders', [
-            'orders' => $orders,
+            'orders' => Order::where('order_status', OrderStatus::APPROVED)->latest()->get(),
         ]);
     }
 }

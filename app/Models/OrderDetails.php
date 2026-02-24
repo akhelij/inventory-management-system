@@ -10,10 +10,6 @@ class OrderDetails extends Model
 {
     use HasActivityLogs;
 
-    protected $guarded = [
-        'id',
-    ];
-
     protected $fillable = [
         'order_id',
         'product_id',
@@ -23,14 +19,6 @@ class OrderDetails extends Model
     ];
 
     protected $with = ['product'];
-
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-        ];
-    }
 
     public function product(): BelongsTo
     {

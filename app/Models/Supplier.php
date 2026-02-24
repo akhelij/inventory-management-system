@@ -12,10 +12,6 @@ class Supplier extends Model
 {
     use HasFactory;
 
-    protected $guarded = [
-        'id',
-    ];
-
     protected $fillable = [
         'name',
         'email',
@@ -31,18 +27,18 @@ class Supplier extends Model
         'uuid',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'type' => SupplierType::class,
-        ];
-    }
+    protected $casts = [
+        'type' => SupplierType::class,
+    ];
 
     public function purchases(): HasMany
     {
         return $this->hasMany(Purchase::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function scopeSearch($query, $value): void
@@ -52,13 +48,5 @@ class Supplier extends Model
             ->orWhere('phone', 'like', "%{$value}%")
             ->orWhere('shopname', 'like', "%{$value}%")
             ->orWhere('type', 'like', "%{$value}%");
-    }
-
-    /**
-     * Get the user that owns the Category
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

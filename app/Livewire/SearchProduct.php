@@ -8,46 +8,46 @@ use Livewire\Component;
 
 class SearchProduct extends Component
 {
-    public $query;
+    public string $query = '';
 
-    public $search_results;
+    public Collection $search_results;
 
-    public $how_many;
+    public int $how_many = 5;
 
-    public function mount()
+    public function mount(): void
     {
-        $this->query = '';
-        $this->how_many = 5;
         $this->search_results = Collection::empty();
     }
 
-    public function render()
+    public function updatedQuery(): void
     {
-        return view('livewire.search-product');
-    }
-
-    public function updatedQuery()
-    {
-        $this->search_results = Product::where('user_id', auth()->id())->where('name', 'like', '%'.$this->query.'%')
+        $this->search_results = Product::where('user_id', auth()->id())
+            ->where('name', 'like', '%'.$this->query.'%')
             ->orWhere('code', 'like', '%'.$this->query.'%')
-            ->take($this->how_many)->get();
+            ->take($this->how_many)
+            ->get();
     }
 
-    public function loadMore()
+    public function loadMore(): void
     {
         $this->how_many += 5;
         $this->updatedQuery();
     }
 
-    public function resetQuery()
+    public function resetQuery(): void
     {
         $this->query = '';
         $this->how_many = 5;
         $this->search_results = Collection::empty();
     }
 
-    public function selectProduct($product)
+    public function selectProduct(array $product): void
     {
         $this->dispatch('productSelected', $product);
+    }
+
+    public function render()
+    {
+        return view('livewire.search-product');
     }
 }

@@ -2,34 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
         return view('roles.index', [
             'roles' => Role::all(),
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         return view('roles.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => 'required|unique:roles,name',
@@ -40,33 +33,25 @@ class RoleController extends Controller
             'guard_name' => 'web',
         ]);
 
-        return redirect()->route('roles.index')->with('success', 'Role created successfully');
+        return to_route('roles.index')->with('success', 'Role created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Role $role)
+    public function show(Role $role): View
     {
         return view('roles.show', [
             'role' => $role,
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Role $role)
+    public function edit(Role $role): View
     {
-        $permissions = Permission::all();
-
-        return view('roles.edit', compact('role', 'permissions'));
+        return view('roles.edit', [
+            'role' => $role,
+            'permissions' => Permission::all(),
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Role $role)
+    public function update(Request $request, Role $role): RedirectResponse
     {
         $request->validate([
             'name' => 'required|unique:roles,name,'.$role->id,
@@ -74,23 +59,16 @@ class RoleController extends Controller
             'permissions.*' => 'exists:permissions,id',
         ]);
 
-        $role->update([
-            'name' => $request->name,
-        ]);
+        $role->update(['name' => $request->name]);
+        $role->syncPermissions(Permission::whereIn('id', $request->permissions)->get());
 
-        $permissions = Permission::whereIn('id', $request->permissions)->get();
-        $role->syncPermissions($permissions);
-
-        return redirect()->route('roles.index')->with('success', 'Role updated successfully');
+        return to_route('roles.index')->with('success', 'Role updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Role $role)
+    public function destroy(Role $role): RedirectResponse
     {
         $role->delete();
 
-        return redirect()->route('roles.index')->with('success', 'Role deleted successfully');
+        return to_route('roles.index')->with('success', 'Role deleted successfully');
     }
 }

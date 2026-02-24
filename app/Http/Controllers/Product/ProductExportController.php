@@ -10,18 +10,13 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
 class ProductExportController extends Controller
 {
-    public function create()
+    public function create(): void
     {
-        $products = Product::where('quantity', '>', 0)->orderby('name')->get();
+        $products = Product::where('quantity', '>', 0)->orderBy('name')->get();
 
         $product_array[] = [
-            'Product Name',
-            'Category Name',
-            'Product Code',
-            'Stock',
-            'Buying Price',
-            'Selling Price',
-            'Note',
+            'Product Name', 'Category Name', 'Product Code', 'Stock',
+            'Buying Price', 'Selling Price', 'Note',
         ];
 
         foreach ($products as $product) {
@@ -45,7 +40,7 @@ class ProductExportController extends Controller
         $this->store($product_array);
     }
 
-    public function store($products)
+    public function store(array $products): void
     {
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '4000M');
@@ -54,14 +49,14 @@ class ProductExportController extends Controller
             $spreadSheet = new Spreadsheet;
             $spreadSheet->getActiveSheet()->getDefaultColumnDimension()->setWidth(20);
             $spreadSheet->getActiveSheet()->fromArray($products);
-            $Excel_writer = new Xls($spreadSheet);
+            $writer = new Xls($spreadSheet);
             header('Content-Type: application/vnd.ms-excel');
             header('Content-Disposition: attachment;filename="products.xls"');
             header('Cache-Control: max-age=0');
             ob_end_clean();
-            $Excel_writer->save('php://output');
+            $writer->save('php://output');
             exit();
-        } catch (Exception $e) {
+        } catch (Exception) {
             return;
         }
     }

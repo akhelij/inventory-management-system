@@ -139,7 +139,7 @@ class Tabler extends Bootstrap5
     public function searchBox(): SearchBox
     {
         return Theme::searchBox()
-            ->input('col-12 col-sm-8 form-control') // form-control form-control-sm
+            ->input('col-12 col-sm-8 form-control')
             ->iconSearch('bi bi-search')
             ->iconClose('');
     }

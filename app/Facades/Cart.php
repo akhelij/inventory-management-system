@@ -17,17 +17,12 @@ use Illuminate\Support\Facades\Facade;
  * @method static \App\Models\Cart clearCart()
  * @method static \App\Models\CartItem|null updateItemOptions($rowId, $options)
  * @method static \App\Services\CartService instance($instance)
- * 
+ *
  * @see \App\Services\CartService
  */
 class Cart extends Facade
 {
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return 'cart';
     }

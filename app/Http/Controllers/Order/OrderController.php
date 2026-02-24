@@ -4,26 +4,28 @@ namespace App\Http\Controllers\Order;
 
 use App\Enums\OrderStatus;
 use App\Enums\PermissionEnum;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderStoreRequest;
-use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderDetails;
 use App\Models\Product;
 use App\Models\User;
+use App\Services\StockService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Haruncpi\LaravelIdGenerator\IdGenerator;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cookie;
-use App\Http\Controllers\Controller;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
 
@@ -32,34 +34,32 @@ class OrderController extends Controller
         ]);
     }
 
-    public function store(OrderStoreRequest $request)
+    public function create(): View
+    {
+        abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
+
+        return view('orders.create', [
+            'products' => Product::with(['category', 'unit'])->get(),
+            'customers' => Customer::ofAuth()->get(['id', 'name']),
+            'users' => User::query()->get(['id', 'name']),
+        ]);
+    }
+
+    public function store(OrderStoreRequest $request): RedirectResponse
     {
         try {
             DB::beginTransaction();
             abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
-            
-            // Get cart data from form submission
-            $cartData = [];
-            if ($request->has('cart_data')) {
-                $cartData = json_decode($request->input('cart_data'), true);
-            }
-            
-            // Check if cart is empty
+
+            $cartData = $request->has('cart_data')
+                ? json_decode($request->input('cart_data'), true)
+                : [];
+
             if (empty($cartData)) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Cannot create an order with an empty cart');
+                return redirect()->back()->with('error', 'Cannot create an order with an empty cart');
             }
-            
-            // Calculate totals
-            $totalProducts = count($cartData);
-            $subTotal = 0;
-            
-            foreach ($cartData as $item) {
-                $subTotal += $item['subtotal'];
-            }
-            
-            $total = $subTotal;
+
+            $subTotal = collect($cartData)->sum('subtotal');
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
@@ -67,23 +67,22 @@ class OrderController extends Controller
                 'pay' => $request->pay ?? 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
                 'order_status' => OrderStatus::PENDING,
-                'total_products' => $totalProducts,
+                'total_products' => count($cartData),
                 'sub_total' => $subTotal,
                 'vat' => 0,
-                'total' => $total,
+                'total' => $subTotal,
                 'invoice_no' => IdGenerator::generate([
                     'table' => 'orders',
                     'field' => 'invoice_no',
                     'length' => 10,
                     'prefix' => 'INV-',
                 ]),
-                'due' => $total - ($request->pay ?? 0),
+                'due' => $subTotal - ($request->pay ?? 0),
                 'user_id' => $request->author_id ?? Auth::id(),
                 'tagged_user_id' => $request->tagged_user_id,
                 'uuid' => Str::uuid(),
             ]);
 
-            // Create Order Details from cart data
             foreach ($cartData as $item) {
                 OrderDetails::create([
                     'order_id' => $order->id,
@@ -93,43 +92,29 @@ class OrderController extends Controller
                     'total' => $item['subtotal'],
                 ]);
             }
-            
-            // Clear the user's cart after order creation
+
             app(\App\Http\Controllers\CartController::class)->clear();
-            
+
             DB::commit();
-            
-            return redirect()
-                ->route('orders.index')
-                ->with('success', 'Order has been created!');
-                
+
+            return to_route('orders.index')->with('success', 'Order has been created!');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect()
-                ->back()
-                ->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
-    public function create()
-    {
-        abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
-        
-        return view('orders.create', [
-            'products' => Product::with(['category', 'unit'])->get(),
-            'customers' => Customer::ofAuth()->get(['id', 'name']),
-            'users' => User::query()->get(['id', 'name']),
-        ]);
-    }
-
-    public function show($uuid)
+    public function show(string $uuid): View
     {
         abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
-        $order = Order::where('uuid', $uuid)->firstOrFail();
-        $order->loadMissing(['customer', 'details'])->get();
 
-        return view('orders.'.($order->order_status === null ? 'edit' : 'show'), [
+        $order = Order::where('uuid', $uuid)->firstOrFail();
+        $order->loadMissing(['customer', 'details']);
+
+        $viewName = $order->order_status === null ? 'orders.edit' : 'orders.show';
+
+        return view($viewName, [
             'products' => Product::with(['category', 'unit'])->get(),
             'customers' => Customer::ofAuth()->get(['id', 'name']),
             'users' => User::query()->get(['id', 'name']),
@@ -137,36 +122,31 @@ class OrderController extends Controller
         ]);
     }
 
-    public function updateItems(Order $order, Request $request)
+    public function updateItems(Order $order, Request $request): RedirectResponse
     {
         abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
-        
-        // Check if product_id array is empty
-        if (!$request->has('product_id') || empty($request->product_id)) {
-            return redirect()
-                ->back()
-                ->with('error', 'Cannot update an order with no items');
+
+        if (! $request->has('product_id') || empty($request->product_id)) {
+            return redirect()->back()->with('error', 'Cannot update an order with no items');
         }
-        
+
         $order->details()->delete();
-        $oDetails = [];
-        foreach ($request->product_id as $key => $product_id) {
-            $oDetails['order_id'] = $order['id'];
-            $oDetails['product_id'] = $product_id;
-            $oDetails['quantity'] = $request->quantity[$key];
-            $oDetails['unitcost'] = $request->unitcost[$key];
-            $oDetails['total'] = $request->total[$key];
-            $oDetails['created_at'] = Carbon::now();
 
-            OrderDetails::insert($oDetails);
+        foreach ($request->product_id as $key => $product_id) {
+            OrderDetails::insert([
+                'order_id' => $order->id,
+                'product_id' => $product_id,
+                'quantity' => $request->quantity[$key],
+                'unitcost' => $request->unitcost[$key],
+                'total' => $request->total[$key],
+                'created_at' => Carbon::now(),
+            ]);
         }
 
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order items has been updated!');
+        return to_route('orders.index')->with('success', 'Order items has been updated!');
     }
 
-    public function updateStatus(Order $order, int $order_status, Request $request)
+    public function updateStatus(Order $order, int $order_status, Request $request): RedirectResponse
     {
         abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS_STATUS), 403);
         abort_unless(in_array($order_status, [OrderStatus::APPROVED, OrderStatus::CANCELED]), 403);
@@ -177,15 +157,12 @@ class OrderController extends Controller
             abort(403, 'Customer is out of limit');
         }
 
-        // Validate stock availability before approving
         if ($order_status == OrderStatus::APPROVED) {
-            $stockService = app(\App\Services\StockService::class);
-            $stockCheck = $stockService->canApproveOrder($order);
-            
-            if (!$stockCheck['can_approve']) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Cannot approve order due to insufficient stock: ' . implode(', ', $stockCheck['issues']));
+            $stockCheck = app(StockService::class)->canApproveOrder($order);
+
+            if (! $stockCheck['can_approve']) {
+                return redirect()->back()
+                    ->with('error', 'Cannot approve order due to insufficient stock: '.implode(', ', $stockCheck['issues']));
             }
         }
 
@@ -194,17 +171,14 @@ class OrderController extends Controller
             'reason' => $request->reason,
         ]);
 
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order status has been updated!');
+        return to_route('orders.index')->with('success', 'Order status has been updated!');
     }
 
-    public function update(Request $request, Order $order)
+    public function update(Request $request, Order $order): RedirectResponse
     {
         abort_if($order->order_status != null, 403, 'Only pending orders can be updated');
         abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
 
-        // Validate the request data
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'purchase_date' => 'required|date',
@@ -214,21 +188,13 @@ class OrderController extends Controller
         ]);
 
         $details = OrderDetails::where('order_id', $order->id)->get();
-        
-        // Check if order has no items
+
         if ($details->isEmpty()) {
-            return redirect()
-                ->back()
-                ->with('error', 'Cannot update an order with no items');
-        }
-        
-        $total = 0;
-
-        foreach ($details as $item) {
-            $total += $item->total;
+            return redirect()->back()->with('error', 'Cannot update an order with no items');
         }
 
-        // Update order with both form data and calculated totals
+        $total = $details->sum('total');
+
         $updateData = [
             'customer_id' => $validated['customer_id'],
             'purchase_date' => $validated['purchase_date'],
@@ -240,112 +206,88 @@ class OrderController extends Controller
             'due' => $total,
         ];
 
-        // Add optional fields if provided
         if (isset($validated['author_id'])) {
             $updateData['user_id'] = $validated['author_id'];
         }
-        
+
         if (isset($validated['tagged_user_id'])) {
             $updateData['tagged_user_id'] = $validated['tagged_user_id'];
         }
 
         $order->update($updateData);
 
-        return redirect()
-            ->route('orders.index')
-            ->with('success', 'Order has been updated successfully!');
+        return to_route('orders.index')->with('success', 'Order has been updated successfully!');
     }
 
-    public function destroy($uuid)
+    public function destroy(string $uuid): RedirectResponse
     {
         abort_unless(Auth::user()->can(PermissionEnum::DELETE_ORDERS), 403);
 
         try {
             DB::beginTransaction();
+
             $order = Order::where('uuid', $uuid)->firstOrFail();
-            
-            // Use StockService to restore stock if order affected it
+
             if ($order->stock_affected) {
-                $stockService = app(\App\Services\StockService::class);
-                $stockService->restoreStockForOrder($order);
+                app(StockService::class)->restoreStockForOrder($order);
             }
-            
+
             $order->delete();
+
             DB::commit();
 
-            return redirect()
-                ->route('orders.index')
-                ->with('success', 'Order has been deleted!');
+            return to_route('orders.index')->with('success', 'Order has been deleted!');
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect()
-                ->route('orders.index')
-                ->with('error', $e->getMessage());
+            return to_route('orders.index')->with('error', $e->getMessage());
         }
     }
 
-    public function downloadInvoice($uuid)
+    public function downloadInvoice(string $uuid)
     {
         abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
+
         $order = Order::with(['customer', 'details.product', 'user'])->where('uuid', $uuid)->firstOrFail();
 
-        $pdf = Pdf::loadView('orders.pdf-invoice', [
-            'order' => $order,
-        ]);
-        
-        $pdf->setPaper('a4', 'portrait');
-        
-        return $pdf->stream('invoice-' . $order->invoice_no . '.pdf');
+        return Pdf::loadView('orders.pdf-invoice', ['order' => $order])
+            ->setPaper('a4', 'portrait')
+            ->stream("invoice-{$order->invoice_no}.pdf");
     }
 
     public function bulkDownloadInvoice(Request $request)
     {
         abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
-        $orders = Order::with(['customer', 'details.product', 'user'])->whereIn('id', $request->order_ids)->get();
 
-        $pdf = Pdf::loadView('orders.pdf-bulk-invoice', [
-            'orders' => $orders,
-        ]);
-        
-        $pdf->setPaper('a4', 'portrait');
-        
-        return $pdf->stream('orders-report-' . now()->format('Y-m-d') . '.pdf');
+        $orders = Order::with(['customer', 'details.product', 'user'])
+            ->whereIn('id', $request->order_ids)
+            ->get();
+
+        return Pdf::loadView('orders.pdf-bulk-invoice', ['orders' => $orders])
+            ->setPaper('a4', 'portrait')
+            ->stream('orders-report-'.now()->format('Y-m-d').'.pdf');
     }
 
-    public function recalculateTotals(Request $request)
+    public function recalculateTotals(Request $request): JsonResponse
     {
         abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
-        
+
         try {
             $orderIds = $request->input('order_ids', []);
-            
-            if (empty($orderIds)) {
-                // If no specific orders provided, recalculate all
-                $orders = Order::all();
-            } else {
-                $orders = Order::whereIn('id', $orderIds)->get();
-            }
-            
+
+            $orders = empty($orderIds)
+                ? Order::all()
+                : Order::whereIn('id', $orderIds)->get();
+
             $updatedCount = 0;
             $results = [];
-            
+
             foreach ($orders as $order) {
                 $oldTotal = $order->total;
-                
-                // Get all order details
                 $details = OrderDetails::where('order_id', $order->id)->get();
-                
-                // Calculate new total
-                $newTotal = 0;
-                foreach ($details as $item) {
-                    $newTotal += $item->total;
-                }
-                
-                // Calculate due amount considering existing payments
+                $newTotal = $details->sum('total');
                 $due = $newTotal - ($order->pay ?? 0);
-                
-                // Update order
+
                 $order->update([
                     'total_products' => $details->count(),
                     'sub_total' => $newTotal,
@@ -353,24 +295,24 @@ class OrderController extends Controller
                     'total' => $newTotal,
                     'due' => $due,
                 ]);
-                
+
                 if ($oldTotal != $newTotal) {
                     $updatedCount++;
                     $results[] = "Order #{$order->id} (Invoice: {$order->invoice_no}): Total updated from {$oldTotal} to {$newTotal}";
                 }
             }
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Order totals recalculated successfully',
                 'orders_updated' => $updatedCount,
                 'total_orders' => $orders->count(),
-                'details' => $results
+                'details' => $results,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error recalculating totals: ' . $e->getMessage()
+                'message' => 'Error recalculating totals: '.$e->getMessage(),
             ], 500);
         }
     }

@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PermissionEnum;
+use App\Exports\PendingPaymentsExport;
 use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Models\Customer;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
 
@@ -19,61 +22,53 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CUSTOMERS), 403);
 
         return view('customers.create');
     }
 
-    public function store(StoreCustomerRequest $request)
+    public function store(StoreCustomerRequest $request): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::CREATE_CUSTOMERS), 403);
 
-        $image = '';
-        if ($request->hasFile('photo')) {
-            $image = $request->file('photo')->store('customers', 'public');
-        }
+        $image = $request->hasFile('photo')
+            ? $request->file('photo')->store('customers', 'public')
+            : '';
 
-        $data = $request->safe()->all();
-
-        $data = array_merge($data, [
+        Customer::create(array_merge($request->safe()->all(), [
             'user_id' => auth()->id(),
             'uuid' => Str::uuid(),
             'photo' => $image,
-        ]);
+        ]));
 
-        Customer::create($data);
-
-        return redirect()
-            ->route('customers.index')
-            ->with('success', 'New customer has been created!');
+        return to_route('customers.index')->with('success', 'New customer has been created!');
     }
 
-    public function show($uuid)
+    public function show(string $uuid): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
+
         $customer = Customer::where('uuid', $uuid)->with(['orders', 'payments'])->firstOrFail();
 
         $due = $customer->total_orders - $customer->total_payments;
-        $totalPayments = $customer->total_payments;
-        $diff = $due;
-        $amountPendingPayments = $customer->total_pending_payments;
 
         return view('customers.show', [
             'customer' => $customer,
             'totalOrders' => $customer->total_orders,
-            'totalPayments' => $totalPayments,
+            'totalPayments' => $customer->total_payments,
             'due' => $due,
-            'amountPendingPayments' => $amountPendingPayments,
-            'diff' => $diff,
+            'amountPendingPayments' => $customer->total_pending_payments,
+            'diff' => $due,
             'limit_reached' => $customer->is_out_of_limit,
         ]);
     }
 
-    public function edit($uuid)
+    public function edit(string $uuid): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CUSTOMERS), 403);
+
         $customer = Customer::where('uuid', $uuid)->firstOrFail();
 
         return view('customers.edit', [
@@ -81,14 +76,12 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function update(UpdateCustomerRequest $request, $uuid)
+    public function update(UpdateCustomerRequest $request, string $uuid): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::UPDATE_CUSTOMERS), 403);
+
         $customer = Customer::where('uuid', $uuid)->firstOrFail();
 
-        /**
-         * Handle upload image with Storage.
-         */
         $image = $customer->photo;
         if ($request->hasFile('photo')) {
             if ($customer->photo) {
@@ -97,35 +90,29 @@ class CustomerController extends Controller
             $image = $request->file('photo')->store('customers', 'public');
         }
 
-        $data = $request->safe()->all();
-
-        $data = array_merge($data, [
+        $customer->update(array_merge($request->safe()->all(), [
             'photo' => $image,
-        ]);
+        ]));
 
-        $customer->update($data);
-
-        return redirect()
-            ->route('customers.index')
-            ->with('success', 'Customer has been updated!');
+        return to_route('customers.index')->with('success', 'Customer has been updated!');
     }
 
-    public function destroy($uuid)
+    public function destroy(string $uuid): RedirectResponse
     {
         abort_unless(auth()->user()->can(PermissionEnum::DELETE_CUSTOMERS), 403);
+
         $customer = Customer::where('uuid', $uuid)->firstOrFail();
+
         if ($customer->photo) {
             unlink(public_path('storage/customers/').$customer->photo);
         }
 
         $customer->delete();
 
-        return redirect()
-            ->back()
-            ->with('success', 'Customer has been deleted!');
+        return redirect()->back()->with('success', 'Customer has been deleted!');
     }
 
-    public function downloadPayments(Customer $customer)
+    public function downloadPayments(Customer $customer): View
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
 
@@ -134,13 +121,12 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function exportPendingPayments($uuid)
+    public function exportPendingPayments(string $uuid)
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
-        
+
         $customer = Customer::where('uuid', $uuid)->with('payments')->firstOrFail();
-        
-        $export = new \App\Exports\PendingPaymentsExport($customer);
-        return $export->export();
+
+        return (new PendingPaymentsExport($customer))->export();
     }
 }

@@ -2,51 +2,41 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
 use App\Providers\AppServiceProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
-    use RefreshDatabase;
-
-    private User $user;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->user = $this->createUser();
-    }
-
-    //    public function createUser(): User
-    //    {
-    //        return User::factory()->create();
-    //    }
-
-    public function test_login_screen_can_be_rendered(): void
+    #[Test]
+    public function login_screen_can_be_rendered(): void
     {
         $response = $this->get('/login');
 
-        $response->assertStatus(200);
+        $response->assertOk();
         $response->assertViewIs('auth.login');
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
+    #[Test]
+    public function authenticated_user_is_redirected_from_login(): void
     {
         $this->withoutExceptionHandling();
 
-        $response = $this->actingAs($this->user)->get('/login');
+        $user = $this->createUser();
+
+        $response = $this->actingAs($user)->get('/login');
 
         $response->assertRedirect(AppServiceProvider::HOME);
         $response->assertRedirect('/dashboard');
     }
 
-    public function test_users_can_not_authenticate_with_invalid_password(): void
+    #[Test]
+    public function users_cannot_authenticate_with_invalid_password(): void
     {
+        $user = $this->createUser();
+
         $this->post('/login', [
-            'email' => $this->user->email,
+            'email' => $user->email,
             'password' => 'wrong-password',
         ]);
 

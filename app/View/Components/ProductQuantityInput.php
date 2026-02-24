@@ -3,18 +3,16 @@
 namespace App\View\Components;
 
 use App\Models\Product;
+use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class ProductQuantityInput extends Component
 {
-    public Product $product;
+    public function __construct(
+        public Product $product,
+    ) {}
 
-    public function __construct(Product $product)
-    {
-        $this->product = $product;
-    }
-
-    public function render()
+    public function render(): View
     {
         return view('components.product-quantity-input');
     }

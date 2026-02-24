@@ -5,14 +5,12 @@ namespace Tests\Feature;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Models\Payment;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class OrderPaymentRelationshipTest extends TestCase
 {
-    use RefreshDatabase;
-
     private function createOrderAndPayment(): array
     {
         $user = $this->createUser();
@@ -47,12 +45,13 @@ class OrderPaymentRelationshipTest extends TestCase
             'cashed_in_at' => now(),
         ]);
 
-        return [$user, $customer, $order, $payment];
+        return [$user, $order, $payment];
     }
 
-    public function test_order_has_payments_relationship(): void
+    #[Test]
+    public function order_has_payments_relationship(): void
     {
-        [$user, $customer, $order, $payment] = $this->createOrderAndPayment();
+        [$user, $order, $payment] = $this->createOrderAndPayment();
 
         $order->payments()->attach($payment->id, [
             'allocated_amount' => 3000,
@@ -64,9 +63,10 @@ class OrderPaymentRelationshipTest extends TestCase
         $this->assertEquals(3000, $order->payments->first()->pivot->allocated_amount);
     }
 
-    public function test_payment_has_orders_relationship(): void
+    #[Test]
+    public function payment_has_orders_relationship(): void
     {
-        [$user, $customer, $order, $payment] = $this->createOrderAndPayment();
+        [$user, $order, $payment] = $this->createOrderAndPayment();
 
         $payment->orders()->attach($order->id, [
             'allocated_amount' => 3000,

@@ -2,75 +2,72 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class CategoryTest extends TestCase
 {
-    use RefreshDatabase;
-
-    public function test_unauthenticated_user_cant_has_access(): void
+    #[Test]
+    public function unauthenticated_user_cannot_access(): void
     {
-        $response = $this->get('categories/');
-
-        $response
-            ->assertStatus(302)
+        $this->get('categories/')
             ->assertRedirect('login/');
     }
 
-    public function test_logged_user_has_access_to_url(): void
+    #[Test]
+    public function logged_user_has_access_to_url(): void
     {
         $this->withoutExceptionHandling();
 
-        // Create Unit
         $this->createCategory();
         $this->assertDatabaseCount('categories', 1)
             ->assertDatabaseHas('categories', ['name' => 'Speakers']);
 
         $user = $this->createUser();
-        $response = $this->actingAs($user)
-            ->get('categories/');
 
-        $response->assertStatus(200)
+        $this->actingAs($user)
+            ->get('categories/')
+            ->assertOk()
             ->assertViewIs('categories.index');
     }
 
-    public function test_user_can_use_create_view(): void
+    #[Test]
+    public function user_can_use_create_view(): void
     {
         $user = $this->createUser();
-        $response = $this->actingAs($user)->get('categories/create');
 
-        $response->assertViewIs('categories.create');
+        $this->actingAs($user)
+            ->get('categories/create')
+            ->assertViewIs('categories.create');
     }
 
-    public function test_user_can_see_edit_view(): void
+    #[Test]
+    public function user_can_see_edit_view(): void
     {
         $user = $this->createUser();
         $category = $this->createCategory();
 
-        $response = $this->actingAs($user)->get('categories/'.$category->slug.'/edit');
-
-        $response
-            ->assertStatus(200)
+        $this->actingAs($user)
+            ->get('categories/'.$category->slug.'/edit')
+            ->assertOk()
             ->assertViewIs('categories.edit');
     }
 
-    public function test_user_can_see_show_view(): void
+    #[Test]
+    public function user_can_see_show_view(): void
     {
         $user = $this->createUser();
         $category = $this->createCategory();
 
-        $response = $this->actingAs($user)->get('categories/'.$category->slug);
-
-        $response
-            ->assertStatus(200)
+        $this->actingAs($user)
+            ->get('categories/'.$category->slug)
+            ->assertOk()
             ->assertViewIs('categories.show');
     }
 
-    public function test_user_can_delete_category(): void
+    #[Test]
+    public function user_can_delete_category(): void
     {
-        // $this->withoutExceptionHandling();
-
         $category = $this->createCategory();
 
         $this->assertDatabaseHas('categories', ['name' => 'Speakers']);
@@ -82,6 +79,5 @@ class CategoryTest extends TestCase
         $this->delete('/categories/'.$category->slug);
 
         $this->assertDatabaseCount('categories', 0);
-
     }
 }

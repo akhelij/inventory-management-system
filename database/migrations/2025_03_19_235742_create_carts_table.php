@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('instance')->default('default');
             $table->decimal('total', 15, 2)->default(0);
             $table->timestamps();
-            
+
             // Add unique constraint to prevent duplicate carts for the same user and instance
             $table->unique(['user_id', 'instance']);
         });

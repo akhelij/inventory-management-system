@@ -7,11 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 
 final class CategoriesTable extends PowerGridComponent
 {
@@ -22,9 +20,9 @@ final class CategoriesTable extends PowerGridComponent
     public function setUp(): array
     {
         return [
-            Header::make()
+            PowerGrid::header()
                 ->showSearchInput(),
-            Footer::make()
+            PowerGrid::footer()
                 ->showPerPage($this->perPage, $this->perPageValues)
                 ->showRecordCount(),
         ];
@@ -35,15 +33,15 @@ final class CategoriesTable extends PowerGridComponent
         return Category::query();
     }
 
-    public function addColumns(): PowerGridColumns
+    public function fields(): PowerGridFields
     {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('name')
-            ->addColumn('name_lower', fn (Category $model) => strtolower(e($model->name)))
-            ->addColumn('slug')
-            ->addColumn('created_at')
-            ->addColumn('created_at_formatted', fn (Category $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('name')
+            ->add('name_lower', fn (Category $model) => strtolower(e($model->name)))
+            ->add('slug')
+            ->add('created_at')
+            ->add('created_at_formatted', fn (Category $model) => Carbon::parse($model->created_at)->format('d/m/Y'));
     }
 
     public function columns(): array
@@ -84,17 +82,13 @@ final class CategoriesTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-            //            Filter::inputText('name'),
-            //            Filter::datepicker('created_at_formatted', 'created_at'),
-        ];
+        return [];
     }
 
-    public function actions(\App\Models\Category $row): array
+    public function actions(Category $row): array
     {
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))
-//                ->slot('Show')
                 ->class('btn btn-outline-info btn-icon w-100')
                 ->tooltip('Show Category Details')
                 ->route('categories.show', ['category' => $row])

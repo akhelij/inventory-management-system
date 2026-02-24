@@ -16,9 +16,7 @@ class Product extends Model
 {
     use HasActivityLogs, HasFactory, SoftDeletes;
 
-    protected $guarded = ['id'];
-
-    public $fillable = [
+    protected $fillable = [
         'name',
         'slug',
         'code',
@@ -38,14 +36,9 @@ class Product extends Model
         'uuid',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'created_at' => 'datetime',
-            'updated_at' => 'datetime',
-            'tax_type' => TaxType::class,
-        ];
-    }
+    protected $casts = [
+        'tax_type' => TaxType::class,
+    ];
 
     public function getRouteKeyName(): string
     {
@@ -72,6 +65,11 @@ class Product extends Model
         return $this->belongsTo(Unit::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     protected function buyingPrice(): Attribute
     {
         return Attribute::make(
@@ -91,13 +89,5 @@ class Product extends Model
     public function scopeSearch($query, $value): void
     {
         $query->where('name', 'like', '%'.$value.'%');
-    }
-
-    /**
-     * Get the user that owns the Category
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 }

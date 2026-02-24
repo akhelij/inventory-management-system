@@ -7,19 +7,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
-use PowerComponents\LivewirePowerGrid\Exportable;
-use PowerComponents\LivewirePowerGrid\Footer;
-use PowerComponents\LivewirePowerGrid\Header;
-use PowerComponents\LivewirePowerGrid\PowerGrid;
-use PowerComponents\LivewirePowerGrid\PowerGridColumns;
+use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Traits\WithExport;
 
 final class QuotationsTable extends PowerGridComponent
 {
     use WithExport;
 
-    // public bool $multiSort = true;
     public string $sortField = 'created_at';
 
     public string $sortDirection = 'desc';
@@ -30,18 +26,13 @@ final class QuotationsTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        // $this->showCheckBox();
-
         return [
-            //            Exportable::make('export')
-            //                ->striped()
-            //                ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
+            PowerGrid::header()
+                ->showSearchInput(),
 
-            Header::make()->showSearchInput(),
-            Footer::make()
+            PowerGrid::footer()
                 ->showRecordCount('full')
                 ->showPerPage($this->perPage, $this->perPageValues),
-
         ];
     }
 
@@ -50,23 +41,16 @@ final class QuotationsTable extends PowerGridComponent
         return Quotation::query();
     }
 
-    public function relationSearch(): array
+    public function fields(): PowerGridFields
     {
-        return [];
-    }
-
-    public function addColumns(): PowerGridColumns
-    {
-        return PowerGrid::columns()
-            ->addColumn('id')
-            ->addColumn('reference')
-            ->addColumn('date_formatted', fn (Quotation $model) => Carbon::parse($model->date)->format('d/m/Y'))
-
-            ->addColumn('customer_id')
-            ->addColumn('customer_name')
-
-            ->addColumn('total_amount')
-            ->addColumn('status');
+        return PowerGrid::fields()
+            ->add('id')
+            ->add('reference')
+            ->add('date_formatted', fn (Quotation $model) => Carbon::parse($model->date)->format('d/m/Y'))
+            ->add('customer_id')
+            ->add('customer_name')
+            ->add('total_amount')
+            ->add('status');
     }
 
     public function columns(): array
@@ -112,12 +96,10 @@ final class QuotationsTable extends PowerGridComponent
 
     public function filters(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
-    public function actions(\App\Models\Quotation $row): array
+    public function actions(Quotation $row): array
     {
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))

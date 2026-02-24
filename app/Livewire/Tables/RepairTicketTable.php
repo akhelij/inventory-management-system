@@ -10,26 +10,21 @@ class RepairTicketTable extends Component
 {
     use WithPagination;
 
-    public $perPage = 25;
+    public int $perPage = 25;
 
-    public $search = '';
+    public string $search = '';
 
-    public $sortField = 'id';
+    public string $sortField = 'id';
 
-    public $sortAsc = false;
+    public bool $sortAsc = false;
 
-    public $statusComment = '';
+    public string $statusComment = '';
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
-    public function sortBy($field): void
+    public function sortBy(string $field): void
     {
-        if ($this->sortField === $field) {
-            $this->sortAsc = ! $this->sortAsc;
-        } else {
-            $this->sortAsc = true;
-        }
-
+        $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
         $this->sortField = $field;
     }
 
