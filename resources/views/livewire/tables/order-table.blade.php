@@ -162,26 +162,24 @@
 
                                 <div x-show="open" x-cloak
                                      @click.outside="open = false"
-                                     class="dropdown-menu show"
-                                     style="position: absolute; top: 100%; left: 50%; transform: translateX(-50%); z-index: 1000; min-width: auto;">
-                                    <div class="px-2 py-1">
-                                        <button type="button"
-                                                class="dropdown-item p-0 bg-transparent border-0"
-                                                wire:click="initiateStatusUpdate({{ $order->id }}, 1)"
-                                                @click="open = false">
-                                            <x-status dot color="green" class="text-uppercase btn">
-                                                {{ __('Approve') }}
-                                            </x-status>
-                                        </button>
-                                        <button type="button"
-                                                class="dropdown-item p-0 bg-transparent border-0"
-                                                wire:click="initiateStatusUpdate({{ $order->id }}, 0)"
-                                                @click="open = false">
-                                            <x-status dot color="red" class="text-uppercase btn">
-                                                {{ __('Cancel') }}
-                                            </x-status>
-                                        </button>
-                                    </div>
+                                     class="dropdown-menu show p-1"
+                                     style="position: absolute; top: 100%; left: 50%; transform: translateX(-50%); z-index: 1000; min-width: 140px;">
+                                    <button type="button"
+                                            class="dropdown-item rounded text-center"
+                                            wire:click="initiateStatusUpdate({{ $order->id }}, 1)"
+                                            @click="open = false">
+                                        <x-status dot color="green" class="text-uppercase">
+                                            {{ __('Approve') }}
+                                        </x-status>
+                                    </button>
+                                    <button type="button"
+                                            class="dropdown-item rounded text-center"
+                                            wire:click="initiateStatusUpdate({{ $order->id }}, 0)"
+                                            @click="open = false">
+                                        <x-status dot color="red" class="text-uppercase">
+                                            {{ __('Cancel') }}
+                                        </x-status>
+                                    </button>
                                 </div>
                             @else
                                 <x-status dot color="{{ $order->status_color }}" class="text-uppercase">
