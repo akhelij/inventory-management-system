@@ -33,6 +33,12 @@ class OrderObserver
             if ($shouldRestore) {
                 $this->stockService->restoreStockForOrder($order);
             }
+
+            // Release all payment allocations when order is canceled
+            if ($newStatus == OrderStatus::CANCELED) {
+                $order->payments()->detach();
+                $order->updateQuietly(['pay' => 0, 'due' => $order->total]);
+            }
         } catch (\Exception $e) {
             Log::error("Stock operation failed for order {$order->id}: ".$e->getMessage());
         }
