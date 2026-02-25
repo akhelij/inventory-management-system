@@ -33,20 +33,6 @@
 
 @push('page-scripts')
     <script>
-        // Initialize modal and toasts
-        let warningModal;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            warningModal = new bootstrap.Modal(document.getElementById('warningModal'));
-        });
-
-        Livewire.on('showWarningModal', () => {
-            warningModal.show();
-        });
-
-        Livewire.on('hideWarningModal', () => {
-            warningModal.hide();
-        });
         document.addEventListener('livewire:initialized', () => {
             const successToast = new bootstrap.Toast(document.getElementById('successToast'));
             const errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
@@ -60,41 +46,7 @@
                 document.querySelector('#errorToast .toast-body').textContent = event.message;
                 errorToast.show();
             });
-
-            // Dispose stale Bootstrap Dropdown instances after Livewire morphs the DOM.
-            // Pagination/sorting/filtering can morph existing elements or add new ones,
-            // leaving cached instances with a null _menu reference.
-            function disposeDropdowns(container) {
-                if (container.querySelectorAll) {
-                    container.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(toggle => {
-                        bootstrap.Dropdown.getInstance(toggle)?.dispose();
-                    });
-                }
-                if (container.matches && container.matches('[data-bs-toggle="dropdown"]')) {
-                    bootstrap.Dropdown.getInstance(container)?.dispose();
-                }
-            }
-
-            Livewire.hook('morph.updated', ({el}) => {
-                queueMicrotask(() => disposeDropdowns(el));
-            });
-
-            Livewire.hook('morph.added', ({el}) => {
-                queueMicrotask(() => disposeDropdowns(el));
-            });
         });
-
-        // Safety net: fix stale Dropdown instances at click time (capture phase
-        // runs before Bootstrap's bubble-phase data-api handler)
-        document.addEventListener('click', (e) => {
-            const toggle = e.target.closest('[data-bs-toggle="dropdown"]');
-            if (!toggle) return;
-
-            const instance = bootstrap.Dropdown.getInstance(toggle);
-            if (instance && !instance._menu) {
-                instance.dispose();
-            }
-        }, true);
 
         // Function to recalculate all order totals
         function recalculateAllTotals() {

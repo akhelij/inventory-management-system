@@ -150,37 +150,45 @@
                     <td class="align-middle text-center">
                         {{ Number::currency($order->total, 'MAD') }}
                     </td>
-                    <td class="align-middle text-center">
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown d-flex justify-content-center align-items-center">
-                                <a class="nav-link @if($order->is_updatable_status) dropdown-toggle @endif"
-                                   href="#"
-                                   @if($order->is_updatable_status) data-bs-toggle="dropdown" data-bs-auto-close="outside" @endif
-                                   role="button" aria-expanded="false">
+                    <td class="align-middle text-center" x-data="{ open: false }">
+                        <div class="d-inline-block position-relative">
+                            @if($order->is_updatable_status)
+                                <button type="button" class="btn btn-link p-0 border-0"
+                                        @click="open = !open">
                                     <x-status dot color="{{ $order->status_color }}" class="text-uppercase">
                                         {{ $order->status }}
                                     </x-status>
-                                </a>
-                                @if($order->is_updatable_status)
-                                    <div class="dropdown-menu">
-                                        <div class="dropdown-menu-columns">
-                                            <div class="dropdown-menu-column ms-2 me-2">
-                                                <a href="#" wire:click.prevent="initiateStatusUpdate({{ $order->id }}, 1)">
-                                                    <x-status dot color="green" class="text-uppercase btn">
-                                                        {{ __('Approve') }}
-                                                    </x-status>
-                                                </a>
-                                                <a href="#" wire:click.prevent="initiateStatusUpdate({{ $order->id }}, 0)">
-                                                    <x-status dot color="red" class="text-uppercase btn">
-                                                        {{ __('Cancel') }}
-                                                    </x-status>
-                                                </a>
-                                            </div>
-                                        </div>
+                                </button>
+
+                                <div x-show="open" x-cloak
+                                     @click.outside="open = false"
+                                     class="dropdown-menu show"
+                                     style="position: absolute; top: 100%; left: 50%; transform: translateX(-50%); z-index: 1000; min-width: auto;">
+                                    <div class="px-2 py-1">
+                                        <button type="button"
+                                                class="dropdown-item p-0 bg-transparent border-0"
+                                                wire:click="initiateStatusUpdate({{ $order->id }}, 1)"
+                                                @click="open = false">
+                                            <x-status dot color="green" class="text-uppercase btn">
+                                                {{ __('Approve') }}
+                                            </x-status>
+                                        </button>
+                                        <button type="button"
+                                                class="dropdown-item p-0 bg-transparent border-0"
+                                                wire:click="initiateStatusUpdate({{ $order->id }}, 0)"
+                                                @click="open = false">
+                                            <x-status dot color="red" class="text-uppercase btn">
+                                                {{ __('Cancel') }}
+                                            </x-status>
+                                        </button>
                                     </div>
-                                @endif
-                            </li>
-                        </ul>
+                                </div>
+                            @else
+                                <x-status dot color="{{ $order->status_color }}" class="text-uppercase">
+                                    {{ $order->status }}
+                                </x-status>
+                            @endif
+                        </div>
                     </td>
                     <td class="align-middle text-center">
                         <x-button.show class="btn-icon" route="{{ route('orders.show', $order->uuid) }}" target="_blank"/>
