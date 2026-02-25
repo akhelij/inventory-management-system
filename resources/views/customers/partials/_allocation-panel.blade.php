@@ -236,10 +236,17 @@
     </div>
 </div>
 
-<script>
-function allocationPanel() {
-    return {
-        orders: @json($customer->orders->map(fn ($order) => [
+@php
+    $ordersData = $customer->orders->map(function ($order) {
+        $allocations = $order->relationLoaded('payments')
+            ? $order->payments->map(fn ($p) => [
+                'payment_id' => $p->id,
+                'nature' => $p->nature,
+                'allocated_amount' => $p->pivot->allocated_amount,
+            ])->values()
+            : collect();
+
+        return [
             'id' => $order->id,
             'uuid' => $order->uuid,
             'invoice_no' => $order->invoice_no,
@@ -248,28 +255,31 @@ function allocationPanel() {
             'pay' => $order->pay,
             'due' => $order->due,
             'status' => $order->status,
-            'allocations' => $order->relationLoaded('payments')
-                ? $order->payments->map(fn ($payment) => [
-                    'payment_id' => $payment->id,
-                    'nature' => $payment->nature,
-                    'allocated_amount' => $payment->pivot->allocated_amount,
-                ])
-                : [],
+            'allocations' => $allocations,
             'drop_hover' => false,
-        ])),
+        ];
+    })->values();
 
-        payments: @json($customer->payments->map(fn ($payment) => [
-            'id' => $payment->id,
-            'nature' => $payment->nature,
-            'payment_type' => $payment->payment_type,
-            'date' => $payment->date,
-            'amount' => $payment->amount,
-            'cashed_in' => (bool) $payment->cashed_in,
-            'reported' => (bool) $payment->reported,
-            'unallocated_amount' => $payment->unallocated_amount,
-            'is_fully_allocated' => $payment->is_fully_allocated,
-            'dragging' => false,
-        ])),
+    $paymentsData = $customer->payments->map(fn ($payment) => [
+        'id' => $payment->id,
+        'nature' => $payment->nature,
+        'payment_type' => $payment->payment_type,
+        'date' => $payment->date,
+        'amount' => $payment->amount,
+        'cashed_in' => (bool) $payment->cashed_in,
+        'reported' => (bool) $payment->reported,
+        'unallocated_amount' => $payment->unallocated_amount,
+        'is_fully_allocated' => $payment->is_fully_allocated,
+        'dragging' => false,
+    ])->values();
+@endphp
+
+<script>
+function allocationPanel() {
+    return {
+        orders: @json($ordersData),
+
+        payments: @json($paymentsData),
 
         allocationEnabled: @json($allocationEnabled ?? false),
 
