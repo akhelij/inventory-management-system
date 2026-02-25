@@ -61,12 +61,15 @@
                 errorToast.show();
             });
 
-            // Reinitialize Bootstrap dropdowns after Livewire updates the DOM
-            // (pagination, sorting, filtering all morph new elements that need Bootstrap JS)
+            // Reinitialize Bootstrap dropdowns after Livewire morphs the DOM
+            // (pagination, sorting, filtering replace elements — stale Dropdown
+            // instances hold a null _menu reference and must be disposed first)
             Livewire.hook('morph.updated', ({el, component}) => {
                 queueMicrotask(() => {
                     el.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(toggle => {
-                        bootstrap.Dropdown.getOrCreateInstance(toggle);
+                        const stale = bootstrap.Dropdown.getInstance(toggle);
+                        if (stale) stale.dispose();
+                        new bootstrap.Dropdown(toggle);
                     });
                 });
             });
