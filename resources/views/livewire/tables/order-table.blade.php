@@ -151,7 +151,7 @@
                         {{ Number::currency($order->total, 'MAD') }}
                     </td>
                     <td class="align-middle text-center">
-                        <div class="d-flex justify-content-center" x-data="{ open: false }">
+                        <div class="d-flex justify-content-center dropdown" x-data="{ open: false }">
                             <a class="nav-link @if($order->is_updatable_status) dropdown-toggle @endif"
                                href="#" @click.prevent="open = !open" role="button"
                                :aria-expanded="open">
