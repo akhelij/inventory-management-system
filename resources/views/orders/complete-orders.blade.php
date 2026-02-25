@@ -66,8 +66,8 @@
                             <td class="text-center">{{ $order->payment_type }}</td>
                             <td class="text-center">{{ Number::currency($order->total, 'MAD') }}</td>
                             <td class="text-center">
-                                <span class="badge bg-green text-white text-uppercase">
-                                    {{ $order->order_status }}
+                                <span class="badge bg-{{ $order->status_color }} text-white text-uppercase">
+                                    {{ $order->status }}
                                 </span>
                             </td>
                             <td class="text-center">
