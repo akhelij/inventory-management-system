@@ -228,12 +228,14 @@
     </div>
 
     <!-- Loading overlay -->
-    <div x-show="loading" x-cloak class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
-         style="background: rgba(0,0,0,0.1); z-index: 9999;">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
+    <template x-if="loading">
+        <div class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+             style="background: rgba(0,0,0,0.1); z-index: 9999;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
-    </div>
+    </template>
 </div>
 
 @php
