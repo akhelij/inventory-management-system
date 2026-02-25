@@ -50,7 +50,10 @@ class CustomerController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
 
-        $customer = Customer::where('uuid', $uuid)->with(['orders', 'payments'])->firstOrFail();
+        $customer = Customer::where('uuid', $uuid)->with([
+            'orders.payments',
+            'payments.orders',
+        ])->firstOrFail();
 
         $due = $customer->total_orders - $customer->total_payments;
 
