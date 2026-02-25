@@ -1,3 +1,24 @@
+<style>
+    [draggable="true"]:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+    }
+    @keyframes slideIntoChip {
+        0% { transform: scale(1.5); opacity: 0; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes chipPopOut {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.3); opacity: 0.8; }
+        100% { transform: scale(1.5); opacity: 0; }
+    }
+    .badge.animating-in { animation: slideIntoChip 0.4s ease-out; }
+    .badge.animating-out { animation: chipPopOut 0.3s ease-in; }
+    .progress-bar { transition: width 0.5s ease; }
+</style>
+
 <div x-data="allocationPanel()" class="row" style="margin-left:-20px; margin-top:1%">
     <!-- Orders Column -->
     <div class="col-5">
@@ -319,6 +340,16 @@ function allocationPanel() {
                     payment_id: payment.id,
                     nature: payment.nature,
                     allocated_amount: data.allocated_amount,
+                });
+
+                // Animate the new chip
+                this.$nextTick(() => {
+                    const chips = this.$el.querySelectorAll('.badge.bg-blue-lt');
+                    const lastChip = chips[chips.length - 1];
+                    if (lastChip) {
+                        lastChip.classList.add('animating-in');
+                        setTimeout(() => lastChip.classList.remove('animating-in'), 400);
+                    }
                 });
 
                 payment.unallocated_amount = data.payment.unallocated_amount;

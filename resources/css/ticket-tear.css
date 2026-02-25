@@ -1,0 +1,60 @@
+/* Ticket-tear animation for payment splits */
+
+/* Drop zone highlight */
+.order-card.drop-active {
+    border: 2px dashed #2fb344 !important;
+    background-color: rgba(47, 179, 68, 0.05);
+    transition: all 0.2s ease;
+}
+
+/* Draggable payment hover */
+[draggable="true"]:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+
+/* Allocation chip slide-in animation */
+@keyframes slideIntoChip {
+    0% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Allocation chip pop-out animation */
+@keyframes chipPopOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.3);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.badge.animating-in {
+    animation: slideIntoChip 0.4s ease-out;
+}
+
+.badge.animating-out {
+    animation: chipPopOut 0.3s ease-in;
+}
+
+/* Progress bar transition */
+.progress-bar {
+    transition: width 0.5s ease;
+}
