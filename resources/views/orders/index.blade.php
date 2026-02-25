@@ -60,6 +60,16 @@
                 document.querySelector('#errorToast .toast-body').textContent = event.message;
                 errorToast.show();
             });
+
+            // Reinitialize Bootstrap dropdowns after Livewire updates the DOM
+            // (pagination, sorting, filtering all morph new elements that need Bootstrap JS)
+            Livewire.hook('morph.updated', ({el, component}) => {
+                queueMicrotask(() => {
+                    el.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(toggle => {
+                        bootstrap.Dropdown.getOrCreateInstance(toggle);
+                    });
+                });
+            });
         });
 
         // Function to recalculate all order totals
