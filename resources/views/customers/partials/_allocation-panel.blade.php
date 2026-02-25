@@ -66,11 +66,11 @@
                                 <template x-for="alloc in order.allocations" :key="alloc.payment_id">
                                     <span class="badge bg-blue-lt" style="cursor: pointer;">
                                         <span x-text="alloc.nature + ': ' + formatCurrency(alloc.allocated_amount)"></span>
-                                        <button type="button" class="btn-close btn-close-sm ms-1"
-                                                style="font-size: 0.5rem;"
+                                        <button type="button" class="ms-1 border-0 bg-transparent p-0 lh-1"
+                                                style="font-size: 0.65rem; color: #206bc4; opacity: 0.7;"
                                                 @click="detachAllocation(order, alloc)"
-                                                :disabled="loading">
-                                        </button>
+                                                :disabled="loading"
+                                                title="{{ __('Remove allocation') }}">✕</button>
                                     </span>
                                 </template>
                             </div>
