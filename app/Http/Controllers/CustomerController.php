@@ -8,6 +8,7 @@ use App\Http\Requests\Customer\StoreCustomerRequest;
 use App\Http\Requests\Customer\UpdateCustomerRequest;
 use App\Models\Customer;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -50,10 +51,13 @@ class CustomerController extends Controller
     {
         abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
 
-        $customer = Customer::where('uuid', $uuid)->with([
-            'orders.payments',
-            'payments.orders',
-        ])->firstOrFail();
+        $allocationEnabled = Schema::hasTable('order_payment');
+
+        $eagerLoads = $allocationEnabled
+            ? ['orders.payments', 'payments.orders']
+            : ['orders', 'payments'];
+
+        $customer = Customer::where('uuid', $uuid)->with($eagerLoads)->firstOrFail();
 
         $due = $customer->total_orders - $customer->total_payments;
 
@@ -65,6 +69,7 @@ class CustomerController extends Controller
             'amountPendingPayments' => $customer->total_pending_payments,
             'diff' => $due,
             'limit_reached' => $customer->is_out_of_limit,
+            'allocationEnabled' => $allocationEnabled,
         ]);
     }
 

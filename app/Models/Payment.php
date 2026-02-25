@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Schema;
 
 #[ObservedBy([PaymentObserver::class])]
 class Payment extends Model
@@ -38,6 +39,10 @@ class Payment extends Model
 
     public function getUnallocatedAmountAttribute(): float
     {
+        if (! Schema::hasTable('order_payment')) {
+            return (float) $this->amount;
+        }
+
         return $this->amount - $this->orders()->sum('order_payment.allocated_amount');
     }
 

@@ -121,10 +121,10 @@
                              'opacity-50': !payment.cashed_in || payment.is_fully_allocated,
                              'border-primary': payment.dragging,
                          }"
-                         :draggable="payment.cashed_in && !payment.is_fully_allocated && !loading"
+                         :draggable="allocationEnabled && payment.cashed_in && !payment.is_fully_allocated && !loading"
                          @dragstart="handleDragStart($event, payment)"
                          @dragend="handleDragEnd(payment)"
-                         :style="payment.cashed_in && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
+                         :style="allocationEnabled && payment.cashed_in && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
                         <div class="card-body p-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -248,11 +248,13 @@ function allocationPanel() {
             'pay' => $order->pay,
             'due' => $order->due,
             'status' => $order->status,
-            'allocations' => $order->payments->map(fn ($payment) => [
-                'payment_id' => $payment->id,
-                'nature' => $payment->nature,
-                'allocated_amount' => $payment->pivot->allocated_amount,
-            ]),
+            'allocations' => $order->relationLoaded('payments')
+                ? $order->payments->map(fn ($payment) => [
+                    'payment_id' => $payment->id,
+                    'nature' => $payment->nature,
+                    'allocated_amount' => $payment->pivot->allocated_amount,
+                ])
+                : [],
             'drop_hover' => false,
         ])),
 
@@ -268,6 +270,8 @@ function allocationPanel() {
             'is_fully_allocated' => $payment->is_fully_allocated,
             'dragging' => false,
         ])),
+
+        allocationEnabled: @json($allocationEnabled ?? false),
 
         draggedPayment: null,
         loading: false,

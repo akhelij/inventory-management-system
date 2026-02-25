@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Schema;
 
 #[ObservedBy([OrderObserver::class])]
 class Order extends Model
@@ -88,6 +89,10 @@ class Order extends Model
 
     public function recalculatePayments(): void
     {
+        if (! Schema::hasTable('order_payment')) {
+            return;
+        }
+
         $totalAllocated = $this->payments()->sum('order_payment.allocated_amount');
 
         $this->update([
