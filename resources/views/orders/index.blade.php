@@ -61,19 +61,40 @@
                 errorToast.show();
             });
 
-            // Reinitialize Bootstrap dropdowns after Livewire morphs the DOM
-            // (pagination, sorting, filtering replace elements — stale Dropdown
-            // instances hold a null _menu reference and must be disposed first)
-            Livewire.hook('morph.updated', ({el, component}) => {
-                queueMicrotask(() => {
-                    el.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(toggle => {
-                        const stale = bootstrap.Dropdown.getInstance(toggle);
-                        if (stale) stale.dispose();
-                        new bootstrap.Dropdown(toggle);
+            // Dispose stale Bootstrap Dropdown instances after Livewire morphs the DOM.
+            // Pagination/sorting/filtering can morph existing elements or add new ones,
+            // leaving cached instances with a null _menu reference.
+            function disposeDropdowns(container) {
+                if (container.querySelectorAll) {
+                    container.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(toggle => {
+                        bootstrap.Dropdown.getInstance(toggle)?.dispose();
                     });
-                });
+                }
+                if (container.matches && container.matches('[data-bs-toggle="dropdown"]')) {
+                    bootstrap.Dropdown.getInstance(container)?.dispose();
+                }
+            }
+
+            Livewire.hook('morph.updated', ({el}) => {
+                queueMicrotask(() => disposeDropdowns(el));
+            });
+
+            Livewire.hook('morph.added', ({el}) => {
+                queueMicrotask(() => disposeDropdowns(el));
             });
         });
+
+        // Safety net: fix stale Dropdown instances at click time (capture phase
+        // runs before Bootstrap's bubble-phase data-api handler)
+        document.addEventListener('click', (e) => {
+            const toggle = e.target.closest('[data-bs-toggle="dropdown"]');
+            if (!toggle) return;
+
+            const instance = bootstrap.Dropdown.getInstance(toggle);
+            if (instance && !instance._menu) {
+                instance.dispose();
+            }
+        }, true);
 
         // Function to recalculate all order totals
         function recalculateAllTotals() {

@@ -154,8 +154,9 @@
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown d-flex justify-content-center align-items-center">
                                 <a class="nav-link @if($order->is_updatable_status) dropdown-toggle @endif"
-                                   href="#" data-bs-toggle="dropdown"
-                                   data-bs-auto-close="outside" role="button" aria-expanded="false">
+                                   href="#"
+                                   @if($order->is_updatable_status) data-bs-toggle="dropdown" data-bs-auto-close="outside" @endif
+                                   role="button" aria-expanded="false">
                                     <x-status dot color="{{ $order->status_color }}" class="text-uppercase">
                                         {{ $order->status }}
                                     </x-status>
