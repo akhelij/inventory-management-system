@@ -151,35 +151,33 @@
                         {{ Number::currency($order->total, 'MAD') }}
                     </td>
                     <td class="align-middle text-center">
-                        <ul class="navbar-nav">
-                            <li class="nav-item dropdown d-flex justify-content-center align-items-center">
-                                <a class="nav-link @if($order->is_updatable_status) dropdown-toggle @endif"
-                                   href="#navbar-base" data-bs-toggle="dropdown"
-                                   data-bs-auto-close="outside" role="button" aria-expanded="false">
-                                    <x-status dot color="{{ $order->status_color }}" class="text-uppercase">
-                                        {{ $order->status }}
-                                    </x-status>
-                                </a>
-                                @if($order->is_updatable_status)
-                                    <div class="dropdown-menu">
-                                        <div class="dropdown-menu-columns">
-                                            <div class="dropdown-menu-column ms-2 me-2">
-                                                <a href="#" wire:click.prevent="initiateStatusUpdate({{ $order->id }}, 1)">
-                                                    <x-status dot color="green" class="text-uppercase btn">
-                                                        {{ __('Approve') }}
-                                                    </x-status>
-                                                </a>
-                                                <a href="#" wire:click.prevent="initiateStatusUpdate({{ $order->id }}, 0)">
-                                                    <x-status dot color="red" class="text-uppercase btn">
-                                                        {{ __('Cancel') }}
-                                                    </x-status>
-                                                </a>
-                                            </div>
+                        <div class="d-flex justify-content-center" x-data="{ open: false }">
+                            <a class="nav-link @if($order->is_updatable_status) dropdown-toggle @endif"
+                               href="#" @click.prevent="open = !open" role="button"
+                               :aria-expanded="open">
+                                <x-status dot color="{{ $order->status_color }}" class="text-uppercase">
+                                    {{ $order->status }}
+                                </x-status>
+                            </a>
+                            @if($order->is_updatable_status)
+                                <div class="dropdown-menu" :class="{ 'show': open }" @click.outside="open = false">
+                                    <div class="dropdown-menu-columns">
+                                        <div class="dropdown-menu-column ms-2 me-2">
+                                            <a href="#" wire:click.prevent="initiateStatusUpdate({{ $order->id }}, 1)" @click="open = false">
+                                                <x-status dot color="green" class="text-uppercase btn">
+                                                    {{ __('Approve') }}
+                                                </x-status>
+                                            </a>
+                                            <a href="#" wire:click.prevent="initiateStatusUpdate({{ $order->id }}, 0)" @click="open = false">
+                                                <x-status dot color="red" class="text-uppercase btn">
+                                                    {{ __('Cancel') }}
+                                                </x-status>
+                                            </a>
                                         </div>
                                     </div>
-                                @endif
-                            </li>
-                        </ul>
+                                </div>
+                            @endif
+                        </div>
                     </td>
                     <td class="align-middle text-center">
                         <x-button.show class="btn-icon" route="{{ route('orders.show', $order->uuid) }}" target="_blank"/>
@@ -248,27 +246,3 @@
 
 
 </div>
-<script>
-    document.getElementById('cancelButton').addEventListener('click', function () {
-        var reason = prompt('Raison : ');
-        if (reason != null) {
-            fetch('/orders/update_status/' + this.dataset.orderId + '/' + 0, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    reason: reason,
-                })
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                this.closest('li').innerHTML = '<a class="nav-link " href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false"><span class="status status-red text-uppercase"><span class="status-dot "></span>Canceled</span></a>';
-            }).catch(error => {
-                console.error('There has been a problem with your fetch operation:', error);
-            });
-        }
-    });
-</script>
