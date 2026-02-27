@@ -15,10 +15,6 @@ class OrderPaymentController extends Controller
             return response()->json(['message' => 'Payment and order must belong to the same customer.'], 422);
         }
 
-        if (! $payment->cashed_in) {
-            return response()->json(['message' => 'Only cashed-in payments can be allocated.'], 422);
-        }
-
         if ($order->order_status !== OrderStatus::APPROVED) {
             return response()->json(['message' => 'Only approved orders can receive payment allocations.'], 422);
         }

@@ -118,13 +118,13 @@
                 <template x-for="payment in payments" :key="payment.id">
                     <div class="card mb-2"
                          :class="{
-                             'opacity-50': !payment.cashed_in || payment.is_fully_allocated,
+                             'opacity-50': payment.is_fully_allocated,
                              'border-primary': payment.dragging,
                          }"
-                         :draggable="allocationEnabled && payment.cashed_in && !payment.is_fully_allocated && !loading"
+                         :draggable="allocationEnabled && !payment.is_fully_allocated && !loading"
                          @dragstart="handleDragStart($event, payment)"
                          @dragend="handleDragEnd(payment)"
-                         :style="allocationEnabled && payment.cashed_in && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
+                         :style="allocationEnabled && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
                         <div class="card-body p-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>

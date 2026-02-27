@@ -134,7 +134,7 @@ class OrderPaymentControllerTest extends TestCase
     }
 
     #[Test]
-    public function store_rejects_uncashed_payment(): void
+    public function store_accepts_uncashed_payment(): void
     {
         [, , $order, $payment] = $this->createTestData([
             'payment' => ['cashed_in' => false, 'cashed_in_at' => null],
@@ -142,8 +142,8 @@ class OrderPaymentControllerTest extends TestCase
 
         $response = $this->postJson("/api/orders/{$order->id}/payments/{$payment->id}");
 
-        $response->assertUnprocessable();
-        $this->assertDatabaseMissing('order_payment', [
+        $response->assertOk();
+        $this->assertDatabaseHas('order_payment', [
             'order_id' => $order->id,
             'payment_id' => $payment->id,
         ]);
