@@ -40,7 +40,7 @@ class PaymentController extends Controller
             'order_id' => 'nullable|integer',
         ]);
 
-        $data = $request->all();
+        $data = $request->except('order_id');
         $data['date'] = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
         $data['echeance'] = Carbon::createFromFormat('d/m/Y', $request->echeance)->format('Y-m-d');
 
