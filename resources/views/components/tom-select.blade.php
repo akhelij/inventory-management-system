@@ -4,77 +4,50 @@
 
 @props([
     'label' => '',
-    'name' => $name,
-    'id' => '' ?? $name,
-    'placeholder' => '',
+    'name',
+    'id' => null,
+    'placeholder' => 'Search...',
     'data',
-    'value'
+    'value' => null,
+    'required' => false,
 ])
 
-<div class="col-md-4">
-    <label for="{{ $id }}" class="form-label required" >
+@php $selectId = $id ?? $name; @endphp
+
+@if ($label)
+    <label for="{{ $selectId }}" class="form-label @if($required) required @endif">
         {{ $label }}
     </label>
+@endif
 
-    <select id="{{ $id }}" name="{{ $name }}" placeholder="{{ $placeholder }}" autocomplete="off"
-            class="form-control form-select @error($name) is-invalid @enderror"
-    >
-        <option value="">
-            Select a person...
+<select id="{{ $selectId }}" name="{{ $name }}" placeholder="{{ $placeholder }}" autocomplete="off"
+        class="form-select @error($name) is-invalid @enderror" @if($required) required @endif>
+    <option value="">{{ $placeholder }}</option>
+
+    @foreach($data as $option)
+        <option value="{{ $option->id }}" @selected(old($name, $value) == $option->id)>
+            {{ $option->name }}
         </option>
+    @endforeach
+</select>
 
-        @foreach($data as $option)
-            <option value="{{ $option->id }}" @selected(old($name, $value = '' ?? null) == $option->id)>
-                {{ $option->name }}
-            </option>
-        @endforeach
-    </select>
-
-    @error($name)
+@error($name)
     <div class="invalid-feedback">
         {{ $message }}
     </div>
-    @enderror
-</div>
+@enderror
 
 @pushonce('page-scripts')
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
-
-    <script>
-        new TomSelect("#{{ $id }}",{
-            create: true,
-            sortField: {
-                field: "text",
-                direction: "asc"
-            }
-        });
-    </script>
 @endpushonce
 
-{{--- ---}}
-{{---
-<div class="col-md-4">
-    <label class="small my-1" for="supplier_id">
-        {{ __('Supplier') }}
-        <span class="text-danger">*</span>
-    </label>
-
-    <select class="form-select @error('supplier_id') is-invalid @enderror" id="supplier_id" name="supplier_id" required>
-        <option selected disabled>
-            {{ __('Select a supplier:') }}
-        </option>
-
-        @foreach ($suppliers as $supplier)
-            <option value="{{ $supplier->id }}" @selected(old('supplier_id', ) == $supplier->id)>
-                {{ $supplier->name }}
-            </option>
-        @endforeach
-    </select>
-
-    @error('supplier_id')
-    <div class="invalid-feedback">
-        {{ $message }}
-    </div>
-    @enderror
-</div>
----}}
+@push('page-scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new TomSelect("#{{ $selectId }}", {
+                sortField: { field: "text", direction: "asc" },
+                allowEmptyOption: true,
+            });
+        });
+    </script>
+@endpush

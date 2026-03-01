@@ -223,30 +223,14 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <label class="small mb-1" for="customer_id">
-                                        {{ __('Customer') }}
-                                        <span class="text-danger">*</span>
-                                    </label>
-
-                                    <select
-                                        class="form-select form-control-solid @error('customer_id') is-invalid @enderror"
-                                        id="customer_id" name="customer_id">
-                                        <option selected="" disabled="">
-                                            Select a customer:
-                                        </option>
-                                        @foreach ($customers as $customer)
-                                            <option
-                                                value="{{ $customer->id }}" @selected($order->customer_id == $customer->id)>
-                                                {{ $customer->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-
-                                    @error('customer_id')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
+                                    <x-tom-select
+                                        name="customer_id"
+                                        label="{{ __('Customer') }}"
+                                        :data="$customers"
+                                        :value="$order->customer_id"
+                                        :required="true"
+                                        placeholder="{{ __('Search customer...') }}"
+                                    />
                                 </div>
 
                                 <div class="col-md-4">

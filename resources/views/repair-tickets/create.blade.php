@@ -254,8 +254,8 @@
                                             <div class="col-md-12" x-show="brought_by === 'customer'">
                                                 <div class="mb-3">
                                                     <label class="form-label required">{{ __('Customer') }}</label>
-                                                    <select name="customer_id" class="form-select @error('customer_id') is-invalid @enderror">
-                                                        <option value="">{{ __('Select Customer') }}</option>
+                                                    <select id="repair_customer_id" name="customer_id" class="form-select @error('customer_id') is-invalid @enderror" placeholder="{{ __('Search customer...') }}">
+                                                        <option value="">{{ __('Search customer...') }}</option>
                                                         @foreach($customers as $customer)
                                                             <option value="{{ $customer->id }}" @selected(old('customer_id') == $customer->id)>
                                                                 {{ $customer->name }} - {{ $customer->phone }}
@@ -422,7 +422,23 @@
             </div>
         </div>
 
-    @push('scripts')
+    @pushonce('page-styles')
+        <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+    @endpushonce
+
+    @push('page-scripts')
+        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                new TomSelect("#repair_customer_id", {
+                    sortField: { field: "text", direction: "asc" },
+                    allowEmptyOption: true,
+                });
+            });
+        </script>
+    @endpush
+
+    @push('page-scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');

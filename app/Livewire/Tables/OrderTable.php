@@ -129,7 +129,7 @@ class OrderTable extends Component
         }
 
         return view('livewire.tables.order-table', [
-            'orders' => $query->with(['customer', 'details'])
+            'orders' => $query->with(['customer', 'details', 'user'])
                 ->search($this->search)
                 ->orderBy($this->sortField, $this->sortAsc ? 'asc' : 'desc')
                 ->paginate($this->perPage),
