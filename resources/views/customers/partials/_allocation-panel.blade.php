@@ -249,9 +249,9 @@
     </template>
 
     <!-- Payment Creation Modal -->
-    <div class="modal modal-blur fade" :class="{ show: modal.open }"
-         :style="modal.open ? 'display: block;' : 'display: none;'"
+    <div class="modal modal-blur show" style="display: block;"
          x-show="modal.open" x-cloak
+         x-transition.opacity.duration.150ms
          @keydown.escape.window="closeModal()"
          tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -355,8 +355,9 @@
         </div>
     </div>
     <!-- Modal backdrop -->
-    <div class="modal-backdrop fade" :class="{ show: modal.open }"
+    <div class="modal-backdrop show"
          x-show="modal.open" x-cloak
+         x-transition.opacity.duration.150ms
          @click="closeModal()"></div>
 </div>
 
