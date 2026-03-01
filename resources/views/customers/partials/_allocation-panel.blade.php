@@ -254,8 +254,7 @@
          x-show="modal.open" x-cloak
          @keydown.escape.window="closeModal()"
          tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document"
-             @click.outside="closeModal()">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">{{ __('Add Payment') }}</h5>
@@ -357,7 +356,8 @@
     </div>
     <!-- Modal backdrop -->
     <div class="modal-backdrop fade" :class="{ show: modal.open }"
-         x-show="modal.open" x-cloak></div>
+         x-show="modal.open" x-cloak
+         @click="closeModal()"></div>
 </div>
 
 @php
