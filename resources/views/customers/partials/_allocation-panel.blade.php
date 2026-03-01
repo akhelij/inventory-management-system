@@ -17,12 +17,13 @@
     .card-animate { animation: slideIn 0.3s ease-out; }
     .progress-bar { transition: width 0.5s ease; }
 
-    /* Modal — pure CSS, no Bootstrap modal classes */
+    /* Modal — pure CSS, Tailwind-inspired clean design */
     .payment-modal-overlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(107, 114, 128, 0.5);
         z-index: 9998;
+        backdrop-filter: blur(2px);
     }
     .payment-modal-container {
         position: fixed;
@@ -31,15 +32,133 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1rem;
     }
     .payment-modal-box {
-        background: var(--tblr-bg-surface, #fff);
-        border-radius: 8px;
-        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
         width: 100%;
-        max-width: 580px;
+        max-width: 540px;
+        margin: 1rem;
         animation: slideIn 0.2s ease-out;
+        overflow: hidden;
+    }
+    .payment-modal-box .modal-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 1.25rem 1.5rem;
+    }
+    .payment-modal-box .modal-head h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+    }
+    .payment-modal-box .modal-head .close-btn {
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background: #f3f4f6;
+        border-radius: 8px;
+        color: #6b7280;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .payment-modal-box .modal-head .close-btn:hover {
+        background: #e5e7eb;
+        color: #374151;
+    }
+    .payment-modal-box .modal-divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 0 1.5rem;
+    }
+    .payment-modal-box .modal-content-area {
+        margin: 1.25rem 1.5rem;
+    }
+    .payment-modal-box .modal-content-area .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    .payment-modal-box .modal-content-area .form-grid .full-width {
+        grid-column: 1 / -1;
+    }
+    .payment-modal-box .modal-content-area .form-label {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.35rem;
+    }
+    .payment-modal-box .modal-content-area .form-control,
+    .payment-modal-box .modal-content-area .form-select {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .payment-modal-box .modal-content-area .form-control:focus,
+    .payment-modal-box .modal-content-area .form-select:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .payment-modal-box .modal-foot {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin: 1.25rem 1.5rem;
+    }
+    .payment-modal-box .modal-foot .btn-cancel {
+        border: 1px solid #d1d5db;
+        background: #fff;
+        color: #374151;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .payment-modal-box .modal-foot .btn-cancel:hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+    }
+    .payment-modal-box .modal-foot .btn-submit {
+        background: #3b82f6;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .payment-modal-box .modal-foot .btn-submit:hover:not(:disabled) {
+        background: #2563eb;
+    }
+    .payment-modal-box .modal-foot .btn-submit:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+    .payment-modal-box .auto-alloc-hint {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 8px;
+        color: #1e40af;
+        font-size: 0.8rem;
+        margin-top: 1rem;
+    }
+    .payment-modal-box .modal-errors {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 8px;
+        color: #991b1b;
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
     }
 </style>
 
@@ -452,13 +571,19 @@
             <div class="payment-modal-overlay" @click="closeModal()"></div>
             <div class="payment-modal-container" @keydown.escape.window="closeModal()">
                 <div class="payment-modal-box" @click.stop>
-                    <div class="card-header">
-                        <h3 class="card-title">{{ __('Add Payment') }}</h3>
-                        <button type="button" class="btn-close" @click="closeModal()"></button>
+
+                    <div class="modal-head">
+                        <h3>{{ __('Add Payment') }}</h3>
+                        <button type="button" class="close-btn" @click="closeModal()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                        </button>
                     </div>
-                    <div class="card-body">
-                        <div class="alert alert-danger" x-show="Object.keys(modalErrors).length > 0">
-                            <ul class="mb-0">
+
+                    <div class="modal-divider"></div>
+
+                    <div class="modal-content-area">
+                        <div class="modal-errors p-3" x-show="Object.keys(modalErrors).length > 0" x-cloak>
+                            <ul class="mb-0 ps-3">
                                 <template x-for="(msgs, field) in modalErrors" :key="field">
                                     <template x-for="msg in msgs" :key="msg">
                                         <li x-text="msg"></li>
@@ -467,13 +592,13 @@
                             </ul>
                         </div>
 
-                        <div class="row gx-3">
-                            <div class="col-6 mb-3">
+                        <div class="form-grid">
+                            <div>
                                 <label class="form-label">{{ __('Nature') }}</label>
                                 <input type="text" class="form-control" x-model="form.nature"
                                        :class="{ 'is-invalid': modalErrors.nature }">
                             </div>
-                            <div class="col-6 mb-3">
+                            <div>
                                 <label class="form-label">{{ __('Payment type') }}</label>
                                 <select class="form-select" x-model="form.payment_type"
                                         :class="{ 'is-invalid': modalErrors.payment_type }">
@@ -482,7 +607,7 @@
                                     <option value="Exchange">Lettre de change</option>
                                 </select>
                             </div>
-                            <div class="col-6 mb-3" x-show="form.payment_type !== 'HandCash'">
+                            <div x-show="form.payment_type !== 'HandCash'">
                                 <label class="form-label">{{ __('Bank') }}</label>
                                 <select class="form-select" x-model="form.bank"
                                         :class="{ 'is-invalid': modalErrors.bank }">
@@ -492,45 +617,47 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-6 mb-3">
+                            <div>
                                 <label class="form-label">{{ __('Date') }}</label>
                                 <input type="text" class="form-control" x-model="form.date"
                                        placeholder="dd/mm/yyyy" data-field="date"
                                        :class="{ 'is-invalid': modalErrors.date }"
                                        @input="formatDateField($event)">
                             </div>
-                            <div class="col-6 mb-3">
+                            <div>
                                 <label class="form-label">{{ __('Echeance') }}</label>
                                 <input type="text" class="form-control" x-model="form.echeance"
                                        placeholder="dd/mm/yyyy" data-field="echeance"
                                        :class="{ 'is-invalid': modalErrors.echeance }"
                                        @input="formatDateField($event)">
                             </div>
-                            <div class="col-6 mb-3">
+                            <div>
                                 <label class="form-label">{{ __('Amount') }}</label>
                                 <input type="number" class="form-control" x-model="form.amount"
                                        step="0.01" :class="{ 'is-invalid': modalErrors.amount }">
                             </div>
-                            <div class="col-12 mb-3">
+                            <div class="full-width">
                                 <label class="form-label">{{ __('Description') }}</label>
                                 <textarea class="form-control" x-model="form.description" rows="2"></textarea>
                             </div>
                         </div>
 
-                        <div class="alert alert-info py-2" x-show="modalOrderId">
-                            <small>
-                                {{ __('This payment will be automatically allocated to order') }}
-                                <strong x-text="modalOrderInvoice"></strong>
-                            </small>
+                        <div class="auto-alloc-hint p-2" x-show="modalOrderId" x-cloak>
+                            {{ __('This payment will be automatically allocated to order') }}
+                            <strong x-text="modalOrderInvoice"></strong>
                         </div>
                     </div>
-                    <div class="card-footer text-end">
-                        <button type="button" class="btn me-auto" @click="closeModal()">{{ __('Cancel') }}</button>
-                        <button type="button" class="btn btn-primary" @click="submitPayment()" :disabled="modalSubmitting">
+
+                    <div class="modal-divider"></div>
+
+                    <div class="modal-foot">
+                        <button type="button" class="btn btn-cancel px-3 py-2" @click="closeModal()">{{ __('Cancel') }}</button>
+                        <button type="button" class="btn btn-submit px-3 py-2" @click="submitPayment()" :disabled="modalSubmitting">
                             <span class="spinner-border spinner-border-sm me-1" x-show="modalSubmitting"></span>
                             {{ __('Add Payment') }}
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
