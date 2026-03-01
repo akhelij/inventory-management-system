@@ -43,6 +43,10 @@ class Payment extends Model
             return (float) $this->amount;
         }
 
+        if ($this->relationLoaded('orders')) {
+            return $this->amount - $this->orders->sum('pivot.allocated_amount');
+        }
+
         return $this->amount - $this->orders()->sum('order_payment.allocated_amount');
     }
 

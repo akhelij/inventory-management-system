@@ -233,27 +233,14 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label class="small mb-1" for="customer_id">
-                                            {{ __('Customer') }}
-                                            <span class="text-danger">*</span>
-                                        </label>
-
-                                        <select
-                                            class="form-select form-control-solid @error('customer_id') is-invalid @enderror"
-                                            id="customer_id" name="customer_id">
-                                            @foreach ($customers as $customer)
-                                                <option
-                                                    value="{{ $customer->id }}" @selected( old('customer_id') == $customer->id)>
-                                                    {{ $customer->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-
-                                        @error('customer_id')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
+                                        <x-tom-select
+                                            name="customer_id"
+                                            label="{{ __('Customer') }}"
+                                            :data="$customers"
+                                            :value="old('customer_id')"
+                                            :required="true"
+                                            placeholder="{{ __('Search customer...') }}"
+                                        />
                                     </div>
 
                                     @if(auth()->user()->hasRole('admin'))
@@ -283,6 +270,27 @@
                                         @enderror
                                     </div>
                                     @endif
+
+                                    <div class="col-md-4" x-data="{ showInstallments: false }">
+                                        <label class="small mb-1">{{ __('Payment Mode') }}</label>
+                                        <select name="payment_mode" class="form-select" @change="showInstallments = $event.target.value === 'installment'">
+                                            <option value="full">{{ __('Full Payment') }}</option>
+                                            <option value="installment">{{ __('Installments') }}</option>
+                                        </select>
+
+                                        <template x-if="showInstallments">
+                                            <div class="row mt-2">
+                                                <div class="col-6">
+                                                    <label class="small mb-1">{{ __('Number of installments') }}</label>
+                                                    <input type="number" name="installment_count" class="form-control form-control-sm" value="4" min="2" max="24">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="small mb-1">{{ __('Period (days)') }}</label>
+                                                    <input type="number" name="installment_period_days" class="form-control form-control-sm" value="30" min="7" max="365">
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
                                     
                                     <div class="col-md-4">
                                         <label class="small mb-1" for="tagged_user_id">

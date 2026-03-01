@@ -19,6 +19,8 @@ class CustomerTable extends Component
 
     public bool $sortAsc = false;
 
+    public string $category = '';
+
     public function sortBy(string $field): void
     {
         $this->sortAsc = $this->sortField === $field ? ! $this->sortAsc : true;
@@ -28,7 +30,8 @@ class CustomerTable extends Component
     public function render()
     {
         $query = Customer::ofAuth()
-            ->with('orders', 'payments')
+            ->when($this->category, fn ($q) => $q->where('category', $this->category))
+            ->with('orders', 'payments', 'user')
             ->search($this->search)
             ->get();
 

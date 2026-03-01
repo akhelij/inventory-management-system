@@ -236,13 +236,25 @@
                     @endcan
                     
                     @can(PermissionEnum::READ_CUSTOMERS)
-                    <!-- Customers -->
-                    <li class="nav-item {{ request()->is('customers*') ? 'active' : null }}">
-                        <a class="nav-link" href="{{ route('customers.index') }}">
+                    <!-- Customers (B2B) -->
+                    <li class="nav-item {{ request('category') === 'b2b' || (request()->is('customers*') && request('category') !== 'b2c') ? 'active' : null }}">
+                        <a class="nav-link" href="{{ route('customers.index', ['category' => 'b2b']) }}">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
-                                <i class="fas fa-users"></i>
+                                <i class="fas fa-building"></i>
                             </span>
                             <span class="nav-link-title">{{ __('Customers') }}</span>
+                        </a>
+                    </li>
+                    @endcan
+
+                    @can(PermissionEnum::READ_CLIENTS)
+                    <!-- Clients (B2C) -->
+                    <li class="nav-item {{ request('category') === 'b2c' ? 'active' : null }}">
+                        <a class="nav-link" href="{{ route('customers.index', ['category' => 'b2c']) }}">
+                            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                <i class="fas fa-address-book"></i>
+                            </span>
+                            <span class="nav-link-title">{{ __('Clients') }}</span>
                         </a>
                     </li>
                     @endcan
@@ -358,14 +370,48 @@
                         <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Enable light mode" data-bs-toggle="tooltip" data-bs-placement="bottom">
                             <i class="fas fa-sun"></i>
                         </a>
-                        
+
+                        <!-- Notifications Bell -->
+                        @php $unreadCount = auth()->user()->unreadNotifications->count(); @endphp
+                        <div class="nav-item dropdown d-none d-md-flex me-3">
+                            <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Notifications">
+                                <i class="fas fa-bell"></i>
+                                @if ($unreadCount > 0)
+                                    <span class="badge bg-red badge-notification">{{ $unreadCount }}</span>
+                                @endif
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card" style="width: 350px;">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">{{ __('Notifications') }}</h3>
+                                    </div>
+                                    <div class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
+                                        @forelse (auth()->user()->unreadNotifications->take(10) as $notification)
+                                            <div class="list-group-item">
+                                                <div class="row align-items-center">
+                                                    <div class="col-auto">
+                                                        <span class="status-dot status-dot-animated bg-red d-block"></span>
+                                                    </div>
+                                                    <div class="col text-truncate">
+                                                        <div class="small text-muted">{{ $notification->created_at->diffForHumans() }}</div>
+                                                        <div class="small">{{ $notification->data['message'] ?? '' }}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @empty
+                                            <div class="list-group-item text-center text-muted py-4">
+                                                {{ __('No new notifications') }}
+                                            </div>
+                                        @endforelse
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Language Dropdown -->
                         <div class="nav-item dropdown d-none d-md-flex me-3">
                             <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Language options">
                                 <i class="fas fa-globe"></i>
-                                @if (auth()->user()->unreadNotifications->count() !== 0)
-                                    <span class="badge bg-red"></span>
-                                @endif
                             </a>
                             <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
                                 @if(app()->getLocale() == 'en')

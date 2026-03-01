@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Order;
+use App\Models\OrderDetails;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -49,10 +51,42 @@ class CartController extends Controller
         $product = Product::findOrFail($validated['id']);
         $requestedQty = $validated['quantity'] ?? 1;
 
-        if ($requestedQty > $product->quantity) {
+        // Sum quantity of all cart items for this product (both paid and gift)
+        $cartQuantityForProduct = $cart->items()
+            ->where('product_id', $product->id)
+            ->sum('quantity');
+
+        $totalAfterAdd = $cartQuantityForProduct + $requestedQty;
+
+        if ($totalAfterAdd > $product->quantity) {
+            $remaining = $product->quantity - $cartQuantityForProduct;
+
             return response()->json([
                 'status' => 'error',
-                'message' => "Requested quantity exceeds available stock ({$product->quantity})",
+                'message' => "Not enough stock. Available: {$product->quantity}, Already in cart: {$cartQuantityForProduct}, Remaining: {$remaining}",
+            ], 400);
+        }
+
+        // Check pending orders for the same product
+        $pendingOrderQty = OrderDetails::whereHas('order', fn ($q) => $q->whereNull('order_status')->where('stock_affected', false))
+            ->where('product_id', $product->id)
+            ->sum('quantity');
+
+        $effectiveAvailable = $product->quantity - $pendingOrderQty;
+
+        if ($totalAfterAdd > $effectiveAvailable) {
+            $pendingOrders = Order::whereNull('order_status')
+                ->where('stock_affected', false)
+                ->whereHas('details', fn ($q) => $q->where('product_id', $product->id))
+                ->with('customer:id,name')
+                ->get(['id', 'invoice_no', 'customer_id']);
+
+            $orderList = $pendingOrders->map(fn ($o) => "{$o->invoice_no} ({$o->customer->name})")->join(', ');
+
+            return response()->json([
+                'status' => 'error',
+                'message' => "Product exists in pending orders ({$orderList}). Available stock: {$product->quantity}, Reserved in pending: {$pendingOrderQty}. Remove from other orders first.",
+                'pending_orders' => $pendingOrders,
             ], 400);
         }
 

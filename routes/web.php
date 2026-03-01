@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CinOcrController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Dashboards\DashboardController;
 use App\Http\Controllers\DriverController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Order\OrderPendingController;
 use App\Http\Controllers\OrderPaymentController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentExportController;
+use App\Http\Controllers\PaymentScheduleController;
 use App\Http\Controllers\Product\ProductController;
 use App\Http\Controllers\Product\ProductExportController;
 use App\Http\Controllers\Product\ProductImportController;
@@ -123,6 +125,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('api/orders/{order}/payments/{payment}', [OrderPaymentController::class, 'store'])->name('order-payments.store');
     Route::delete('api/orders/{order}/payments/{payment}', [OrderPaymentController::class, 'destroy'])->name('order-payments.destroy');
 
+    // Payment Schedules
+    Route::post('orders/{order}/payment-schedule', [PaymentScheduleController::class, 'store'])->name('payment-schedules.store');
+    Route::post('installments/{entry}/pay', [PaymentScheduleController::class, 'markPaid'])->name('installments.pay');
+
     Route::get('lang/{lang}', function (string $lang) {
         $supportedLocales = ['en', 'fr'];
         if (! in_array($lang, $supportedLocales)) {
@@ -145,6 +151,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::get('documentation/toast', fn () => view('documentation.toast'))->name('documentation.toast');
+
+    // CIN OCR
+    Route::post('cin-ocr', CinOcrController::class)->name('cin.ocr');
 
     // Progress Items
     Route::resource('progress-items', ProgressItemController::class);

@@ -7,8 +7,10 @@ use App\Enums\PermissionEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderStoreRequest;
 use App\Models\Customer;
+use App\Models\InstallmentEntry;
 use App\Models\Order;
 use App\Models\OrderDetails;
+use App\Models\PaymentSchedule;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\StockService;
@@ -40,7 +42,7 @@ class OrderController extends Controller
 
         return view('orders.create', [
             'products' => Product::with(['category', 'unit'])->get(),
-            'customers' => Customer::ofAuth()->get(['id', 'name']),
+            'customers' => Customer::ofAuth()->orderBy('name')->get(['id', 'name']),
             'users' => User::query()->get(['id', 'name']),
         ]);
     }
@@ -93,6 +95,33 @@ class OrderController extends Controller
                 ]);
             }
 
+            if ($request->input('payment_mode') === 'installment') {
+                $installmentCount = (int) $request->input('installment_count', 4);
+                $periodDays = (int) $request->input('installment_period_days', 30);
+
+                $schedule = PaymentSchedule::create([
+                    'order_id' => $order->id,
+                    'customer_id' => $order->customer_id,
+                    'total_installments' => $installmentCount,
+                    'period_days' => $periodDays,
+                    'total_amount' => $order->total,
+                    'user_id' => Auth::id(),
+                ]);
+
+                $baseAmount = floor($order->total / $installmentCount * 100) / 100;
+                $remainder = $order->total - ($baseAmount * ($installmentCount - 1));
+
+                for ($i = 1; $i <= $installmentCount; $i++) {
+                    InstallmentEntry::create([
+                        'payment_schedule_id' => $schedule->id,
+                        'installment_number' => $i,
+                        'amount' => $i === $installmentCount ? $remainder : $baseAmount,
+                        'due_date' => now()->addDays($periodDays * $i),
+                        'status' => 'pending',
+                    ]);
+                }
+            }
+
             app(\App\Http\Controllers\CartController::class)->clear();
 
             DB::commit();
@@ -116,7 +145,7 @@ class OrderController extends Controller
 
         return view($viewName, [
             'products' => Product::with(['category', 'unit'])->get(),
-            'customers' => Customer::ofAuth()->get(['id', 'name']),
+            'customers' => Customer::ofAuth()->orderBy('name')->get(['id', 'name']),
             'users' => User::query()->get(['id', 'name']),
             'order' => $order,
         ]);
@@ -248,7 +277,7 @@ class OrderController extends Controller
     {
         abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
 
-        $order = Order::with(['customer', 'details.product', 'user'])->where('uuid', $uuid)->firstOrFail();
+        $order = Order::with(['customer', 'details.product', 'user', 'payments'])->where('uuid', $uuid)->firstOrFail();
 
         return Pdf::loadView('orders.pdf-invoice', ['order' => $order])
             ->setPaper('a4', 'portrait')
@@ -259,7 +288,7 @@ class OrderController extends Controller
     {
         abort_unless(Auth::user()->can(PermissionEnum::READ_ORDERS), 403);
 
-        $orders = Order::with(['customer', 'details.product', 'user'])
+        $orders = Order::with(['customer', 'details.product', 'user', 'payments'])
             ->whereIn('id', $request->order_ids)
             ->get();
 

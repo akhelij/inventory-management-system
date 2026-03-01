@@ -54,10 +54,15 @@
                                 <label for="bank" class="small my-1">
                                     {{ __('Bank') }}
                                 </label>
-                                <input name="bank" id="bank" type="text"
-                                       class="form-control example-date-input @error('bank') is-invalid @enderror"
-                                       value="{{ $customer->bank_name }}"
-                                >
+                                <select name="bank" id="bank"
+                                        class="form-select @error('bank') is-invalid @enderror">
+                                    <option value="">{{ __('Select a bank:') }}</option>
+                                    @foreach ($banks as $bank)
+                                        <option value="{{ $bank->value }}" @selected(old('bank', $customer->bank_name) === $bank->value)>
+                                            {{ $bank->value }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="col-6">

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CustomerCategory;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,10 @@ class Customer extends Model
         'name',
         'email',
         'type',
+        'category',
+        'cin',
+        'date_of_birth',
+        'cin_photo',
         'phone',
         'address',
         'city',
@@ -26,6 +31,11 @@ class Customer extends Model
         'bank_name',
         'user_id',
         'uuid',
+    ];
+
+    protected $casts = [
+        'date_of_birth' => 'date',
+        'category' => CustomerCategory::class,
     ];
 
     protected $appends = [
@@ -80,6 +90,21 @@ class Customer extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class)->orderBy('echeance', 'desc');
+    }
+
+    public function paymentSchedules(): HasMany
+    {
+        return $this->hasMany(PaymentSchedule::class);
+    }
+
+    public function scopeB2b($query): void
+    {
+        $query->where('category', CustomerCategory::B2B);
+    }
+
+    public function scopeB2c($query): void
+    {
+        $query->where('category', CustomerCategory::B2C);
     }
 
     public function scopeSearch($query, $value): void

@@ -3,14 +3,14 @@
         <div class="card-header d-flex flex-column flex-md-row align-items-md-center">
             <div>
                 <h3 class="card-title">
-                    {{ __('Customers') }}
+                    {{ $category === 'b2c' ? __('Clients') : __('Customers') }}
                 </h3>
-                <p class="text-muted mt-1 mb-0">{{ __('Manage your customer database') }}</p>
+                <p class="text-muted mt-1 mb-0">{{ $category === 'b2c' ? __('Manage your client database') : __('Manage your customer database') }}</p>
             </div>
 
             <div class="card-actions ms-auto mt-3 mt-md-0">
                 <x-button.print class="btn-icon" route="{{ route('payments.export') }}"/>
-                <x-action.create route="{{ route('customers.create') }}" />
+                <x-action.create route="{{ route('customers.create', ['category' => $category ?: null]) }}" />
             </div>
         </div>
 
@@ -30,14 +30,14 @@
                                             {{ __('Showing customers exceeding credit limit') }}
                                         @endif
                                     </span>
-                                    <a href="{{ route('customers.index') }}" class="ms-2 btn btn-sm btn-outline-info">
+                                    <a href="{{ route('customers.index', ['category' => $category ?: null]) }}" class="ms-2 btn btn-sm btn-outline-info">
                                         <i class="fas fa-times"></i> {{ __('Clear filter') }}
                                     </a>
                                 </div>
                             </div>
                         @else
                             <div class="d-flex flex-wrap gap-2">
-                                <a href="{{ route('customers.index') }}?only_out_of_limit=1" class="status-filter-card p-2 text-decoration-none">
+                                <a href="{{ route('customers.index', ['category' => $category ?: null, 'only_out_of_limit' => 1]) }}" class="status-filter-card p-2 text-decoration-none">
                                     <div class="d-flex align-items-center">
                                         <div class="status-icon bg-warning p-2 rounded-circle me-2">
                                             <i class="fas fa-exclamation-triangle text-white"></i>
@@ -49,7 +49,7 @@
                                     </div>
                                 </a>
                                 
-                                <a href="{{ route('customers.index') }}?only_unpaid=1" class="status-filter-card p-2 text-decoration-none">
+                                <a href="{{ route('customers.index', ['category' => $category ?: null, 'only_unpaid' => 1]) }}" class="status-filter-card p-2 text-decoration-none">
                                     <div class="d-flex align-items-center">
                                         <div class="status-icon bg-danger p-2 rounded-circle me-2">
                                             <i class="fas fa-file-invoice-dollar text-white"></i>

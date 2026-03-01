@@ -6,7 +6,7 @@
             <div class="row g-2 align-items-center mb-3">
                 <div class="col">
                     <h2 class="page-title">
-                        {{ __('Edit Customer') }}
+                        {{ $customer->category?->value === 'b2c' ? __('Edit Client') : __('Edit Customer') }}
                     </h2>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h3 class="card-title">
-                                        {{ __('Edit Customer') }}
+                                        {{ $customer->category?->value === 'b2c' ? __('Client Details') : __('Customer Details') }}
                                     </h3>
 
                                     <div class="row row-cards">
@@ -78,13 +78,28 @@
                                             />
                                         </div>
 
+                                        @if ($customer->category?->value === 'b2c')
+                                            <div class="col-sm-6 col-md-6">
+                                                <x-input label="{{ __('CIN') }}" name="cin"
+                                                         :value="old('cin', $customer->cin)"
+                                                />
+                                            </div>
 
-                                        <div class="col-12">
-                                            <x-input label="{{ __('Limit') }}" name="limit"
-                                                     :value="old('limit', $customer->limit)"
-                                            />
-                                        </div>
+                                            <div class="col-sm-6 col-md-6">
+                                                <x-input label="{{ __('Date of Birth') }}" name="date_of_birth"
+                                                         type="date"
+                                                         :value="old('date_of_birth', $customer->date_of_birth?->format('Y-m-d'))"
+                                                />
+                                            </div>
+                                        @endif
 
+                                        @if ($customer->category?->value !== 'b2c')
+                                            <div class="col-12">
+                                                <x-input label="{{ __('Limit') }}" name="limit"
+                                                         :value="old('limit', $customer->limit)"
+                                                />
+                                            </div>
+                                        @endif
 
                                         <div class="col-sm-6 col-md-6">
                                             <label for="bank_name" class="form-label">
@@ -94,39 +109,11 @@
                                             <select class="form-select @error('bank_name') is-invalid @enderror"
                                                     id="bank_name" name="bank_name">
                                                 <option selected="" disabled="">{{ __('Select a bank:') }}</option>
-                                                <option value="ATTIJARI"
-                                                        @if (old('bank_name', $customer->bank_name) == 'ATTIJARI') selected="selected" @endif>
-                                                    ATTIJARI
-                                                </option>
-                                                <option value="CIH"
-                                                        @if (old('bank_name', $customer->bank_name) == 'CIH') selected="selected" @endif>
-                                                    CIH
-                                                </option>
-                                                <option value="BP"
-                                                        @if (old('bank_name', $customer->bank_name) == 'BP') selected="selected" @endif>
-                                                    BP
-                                                </option>
-
-                                                <option value="BMCE"
-                                                        @if (old('bank_name', $customer->bank_name) == 'BMCE') selected="selected" @endif>
-                                                    BMCE
-                                                </option>
-
-                                                <option value="CREDIT DU MAROC"
-                                                        @if (old('bank_name', $customer->bank_name) == 'CREDIT DU MAROC') selected="selected" @endif>
-                                                    CREDIT DU MAROC
-                                                </option>
-
-                                                <option value="BARID BANK"
-                                                        @if (old('bank_name', $customer->bank_name) == 'BARID BANK') selected="selected" @endif>
-                                                    BARID BANK
-                                                </option>
-
-
-                                                <option value="CREDIT AGRICOLE"
-                                                        @if (old('bank_name', $customer->bank_name) == 'CREDIT AGRICOLE') selected="selected" @endif>
-                                                    CREDIT AGRICOLE
-                                                </option>
+                                                @foreach ($banks as $bank)
+                                                    <option value="{{ $bank->value }}" @selected(old('bank_name', $customer->bank_name) === $bank->value)>
+                                                        {{ $bank->label() }}
+                                                    </option>
+                                                @endforeach
                                             </select>
 
                                             @error('bank_name')
@@ -171,7 +158,7 @@
                                         {{ __('Update') }}
                                     </button>
 
-                                    <a class="btn btn-outline-warning" href="{{ route('customers.index') }}">
+                                    <a class="btn btn-outline-warning" href="{{ route('customers.index', ['category' => $customer->category?->value ?? 'b2b']) }}">
                                         {{ __('Cancel') }}
                                     </a>
                                 </div>

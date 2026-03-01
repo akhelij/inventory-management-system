@@ -86,7 +86,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-end">
-                            <a class="btn btn-info" href="{{ route('customers.index') }}">
+                            <a class="btn btn-info" href="{{ route('customers.index', ['category' => $customer->category?->value]) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-arrow-left"
                                      width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
                                      fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -133,6 +133,10 @@
                 {{ __('Export Excel') }}
             </a>
             @include('customers.partials._allocation-panel')
+
+            @if ($customer->category?->value === 'b2c')
+                @include('customers.partials._installment-schedules')
+            @endif
         </div>
     </div>
     <script>

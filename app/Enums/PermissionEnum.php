@@ -54,6 +54,14 @@ enum PermissionEnum
 
     public const DELETE_CUSTOMERS = 'delete customers';
 
+    public const READ_CLIENTS = 'read clients';
+
+    public const CREATE_CLIENTS = 'create clients';
+
+    public const UPDATE_CLIENTS = 'update clients';
+
+    public const DELETE_CLIENTS = 'delete clients';
+
     public const READ_REPAIRS = 'read repairtickets';
 
     public const CREATE_REPAIRS = 'create repairtickets';
