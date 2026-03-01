@@ -16,6 +16,7 @@
     }
     .badge.animating-in { animation: slideIntoChip 0.4s ease-out; }
     .badge.animating-out { animation: chipPopOut 0.3s ease-in; }
+    .card.animating-in { animation: slideIntoChip 0.4s ease-out; }
     .progress-bar { transition: width 0.5s ease; }
 </style>
 
@@ -55,6 +56,12 @@
                                     <small class="text-muted"
                                            x-show="order.due > 0"
                                            x-text="'{{ __('Due') }}: ' + formatCurrency(order.due)"></small>
+                                    <button class="btn btn-sm btn-outline-primary mt-1 py-0 px-1"
+                                            x-show="order.due > 0 && order.status === 'Approved'"
+                                            @click="openModal(order)"
+                                            style="font-size: 0.7rem;">
+                                        {{ __('Pay') }}
+                                    </button>
                                     <span class="badge bg-success" x-show="order.due === 0">
                                         {{ __('Fully Paid') }}
                                     </span>
@@ -105,13 +112,14 @@
                     <x-status dot color="red" class="btn btn-sm">
                         <small>{{ __('Due') }}:</small> {{ $due }} MAD
                     </x-status>
-                    <a href="{{ '/payments/'.$customer->id.'/create'}}" class="btn btn-sm btn-primary" title="{{ __('Add Payment') }}">
+                    <button type="button" class="btn btn-sm btn-primary" title="{{ __('Add Payment') }}"
+                            @click="openModal()">
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                             <path d="M12 5l0 14"/>
                             <path d="M5 12l14 0"/>
                         </svg>
-                    </a>
+                    </button>
                 </div>
             </div>
             <div class="card-body p-2" style="max-height: 600px; overflow-y: auto;">
@@ -239,6 +247,117 @@
             </div>
         </div>
     </template>
+
+    <!-- Payment Creation Modal -->
+    <div class="modal modal-blur fade" :class="{ show: modal.open }"
+         :style="modal.open ? 'display: block;' : 'display: none;'"
+         x-show="modal.open" x-cloak
+         @keydown.escape.window="closeModal()"
+         tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document"
+             @click.outside="closeModal()">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">{{ __('Add Payment') }}</h5>
+                    <button type="button" class="btn-close" @click="closeModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Validation errors -->
+                    <div class="alert alert-danger" x-show="Object.keys(modal.errors).length > 0" x-cloak>
+                        <ul class="mb-0">
+                            <template x-for="(msgs, field) in modal.errors" :key="field">
+                                <template x-for="msg in msgs" :key="msg">
+                                    <li x-text="msg"></li>
+                                </template>
+                            </template>
+                        </ul>
+                    </div>
+
+                    <div class="row gx-3">
+                        <!-- Nature -->
+                        <div class="col-6 mb-3">
+                            <label class="form-label">{{ __('Nature') }}</label>
+                            <input type="text" class="form-control" x-model="modal.form.nature"
+                                   :class="{ 'is-invalid': modal.errors.nature }">
+                        </div>
+
+                        <!-- Payment Type -->
+                        <div class="col-6 mb-3">
+                            <label class="form-label">{{ __('Payment type') }}</label>
+                            <select class="form-select" x-model="modal.form.payment_type"
+                                    :class="{ 'is-invalid': modal.errors.payment_type }">
+                                <option value="HandCash">Cash</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Exchange">Lettre de change</option>
+                            </select>
+                        </div>
+
+                        <!-- Bank (shown for Cheque/Exchange) -->
+                        <div class="col-6 mb-3" x-show="modal.form.payment_type !== 'HandCash'">
+                            <label class="form-label">{{ __('Bank') }}</label>
+                            <select class="form-select" x-model="modal.form.bank"
+                                    :class="{ 'is-invalid': modal.errors.bank }">
+                                <option value="">{{ __('Select a bank:') }}</option>
+                                @foreach ($banks as $bank)
+                                    <option value="{{ $bank->value }}">{{ $bank->value }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="col-6 mb-3">
+                            <label class="form-label">{{ __('Date') }}</label>
+                            <input type="text" class="form-control" x-model="modal.form.date"
+                                   placeholder="dd/mm/yyyy"
+                                   :class="{ 'is-invalid': modal.errors.date }"
+                                   @input="formatDateInput($event)">
+                        </div>
+
+                        <!-- Echeance -->
+                        <div class="col-6 mb-3">
+                            <label class="form-label">{{ __('Echeance') }}</label>
+                            <input type="text" class="form-control" x-model="modal.form.echeance"
+                                   placeholder="dd/mm/yyyy"
+                                   :class="{ 'is-invalid': modal.errors.echeance }"
+                                   @input="formatDateInput($event)">
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="col-6 mb-3">
+                            <label class="form-label">{{ __('Amount') }}</label>
+                            <input type="number" class="form-control" x-model="modal.form.amount"
+                                   step="0.01"
+                                   :class="{ 'is-invalid': modal.errors.amount }">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="col-12 mb-3">
+                            <label class="form-label">{{ __('Description') }}</label>
+                            <textarea class="form-control" x-model="modal.form.description" rows="2"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Auto-allocate hint -->
+                    <div class="alert alert-info py-2" x-show="modal.orderId" x-cloak>
+                        <small>
+                            {{ __('This payment will be automatically allocated to order') }}
+                            <strong x-text="modal.orderInvoice"></strong>
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn me-auto" @click="closeModal()">{{ __('Cancel') }}</button>
+                    <button type="button" class="btn btn-primary" @click="submitPayment()" :disabled="modal.submitting">
+                        <span class="spinner-border spinner-border-sm me-1" x-show="modal.submitting"></span>
+                        {{ __('Add Payment') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal backdrop -->
+    <div class="modal-backdrop fade" :class="{ show: modal.open }"
+         x-show="modal.open" x-cloak></div>
 </div>
 
 @php
@@ -291,6 +410,23 @@ function allocationPanel() {
 
         draggedPayment: null,
         loading: false,
+
+        modal: {
+            open: false,
+            submitting: false,
+            orderId: null,
+            orderInvoice: '',
+            errors: {},
+            form: {
+                nature: '',
+                payment_type: 'HandCash',
+                bank: '',
+                date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+                echeance: '',
+                amount: '',
+                description: '',
+            },
+        },
 
         formatCurrency(amount) {
             return new Intl.NumberFormat('fr-MA', {
@@ -420,6 +556,113 @@ function allocationPanel() {
                 alert('Network error. Please try again.');
             } finally {
                 this.loading = false;
+            }
+        },
+
+        openModal(order = null) {
+            this.modal.errors = {};
+            this.modal.form = {
+                nature: '',
+                payment_type: 'HandCash',
+                bank: '',
+                date: new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+                echeance: '',
+                amount: order ? order.due : '',
+                description: '',
+            };
+            this.modal.orderId = order ? order.id : null;
+            this.modal.orderInvoice = order ? order.invoice_no : '';
+            this.modal.submitting = false;
+            this.modal.open = true;
+            document.body.classList.add('modal-open');
+        },
+
+        closeModal() {
+            this.modal.open = false;
+            this.modal.errors = {};
+            document.body.classList.remove('modal-open');
+        },
+
+        formatDateInput(event) {
+            let value = event.target.value.replace(/\D/g, '');
+            if (value.length >= 2) value = value.substring(0, 2) + '/' + value.substring(2);
+            if (value.length >= 5) value = value.substring(0, 5) + '/' + value.substring(5, 9);
+            event.target.value = value;
+            const model = event.target.getAttribute('x-model');
+            if (model === 'modal.form.date') this.modal.form.date = value;
+            if (model === 'modal.form.echeance') this.modal.form.echeance = value;
+        },
+
+        async submitPayment() {
+            this.modal.submitting = true;
+            this.modal.errors = {};
+
+            const body = {
+                customer_id: {{ $customer->id }},
+                nature: this.modal.form.nature,
+                payment_type: this.modal.form.payment_type,
+                bank: this.modal.form.bank || null,
+                date: this.modal.form.date,
+                echeance: this.modal.form.echeance,
+                amount: this.modal.form.amount,
+                description: this.modal.form.description || null,
+            };
+
+            if (this.modal.orderId) {
+                body.order_id = this.modal.orderId;
+            }
+
+            try {
+                const response = await fetch(`/payments/{{ $customer->id }}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (response.status === 422 && data.errors) {
+                        this.modal.errors = data.errors;
+                    } else {
+                        alert(data.message || 'Error creating payment.');
+                    }
+                    return;
+                }
+
+                this.payments.unshift(data.payment);
+                this.$nextTick(() => {
+                    const firstCard = this.$el.querySelector('.col-7 .card-body .card');
+                    if (firstCard) {
+                        firstCard.classList.add('animating-in');
+                        setTimeout(() => firstCard.classList.remove('animating-in'), 400);
+                    }
+                });
+
+                if (data.allocation) {
+                    const order = this.orders.find(o => o.id === this.modal.orderId);
+                    if (order) {
+                        order.pay = data.allocation.order.pay;
+                        order.due = data.allocation.order.due;
+                        order.allocations.push({
+                            payment_id: data.payment.id,
+                            nature: data.payment.nature,
+                            allocated_amount: data.allocation.allocated_amount,
+                        });
+                    }
+                }
+
+                this.closeModal();
+
+            } catch (error) {
+                console.error('Payment creation error:', error);
+                alert('Network error. Please try again.');
+            } finally {
+                this.modal.submitting = false;
             }
         },
     };
