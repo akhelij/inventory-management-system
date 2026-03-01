@@ -126,36 +126,37 @@
                          @dragend="handleDragEnd(payment)"
                          :style="allocationEnabled && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
                         <div class="card-body p-2">
-                            <!-- Row 1: Nature + Amount + Status badge -->
                             <div class="d-flex justify-content-between align-items-start">
+                                <!-- Left: ID + Type, then dates -->
                                 <div>
                                     <span class="fw-bold" x-text="payment.nature"></span>
-                                    <template x-if="payment.reported">
-                                        <x-status dot color="red" class="ms-2"><small>{{ __('Reported') }}</small></x-status>
-                                    </template>
-                                    <template x-if="payment.cashed_in && !payment.reported">
-                                        <x-status dot color="green" class="ms-2"><small>{{ __('Cashed In') }}</small></x-status>
-                                    </template>
-                                    <template x-if="!payment.cashed_in && !payment.reported">
-                                        <x-status dot color="orange" class="ms-2"><small>{{ __('Pending') }}</small></x-status>
-                                    </template>
+                                    <small class="text-muted ms-1" x-text="payment.payment_type"></small>
+                                    <div class="mt-1">
+                                        <small class="text-muted">
+                                            {{ __('Created') }}: <span x-text="payment.date"></span>
+                                        </small>
+                                        <template x-if="payment.echeance">
+                                            <small class="text-muted d-block">
+                                                {{ __('Due') }}: <span x-text="payment.echeance"></span>
+                                            </small>
+                                        </template>
+                                    </div>
                                 </div>
-                                <span class="fw-bold" x-text="formatCurrency(payment.amount)"></span>
-                            </div>
-
-                            <!-- Row 2: Type · Date · Echeance -->
-                            <div class="mt-1">
-                                <small class="text-muted">
-                                    <span x-text="payment.payment_type"></span>
-                                    <span class="mx-1">&middot;</span>
-                                    <span x-text="payment.date"></span>
-                                    <template x-if="payment.echeance">
-                                        <span>
-                                            <span class="mx-1">&middot;</span>
-                                            {{ __('Due') }}: <span x-text="payment.echeance"></span>
-                                        </span>
-                                    </template>
-                                </small>
+                                <!-- Right: Amount, then status -->
+                                <div class="text-end">
+                                    <span class="fw-bold" x-text="formatCurrency(payment.amount)"></span>
+                                    <div class="mt-1">
+                                        <template x-if="payment.reported">
+                                            <x-status dot color="red"><small>{{ __('Reported') }}</small></x-status>
+                                        </template>
+                                        <template x-if="payment.cashed_in && !payment.reported">
+                                            <x-status dot color="green"><small>{{ __('Cashed In') }}</small></x-status>
+                                        </template>
+                                        <template x-if="!payment.cashed_in && !payment.reported">
+                                            <x-status dot color="orange"><small>{{ __('Pending') }}</small></x-status>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Row 3: Progress bar + Available info -->
