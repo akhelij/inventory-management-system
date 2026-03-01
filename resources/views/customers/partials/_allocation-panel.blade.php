@@ -167,7 +167,7 @@
                             </div>
 
                             <!-- Allocation progress bar -->
-                            <template x-if="payment.cashed_in && payment.amount > 0">
+                            <template x-if="payment.amount > 0 && payment.unallocated_amount < payment.amount">
                                 <div class="mt-2">
                                     <div class="progress progress-sm">
                                         <div class="progress-bar bg-success"
