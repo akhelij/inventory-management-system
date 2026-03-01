@@ -126,49 +126,50 @@
                          @dragend="handleDragEnd(payment)"
                          :style="allocationEnabled && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
                         <div class="card-body p-2">
-                            <div class="d-flex justify-content-between align-items-center">
+                            <!-- Row 1: Nature + Amount + Status badge -->
+                            <div class="d-flex justify-content-between align-items-start">
                                 <div>
                                     <span class="fw-bold" x-text="payment.nature"></span>
-                                    <small class="text-muted d-block" x-text="payment.payment_type"></small>
-                                    <small class="text-muted d-block" x-text="payment.date"></small>
-                                    <small class="text-muted" x-show="payment.echeance" x-text="'{{ __('Due') }}: ' + payment.echeance"></small>
-                                </div>
-                                <div class="text-end">
-                                    <div class="fw-bold" x-text="formatCurrency(payment.amount)"></div>
-                                    <template x-if="payment.cashed_in">
-                                        <div>
-                                            <small class="text-success" x-show="payment.is_fully_allocated">
-                                                {{ __('Fully Allocated') }}
-                                            </small>
-                                            <small class="text-info"
-                                                   x-show="!payment.is_fully_allocated && payment.unallocated_amount < payment.amount"
-                                                   x-text="'{{ __('Available') }}: ' + formatCurrency(payment.unallocated_amount)">
-                                            </small>
-                                        </div>
-                                    </template>
-                                </div>
-                                <div>
                                     <template x-if="payment.reported">
-                                        <x-status dot color="red" class="btn btn-sm">
-                                            <small>{{ __('Reported') }}</small>
-                                        </x-status>
+                                        <x-status dot color="red" class="ms-2"><small>{{ __('Reported') }}</small></x-status>
                                     </template>
                                     <template x-if="payment.cashed_in && !payment.reported">
-                                        <x-status dot color="green" class="btn btn-sm">
-                                            <small>{{ __('Cashed In') }}</small>
-                                        </x-status>
+                                        <x-status dot color="green" class="ms-2"><small>{{ __('Cashed In') }}</small></x-status>
                                     </template>
                                     <template x-if="!payment.cashed_in && !payment.reported">
-                                        <x-status dot color="orange" class="btn btn-sm">
-                                            <small>{{ __('Pending') }}</small>
-                                        </x-status>
+                                        <x-status dot color="orange" class="ms-2"><small>{{ __('Pending') }}</small></x-status>
                                     </template>
                                 </div>
+                                <span class="fw-bold" x-text="formatCurrency(payment.amount)"></span>
                             </div>
 
-                            <!-- Allocation progress bar -->
+                            <!-- Row 2: Type · Date · Echeance -->
+                            <div class="mt-1">
+                                <small class="text-muted">
+                                    <span x-text="payment.payment_type"></span>
+                                    <span class="mx-1">&middot;</span>
+                                    <span x-text="payment.date"></span>
+                                    <template x-if="payment.echeance">
+                                        <span>
+                                            <span class="mx-1">&middot;</span>
+                                            {{ __('Due') }}: <span x-text="payment.echeance"></span>
+                                        </span>
+                                    </template>
+                                </small>
+                            </div>
+
+                            <!-- Row 3: Progress bar + Available info -->
                             <template x-if="payment.amount > 0 && payment.unallocated_amount < payment.amount">
                                 <div class="mt-2">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <small class="text-success" x-show="payment.is_fully_allocated">
+                                            {{ __('Fully Allocated') }}
+                                        </small>
+                                        <small class="text-info"
+                                               x-show="!payment.is_fully_allocated"
+                                               x-text="'{{ __('Available') }}: ' + formatCurrency(payment.unallocated_amount)">
+                                        </small>
+                                    </div>
                                     <div class="progress progress-sm">
                                         <div class="progress-bar bg-success"
                                              :style="'width: ' + ((payment.amount - payment.unallocated_amount) / payment.amount * 100) + '%'">
@@ -177,7 +178,7 @@
                                 </div>
                             </template>
 
-                            <!-- Action buttons for uncashed payments -->
+                            <!-- Row 4: Action buttons -->
                             <div class="d-flex align-items-center gap-1 mt-2"
                                  x-show="!payment.cashed_in || payment.reported">
                                 <template x-if="!payment.reported && !payment.cashed_in">
