@@ -130,7 +130,8 @@
                                 <div>
                                     <span class="fw-bold" x-text="payment.nature"></span>
                                     <small class="text-muted d-block" x-text="payment.payment_type"></small>
-                                    <small class="text-muted" x-text="payment.date"></small>
+                                    <small class="text-muted d-block" x-text="payment.date"></small>
+                                    <small class="text-muted" x-show="payment.echeance" x-text="'{{ __('Due') }}: ' + payment.echeance"></small>
                                 </div>
                                 <div class="text-end">
                                     <div class="fw-bold" x-text="formatCurrency(payment.amount)"></div>
@@ -267,6 +268,7 @@
         'nature' => $payment->nature,
         'payment_type' => $payment->payment_type,
         'date' => $payment->date,
+        'echeance' => $payment->echeance,
         'amount' => $payment->amount,
         'cashed_in' => (bool) $payment->cashed_in,
         'reported' => (bool) $payment->reported,
