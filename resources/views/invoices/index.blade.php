@@ -152,18 +152,9 @@
                                 <option selected="" disabled="">Select a payment:</option>
                                 <option value="HandCash">HandCash</option>
                                 <option value="Cheque">Cheque</option>
-                                <option value="Due">Due</option>
+                                <option value="Exchange">Lettre de change</option>
                             </select>
                             @error('payment_type')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-                        <div class="mb-3">
-                            <label class="small mb-1" for="pay">Pay Now <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control form-control-solid @error('pay') is-invalid @enderror" id="pay" name="pay" placeholder="" value="{{ old('pay') }}" autocomplete="off"/>
-                            @error('pay')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>

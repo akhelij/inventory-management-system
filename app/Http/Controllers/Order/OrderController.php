@@ -66,7 +66,7 @@ class OrderController extends Controller
             $order = Order::create([
                 'customer_id' => $request->customer_id,
                 'payment_type' => $request->payment_type,
-                'pay' => $request->pay ?? 0,
+                'pay' => 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
                 'order_status' => OrderStatus::PENDING,
                 'total_products' => count($cartData),
@@ -79,7 +79,7 @@ class OrderController extends Controller
                     'length' => 10,
                     'prefix' => 'INV-',
                 ]),
-                'due' => $subTotal - ($request->pay ?? 0),
+                'due' => $subTotal,
                 'user_id' => $request->author_id ?? Auth::id(),
                 'tagged_user_id' => $request->tagged_user_id,
                 'uuid' => Str::uuid(),
@@ -224,6 +224,8 @@ class OrderController extends Controller
 
         $total = $details->sum('total');
 
+        $totalAllocated = $order->payments()->sum('order_payment.allocated_amount');
+
         $updateData = [
             'customer_id' => $validated['customer_id'],
             'purchase_date' => $validated['purchase_date'],
@@ -232,7 +234,8 @@ class OrderController extends Controller
             'sub_total' => $total,
             'vat' => 0,
             'total' => $total,
-            'due' => $total,
+            'pay' => $totalAllocated,
+            'due' => $total - $totalAllocated,
         ];
 
         if (isset($validated['author_id'])) {
@@ -315,14 +318,15 @@ class OrderController extends Controller
                 $oldTotal = $order->total;
                 $details = OrderDetails::where('order_id', $order->id)->get();
                 $newTotal = $details->sum('total');
-                $due = $newTotal - ($order->pay ?? 0);
+                $totalAllocated = $order->payments()->sum('order_payment.allocated_amount');
 
                 $order->update([
                     'total_products' => $details->count(),
                     'sub_total' => $newTotal,
                     'vat' => 0,
                     'total' => $newTotal,
-                    'due' => $due,
+                    'pay' => $totalAllocated,
+                    'due' => $newTotal - $totalAllocated,
                 ]);
 
                 if ($oldTotal != $newTotal) {

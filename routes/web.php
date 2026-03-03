@@ -7,7 +7,6 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\Dashboards\DashboardController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\Order\DueOrderController;
 use App\Http\Controllers\Order\OrderCompleteController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\OrderPendingController;
@@ -80,12 +79,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::match(['get', 'post'], 'orders/update_status/{order}/{order_status}', [OrderController::class, 'updateStatus']);
     Route::post('orders/recalculate-totals', [OrderController::class, 'recalculateTotals'])->name('orders.recalculate-totals');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
-
-    // Due Orders
-    Route::get('due/orders', [DueOrderController::class, 'index'])->name('due.index');
-    Route::get('due/order/view/{order}', [DueOrderController::class, 'show'])->name('due.show');
-    Route::get('due/order/edit/{order}', [DueOrderController::class, 'edit'])->name('due.edit');
-    Route::put('due/order/update/{order}', [DueOrderController::class, 'update'])->name('due.update');
 
     // Order Invoices
     Route::get('orders/details/{order_id}/download', [OrderController::class, 'downloadInvoice'])->name('order.downloadInvoice');
