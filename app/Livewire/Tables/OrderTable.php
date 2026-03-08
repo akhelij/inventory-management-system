@@ -117,13 +117,6 @@ class OrderTable extends Component
     {
         $query = Order::query();
 
-        $query->when(auth()->user()->warehouse_id != null, fn ($q) => $q->where('user_id', auth()->id()));
-
-        if (! auth()->user()->hasRole('admin')) {
-            $query->where('user_id', auth()->id())
-                ->orWhereIn('user_id', User::role('admin')->pluck('id'));
-        }
-
         if ($this->startDate && $this->endDate) {
             $query->whereBetween('order_date', [$this->startDate, $this->endDate]);
         }
