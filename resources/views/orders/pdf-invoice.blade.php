@@ -152,6 +152,34 @@
             margin-top: 10px;
         }
 
+        .totals-outer {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .totals-outer td {
+            vertical-align: top;
+        }
+
+        .cheque-info {
+            font-size: 9pt;
+            color: #333;
+            padding-top: 10px;
+        }
+
+        .cheque-label {
+            font-size: 8pt;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 3px;
+        }
+
+        .cheque-number {
+            font-size: 9pt;
+            color: #003366;
+            font-weight: bold;
+        }
+
         .totals-table {
             width: 280px;
             margin-left: auto;
@@ -303,19 +331,38 @@
 
     <!-- Totals -->
     <div class="totals-wrapper">
-        <table class="totals-table">
-            <tr class="total-row">
-                <td class="label">Sous-total</td>
-                <td class="value">{{ Number::currency($order->total, 'MAD') }}</td>
-            </tr>
-            <tr class="paid-row">
-                <td class="label">Total Pay&eacute;</td>
-                <td class="value">{{ Number::currency($order->pay, 'MAD') }}</td>
-            </tr>
-            <tr class="due-row">
-                <td class="label">Reste &agrave; payer</td>
-                <td class="value {{ $order->due > 0 ? 'due-red' : 'due-green' }}">
-                    {{ Number::currency($order->due, 'MAD') }}
+        <table class="totals-outer">
+            <tr>
+                <td>
+                    @php
+                        $chequePayments = $order->payments->filter(fn ($p) => $p->payment_type === 'Cheque');
+                    @endphp
+                    @if($chequePayments->isNotEmpty())
+                        <div class="cheque-info">
+                            <div class="cheque-label">Ch&egrave;que(s) :</div>
+                            @foreach($chequePayments as $cheque)
+                                <div class="cheque-number">{{ $cheque->nature }}</div>
+                            @endforeach
+                        </div>
+                    @endif
+                </td>
+                <td>
+                    <table class="totals-table">
+                        <tr class="total-row">
+                            <td class="label">Sous-total</td>
+                            <td class="value">{{ Number::currency($order->total, 'MAD') }}</td>
+                        </tr>
+                        <tr class="paid-row">
+                            <td class="label">Total Pay&eacute;</td>
+                            <td class="value">{{ Number::currency($order->pay, 'MAD') }}</td>
+                        </tr>
+                        <tr class="due-row">
+                            <td class="label">Reste &agrave; payer</td>
+                            <td class="value {{ $order->due > 0 ? 'due-red' : 'due-green' }}">
+                                {{ Number::currency($order->due, 'MAD') }}
+                            </td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
         </table>
