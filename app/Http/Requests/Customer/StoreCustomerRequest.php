@@ -18,7 +18,7 @@ class StoreCustomerRequest extends FormRequest
             'category' => 'nullable|string|in:b2b,b2c',
             'name' => 'required|string|max:50',
             'email' => 'nullable|email|max:50',
-            'phone' => 'nullable|string|max:25',
+            'phone' => 'nullable|string|max:25|unique:customers,phone',
             'city' => 'nullable|string|max:25',
             'limit' => 'integer',
             'account_holder' => 'max:50',

@@ -19,7 +19,7 @@ class UpdateCustomerRequest extends FormRequest
             'name' => 'required|string|max:50',
             'type' => ['nullable', 'string', 'max:25', Rule::in(['particulier', 'grossiste', 'magasinier'])],
             'email' => 'nullable|email|max:50',
-            'phone' => 'nullable|string|max:25',
+            'phone' => 'nullable|string|max:25|unique:customers,phone,'.$this->route('customer')->id,
             'city' => 'nullable|string|max:25',
             'limit' => 'integer',
             'account_holder' => 'max:50',
