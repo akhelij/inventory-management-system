@@ -99,7 +99,7 @@
                                                             </div>
                                                         </template>
                                                     </button>
-                                                    @if(auth()->user()->hasRole('admin'))
+                                                    @if(auth()->user()->hasRole('ADMIN'))
                                                     <button
                                                         @click="addFreeItem(product)"
                                                         :disabled="isAddingToCart"
@@ -243,7 +243,7 @@
                                         />
                                     </div>
 
-                                    @if(auth()->user()->hasRole('admin'))
+                                    @if(auth()->user()->hasRole('ADMIN'))
                                     <div class="col-md-4">
                                         <label class="small mb-1" for="author_id">
                                             {{ __('Author') }}

@@ -183,7 +183,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        @if(auth()->user()->hasRole('admin'))
+                                        @if(auth()->user()->hasRole('ADMIN'))
                                             <div class="col-12">
                                                 <div class="mb-3">
                                                     <label class="form-label" for="buying_price">

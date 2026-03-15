@@ -31,7 +31,7 @@ class ProductExportController extends Controller
             ];
         }
 
-        if (! auth()->user()->hasRole('admin')) {
+        if (! auth()->user()->hasRole('ADMIN')) {
             foreach ($product_array as $key => $product) {
                 unset($product_array[$key]['Buying Price']);
             }

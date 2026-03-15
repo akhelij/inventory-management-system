@@ -169,7 +169,7 @@
                     </div>
                 </div>
 
-                @if(auth()->user()->hasRole('admin'))
+                @if(auth()->user()->hasRole('ADMIN'))
                 <div class="col-sm-4 col-lg-4">
                     <div class="card">
                         <div class="card-body">

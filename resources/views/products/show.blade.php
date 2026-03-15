@@ -89,7 +89,7 @@
                                                 </span>
                                             </td>
                                         </tr>
-                                        @if(auth()->user()->hasRole('admin'))
+                                        @if(auth()->user()->hasRole('ADMIN'))
                                         <tr>
                                             <td>{{ __('Buying Price') }}</td>
                                             <td>{{ $product->buying_price }}</td>
