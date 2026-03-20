@@ -145,7 +145,7 @@
             if (!button) return;
 
             event.preventDefault();
-            var newDate = prompt('New date');
+            var newDate = prompt('New date (dd/mm/yyyy)');
             if (newDate) {
                 var input = document.createElement('input');
                 input.type = 'hidden';

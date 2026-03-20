@@ -118,9 +118,13 @@ class PaymentController extends Controller
 
     public function report(Request $request, Payment $payment): RedirectResponse
     {
+        $request->validate([
+            'new_date' => 'required|date_format:d/m/Y',
+        ]);
+
         $payment->update([
             'reported' => true,
-            'echeance' => $request->new_date,
+            'echeance' => Carbon::createFromFormat('d/m/Y', $request->new_date)->format('Y-m-d'),
         ]);
 
         return to_route('customers.show', $payment->customer->uuid);
