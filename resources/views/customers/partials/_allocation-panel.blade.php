@@ -293,8 +293,8 @@
 
             this.payments.unshift(data.payment);
             this.$nextTick(() => {
-                const card = this.$el.querySelector('.col-7 .card-body .card');
-                if (card) { card.classList.add('card-animate'); setTimeout(() => card.classList.remove('card-animate'), 400); }
+                const row = this.$el.querySelector('.col-7 tbody tr');
+                if (row) { row.classList.add('card-animate'); setTimeout(() => row.classList.remove('card-animate'), 400); }
             });
 
             if (data.allocation) {
@@ -468,91 +468,88 @@
                     </button>
                 </div>
             </div>
-            <div class="card-body p-2" style="max-height: 600px; overflow-y: auto;">
-                <template x-for="payment in payments" :key="payment.id">
-                    <div class="card mb-2"
-                         :class="{ 'opacity-50': payment.is_fully_allocated, 'border-primary': payment.dragging }"
-                         :draggable="allocationEnabled && !payment.is_fully_allocated && !loading"
-                         @dragstart="handleDragStart($event, payment)"
-                         @dragend="handleDragEnd(payment)"
-                         :style="allocationEnabled && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
-                        <div class="card-body p-2">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
+            <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                <table class="table table-vcenter table-nowrap">
+                    <thead>
+                        <tr>
+                            <th>{{ __('Date') }}</th>
+                            <th>{{ __('Nature') }}</th>
+                            <th>{{ __('Type') }}</th>
+                            <th>{{ __('Amount') }}</th>
+                            <th>{{ __('Echeance') }}</th>
+                            <th>{{ __('Status') }}</th>
+                            <th>{{ __('Action') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="payment in payments" :key="payment.id">
+                            <tr :class="{ 'opacity-50': payment.is_fully_allocated, 'table-primary': payment.dragging }"
+                                :draggable="allocationEnabled && !payment.is_fully_allocated && !loading"
+                                @dragstart="handleDragStart($event, payment)"
+                                @dragend="handleDragEnd(payment)"
+                                :style="allocationEnabled && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
+                                <td x-text="payment.date"></td>
+                                <td>
                                     <span class="fw-bold" x-text="payment.nature"></span>
-                                    <small class="text-muted ms-1" x-text="payment.payment_type"></small>
-                                    <div class="mt-1">
-                                        <small class="text-muted">{{ __('Created') }}: <span x-text="payment.date"></span></small>
-                                        <template x-if="payment.echeance">
-                                            <small class="text-muted d-block">{{ __('Due') }}: <span x-text="payment.echeance"></span></small>
+                                    <template x-if="payment.amount > 0 && payment.unallocated_amount < payment.amount">
+                                        <div class="mt-1">
+                                            <div class="progress progress-sm" style="min-width: 80px;">
+                                                <div class="progress-bar bg-success"
+                                                     :style="'width: ' + ((payment.amount - payment.unallocated_amount) / payment.amount * 100) + '%'"></div>
+                                            </div>
+                                            <small class="text-success" x-show="payment.is_fully_allocated">{{ __('Fully Allocated') }}</small>
+                                            <small class="text-info" x-show="!payment.is_fully_allocated"
+                                                   x-text="'{{ __('Available') }}: ' + formatCurrency(payment.unallocated_amount)"></small>
+                                        </div>
+                                    </template>
+                                </td>
+                                <td x-text="payment.payment_type"></td>
+                                <td class="fw-bold" x-text="formatCurrency(payment.amount)"></td>
+                                <td x-text="payment.echeance || '—'"></td>
+                                <td>
+                                    <template x-if="payment.reported">
+                                        <x-status dot color="red">{{ __('Reported') }}</x-status>
+                                    </template>
+                                    <template x-if="payment.cashed_in && !payment.reported">
+                                        <x-status dot color="green">{{ __('Cashed In') }}</x-status>
+                                    </template>
+                                    <template x-if="!payment.cashed_in && !payment.reported">
+                                        <x-status dot color="orange">{{ __('Pending') }}</x-status>
+                                    </template>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-1" x-show="!payment.cashed_in || payment.reported">
+                                        <template x-if="!payment.reported && !payment.cashed_in">
+                                            <form class="reportForm" :action="'/payments/' + payment.id + '/report'" method="POST">
+                                                @csrf
+                                                <button class="reportButton btn btn-sm btn-warning" type="submit" title="{{ __('Report') }}">
+                                                    {{ __('Reporté') }}
+                                                </button>
+                                            </form>
+                                        </template>
+                                        <template x-if="!payment.cashed_in">
+                                            <form :action="'/payments/' + payment.id + '/cash-in'" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-sm btn-primary" title="{{ __('Cash In') }}">
+                                                    {{ __('Encaisser') }}
+                                                </button>
+                                            </form>
+                                        </template>
+                                        <template x-if="!payment.cashed_in">
+                                            <form :action="'/payments/' + payment.id" method="POST">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-danger" title="{{ __('Delete') }}">
+                                                    X
+                                                </button>
+                                            </form>
                                         </template>
                                     </div>
-                                </div>
-                                <div class="text-end">
-                                    <span class="fw-bold" x-text="formatCurrency(payment.amount)"></span>
-                                    <div class="mt-1">
-                                        <template x-if="payment.reported">
-                                            <x-status dot color="red"><small>{{ __('Reported') }}</small></x-status>
-                                        </template>
-                                        <template x-if="payment.cashed_in && !payment.reported">
-                                            <x-status dot color="green"><small>{{ __('Cashed In') }}</small></x-status>
-                                        </template>
-                                        <template x-if="!payment.cashed_in && !payment.reported">
-                                            <x-status dot color="orange"><small>{{ __('Pending') }}</small></x-status>
-                                        </template>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <template x-if="payment.amount > 0 && payment.unallocated_amount < payment.amount">
-                                <div class="mt-2">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <small class="text-success" x-show="payment.is_fully_allocated">{{ __('Fully Allocated') }}</small>
-                                        <small class="text-info" x-show="!payment.is_fully_allocated"
-                                               x-text="'{{ __('Available') }}: ' + formatCurrency(payment.unallocated_amount)"></small>
-                                    </div>
-                                    <div class="progress progress-sm">
-                                        <div class="progress-bar bg-success"
-                                             :style="'width: ' + ((payment.amount - payment.unallocated_amount) / payment.amount * 100) + '%'"></div>
-                                    </div>
-                                </div>
-                            </template>
-
-                            <div class="d-flex align-items-center gap-1 mt-2" x-show="!payment.cashed_in || payment.reported">
-                                <template x-if="!payment.reported && !payment.cashed_in">
-                                    <form class="reportForm" :action="'/payments/' + payment.id + '/report'" method="POST">
-                                        @csrf
-                                        <button class="reportButton btn btn-sm btn-icon btn-warning" type="submit" title="{{ __('Report') }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 21a9 9 0 0 0 0 -18c-4 0 -7.5 1.5 -9 4.5v-2.5h-3v8h8v-3h-2.5c1.5 -2.5 4 -4 6.5 -4a6 6 0 0 1 6 6m0 -3v6"/>
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </template>
-                                <template x-if="!payment.cashed_in">
-                                    <form :action="'/payments/' + payment.id + '/cash-in'" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-sm btn-icon btn-primary" title="{{ __('Cash In') }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10"/>
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </template>
-                                <template x-if="!payment.cashed_in">
-                                    <form :action="'/payments/' + payment.id" method="POST">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-icon btn-danger" title="{{ __('Delete') }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="16" height="16" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12"/><path d="M6 6l12 12"/>
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </template>
-                            </div>
-                        </div>
-                    </div>
-                </template>
+                                    <span x-show="payment.cashed_in && !payment.reported">—</span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
