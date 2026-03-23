@@ -149,8 +149,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('cin-ocr', CinOcrController::class)->name('cin.ocr');
 
     // Progress Items
-    Route::resource('progress-items', ProgressItemController::class);
     Route::post('progress-items/bulk', [ProgressItemController::class, 'bulkStore'])->name('progress-items.bulk-store');
+    Route::resource('progress-items', ProgressItemController::class);
     Route::post('progress-items/{progressItem}/payment', [ProgressItemController::class, 'recordPayment'])->name('progress-items.payment');
 });
 
