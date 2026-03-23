@@ -11,11 +11,6 @@ use Illuminate\View\View;
 
 class ProgressItemController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(['auth']);
-    }
-
     public function index(): View
     {
         Gate::authorize('manage-progress-items');
