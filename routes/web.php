@@ -150,6 +150,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Progress Items
     Route::resource('progress-items', ProgressItemController::class);
+    Route::post('progress-items/bulk', [ProgressItemController::class, 'bulkStore'])->name('progress-items.bulk-store');
     Route::post('progress-items/{progressItem}/payment', [ProgressItemController::class, 'recordPayment'])->name('progress-items.payment');
 });
 

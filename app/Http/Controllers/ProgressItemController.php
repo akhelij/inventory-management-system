@@ -50,6 +50,25 @@ class ProgressItemController extends Controller
         return to_route('progress-items.index')->with('success', 'Progress item created successfully.');
     }
 
+    public function bulkStore(Request $request): RedirectResponse
+    {
+        Gate::authorize('manage-progress-items');
+
+        $validated = $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.title' => 'required|string|max:255',
+            'items.*.description' => 'required|string',
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.status' => 'required|in:not_started,in_progress,completed',
+        ]);
+
+        foreach ($validated['items'] as $item) {
+            ProgressItem::create($item);
+        }
+
+        return to_route('progress-items.index')->with('success', count($validated['items']).' progress items created successfully.');
+    }
+
     public function edit(ProgressItem $progressItem): View
     {
         Gate::authorize('manage-progress-items');
