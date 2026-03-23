@@ -48,7 +48,7 @@
                 <h3 class="card-title">Development Progress & Invoicing</h3>
                 <div class="card-actions">
                     <span class="badge bg-purple text-white text-uppercase me-3">
-                        Total Unpaid: {{ number_format($totalUnpaid, 2) }} €
+                        Total Unpaid: {{ number_format($totalUnpaid, 2) }} Dhs
                     </span>
                 </div>
             </div>
@@ -85,15 +85,15 @@
                                     <span class="badge bg-green text-white text-uppercase">Completed</span>
                                     @endif
                                 </td>
-                                <td class="text-muted text-nowrap">{{ number_format($item->price, 2) }} €</td>
+                                <td class="text-muted text-nowrap">{{ number_format($item->price, 2) }} Dhs</td>
                                 <td class="text-muted text-nowrap">
                                     <span @if($item->payment_status == 'paid') class="text-green" @endif>
-                                        {{ number_format($item->amount_paid, 2) }} €
+                                        {{ number_format($item->amount_paid, 2) }} Dhs
                                     </span>
                                 </td>
                                 <td class="text-muted text-nowrap">
                                     <span @if($item->remaining_amount > 0) class="text-red" @endif>
-                                        {{ number_format($item->remaining_amount, 2) }} €
+                                        {{ number_format($item->remaining_amount, 2) }} Dhs
                                     </span>
                                 </td>
                                 <td>
@@ -134,7 +134,7 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Remaining Amount</label>
-                                                    <input type="text" class="form-control" disabled value="{{ number_format($item->remaining_amount, 2) }} €">
+                                                    <input type="text" class="form-control" disabled value="{{ number_format($item->remaining_amount, 2) }} Dhs">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Payment Amount</label>

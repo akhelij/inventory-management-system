@@ -55,7 +55,7 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label required">Price (€)</label>
+                                <label class="form-label required">Price (Dhs)</label>
                                 <input type="number" step="0.01" min="0" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ old('price', $progressItem->price) }}" placeholder="0.00">
                                 @error('price')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -63,7 +63,7 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Amount Paid (€)</label>
+                                <label class="form-label">Amount Paid (Dhs)</label>
                                 <input type="number" step="0.01" min="0" class="form-control @error('amount_paid') is-invalid @enderror" name="amount_paid" value="{{ old('amount_paid', $progressItem->amount_paid) }}" placeholder="0.00">
                                 @error('amount_paid')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -142,7 +142,7 @@
                                         <div>
                                             <h4 class="alert-title">Remaining Amount</h4>
                                             <div class="text-muted">
-                                                {{ number_format($progressItem->remaining_amount, 2) }} € out of {{ number_format($progressItem->price, 2) }} €
+                                                {{ number_format($progressItem->remaining_amount, 2) }} Dhs out of {{ number_format($progressItem->price, 2) }} Dhs
                                             </div>
                                         </div>
                                     </div>

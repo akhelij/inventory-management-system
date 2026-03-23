@@ -54,7 +54,7 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label required">Price (€)</label>
+                                <label class="form-label required">Price (Dhs)</label>
                                 <input type="number" step="0.01" min="0" class="form-control @error('price') is-invalid @enderror" name="price" value="{{ old('price') }}" placeholder="0.00">
                                 @error('price')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -62,7 +62,7 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">Initial Amount Paid (€)</label>
+                                <label class="form-label">Initial Amount Paid (Dhs)</label>
                                 <input type="number" step="0.01" min="0" class="form-control @error('amount_paid') is-invalid @enderror" name="amount_paid" value="{{ old('amount_paid', '0.00') }}" placeholder="0.00">
                                 @error('amount_paid')
                                 <div class="invalid-feedback">{{ $message }}</div>
