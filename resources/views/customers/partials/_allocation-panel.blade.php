@@ -662,46 +662,54 @@
                                         <x-status dot color="orange">{{ __('Pending') }}</x-status>
                                     </template>
                                 </td>
-                                <td>
-                                    <div class="dropdown" x-data="{ open: false }">
-                                        <button class="btn btn-sm btn-ghost-secondary btn-icon" @click="open = !open" @click.outside="open = false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-end" :class="{ 'show': open }" style="min-width: 180px;">
-                                            <template x-if="!payment.reported && !payment.cashed_in">
-                                                <form class="reportForm" :action="'/payments/' + payment.id + '/report'" method="POST">
-                                                    @csrf
-                                                    <button class="dropdown-item text-warning" type="submit">
-                                                        <i class="fas fa-flag me-2"></i>{{ __('Reporté') }}
-                                                    </button>
-                                                </form>
-                                            </template>
-                                            <template x-if="!payment.cashed_in">
-                                                <form :action="'/payments/' + payment.id + '/cash-in'" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="dropdown-item text-primary">
-                                                        <i class="fas fa-money-bill-wave me-2"></i>{{ __('Encaisser') }}
-                                                    </button>
-                                                </form>
-                                            </template>
-                                            <template x-if="(payment.payment_type === 'Cheque' || payment.payment_type === 'Exchange') && !payment.cheque_photo">
-                                                <button type="button" class="dropdown-item text-info" @click="open = false; openChequeUpload(payment)">
-                                                    <i class="fas fa-camera me-2"></i>{{ __('Attach Cheque Photo') }}
+                                <td x-data="{ open: false }" class="position-relative">
+                                    <button class="btn btn-sm btn-ghost-secondary btn-icon"
+                                            @click="open = !open; if(open) { $nextTick(() => {
+                                                const btn = $event.target.closest('button');
+                                                const rect = btn.getBoundingClientRect();
+                                                const dd = btn.parentElement.querySelector('.payment-actions-dd');
+                                                dd.style.position = 'fixed';
+                                                dd.style.top = rect.bottom + 4 + 'px';
+                                                dd.style.left = (rect.right - 200) + 'px';
+                                            }) }"
+                                            @click.outside="open = false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                    </button>
+                                    <div class="payment-actions-dd" x-show="open" x-cloak
+                                         style="position: fixed; z-index: 1060; min-width: 200px; background: #fff; border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); padding: 4px 0;">
+                                        <template x-if="!payment.reported && !payment.cashed_in">
+                                            <form class="reportForm" :action="'/payments/' + payment.id + '/report'" method="POST">
+                                                @csrf
+                                                <button class="dropdown-item text-warning" type="submit">
+                                                    <i class="fas fa-flag me-2"></i>{{ __('Reporté') }}
                                                 </button>
-                                            </template>
-                                            <template x-if="!payment.cashed_in">
-                                                <div>
-                                                    <div class="dropdown-divider"></div>
-                                                    <form :action="'/payments/' + payment.id" method="POST"
-                                                          @submit.prevent="if(confirm('{{ __('Are you sure?') }}')) $el.submit()">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="fas fa-trash me-2"></i>{{ __('Delete') }}
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </template>
-                                        </div>
+                                            </form>
+                                        </template>
+                                        <template x-if="!payment.cashed_in">
+                                            <form :action="'/payments/' + payment.id + '/cash-in'" method="POST">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item text-primary">
+                                                    <i class="fas fa-money-bill-wave me-2"></i>{{ __('Encaisser') }}
+                                                </button>
+                                            </form>
+                                        </template>
+                                        <template x-if="(payment.payment_type === 'Cheque' || payment.payment_type === 'Exchange') && !payment.cheque_photo">
+                                            <button type="button" class="dropdown-item text-info" @click="open = false; openChequeUpload(payment)">
+                                                <i class="fas fa-camera me-2"></i>{{ __('Attach Cheque Photo') }}
+                                            </button>
+                                        </template>
+                                        <template x-if="!payment.cashed_in">
+                                            <div>
+                                                <div class="dropdown-divider"></div>
+                                                <form :action="'/payments/' + payment.id" method="POST"
+                                                      @submit.prevent="if(confirm('{{ __('Are you sure?') }}')) $el.submit()">
+                                                    @csrf @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger">
+                                                        <i class="fas fa-trash me-2"></i>{{ __('Delete') }}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </template>
                                     </div>
                                 </td>
                             </tr>
