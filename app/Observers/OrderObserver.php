@@ -5,7 +5,6 @@ namespace App\Observers;
 use App\Enums\OrderStatus;
 use App\Models\Order;
 use App\Services\StockService;
-use Illuminate\Support\Facades\Log;
 
 class OrderObserver
 {
@@ -22,25 +21,21 @@ class OrderObserver
         $oldStatus = $order->getOriginal('order_status');
         $newStatus = $order->order_status;
 
-        try {
-            if ($newStatus == OrderStatus::APPROVED && ! $order->stock_affected) {
-                $this->stockService->deductStockForOrder($order);
-            }
+        if ($newStatus == OrderStatus::APPROVED && ! $order->stock_affected) {
+            $this->stockService->deductStockForOrder($order);
+        }
 
-            $shouldRestore = ($newStatus == OrderStatus::CANCELED && $order->stock_affected)
-                || ($oldStatus == OrderStatus::APPROVED && $newStatus == OrderStatus::PENDING && $order->stock_affected);
+        $shouldRestore = ($newStatus == OrderStatus::CANCELED && $order->stock_affected)
+            || ($oldStatus == OrderStatus::APPROVED && $newStatus == OrderStatus::PENDING && $order->stock_affected);
 
-            if ($shouldRestore) {
-                $this->stockService->restoreStockForOrder($order);
-            }
+        if ($shouldRestore) {
+            $this->stockService->restoreStockForOrder($order);
+        }
 
-            // Release all payment allocations when order is canceled
-            if ($newStatus == OrderStatus::CANCELED) {
-                $order->payments()->detach();
-                $order->updateQuietly(['pay' => 0, 'due' => $order->total]);
-            }
-        } catch (\Exception $e) {
-            Log::error("Stock operation failed for order {$order->id}: ".$e->getMessage());
+        // Release all payment allocations when order is canceled
+        if ($newStatus == OrderStatus::CANCELED) {
+            $order->payments()->detach();
+            $order->updateQuietly(['pay' => 0, 'due' => $order->total]);
         }
     }
 }

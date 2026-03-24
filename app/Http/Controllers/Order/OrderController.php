@@ -243,10 +243,17 @@ class OrderController extends Controller
             }
         }
 
-        $order->update([
-            'order_status' => $order_status,
-            'reason' => $request->reason,
-        ]);
+        try {
+            DB::transaction(function () use ($order, $order_status, $request): void {
+                $order->update([
+                    'order_status' => $order_status,
+                    'reason' => $request->reason,
+                ]);
+            });
+        } catch (\RuntimeException $e) {
+            return redirect()->back()
+                ->with('error', 'Failed to update order status: '.$e->getMessage());
+        }
 
         return to_route('orders.index')->with('success', 'Order status has been updated!');
     }
