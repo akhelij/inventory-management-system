@@ -249,6 +249,12 @@
     chequeScanning: false,
     chequeError: null,
     chequeSuccess: false,
+    chequeUploadModal: false,
+    chequeUploadPayment: null,
+    chequeUploadFile: null,
+    chequeUploadPreview: null,
+    chequeUploadSubmitting: false,
+    chequeUploadError: null,
     form: {
         nature: '',
         payment_type: 'HandCash',
@@ -299,6 +305,46 @@
 
     formatCurrency(amount) {
         return new Intl.NumberFormat('fr-MA', { style: 'currency', currency: 'MAD', minimumFractionDigits: 2 }).format(amount);
+    },
+
+    openChequeUpload(payment) {
+        this.chequeUploadPayment = payment;
+        this.chequeUploadFile = null;
+        this.chequeUploadPreview = null;
+        this.chequeUploadSubmitting = false;
+        this.chequeUploadError = null;
+        this.chequeUploadModal = true;
+    },
+
+    async submitChequeUpload() {
+        if (!this.chequeUploadFile || !this.chequeUploadPayment) return;
+        this.chequeUploadSubmitting = true;
+        this.chequeUploadError = null;
+
+        const formData = new FormData();
+        formData.append('cheque_image', this.chequeUploadFile);
+
+        try {
+            const res = await fetch('/api/payments/' + this.chequeUploadPayment.id + '/attach-cheque', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            });
+            const data = await res.json();
+            if (res.ok) {
+                this.chequeUploadPayment.cheque_photo = data.cheque_photo;
+                if (data.bank) this.chequeUploadPayment.bank = data.bank;
+                this.chequeUploadModal = false;
+            } else {
+                this.chequeUploadError = data.message || 'Failed to upload cheque.';
+            }
+        } catch (e) {
+            this.chequeUploadError = 'Failed to upload cheque photo.';
+        }
+        this.chequeUploadSubmitting = false;
     },
 
     openModal(order = null) {
@@ -617,38 +663,88 @@
                                     </template>
                                 </td>
                                 <td>
-                                    <div class="d-flex align-items-center gap-1" x-show="!payment.cashed_in || payment.reported">
-                                        <template x-if="!payment.reported && !payment.cashed_in">
-                                            <form class="reportForm" :action="'/payments/' + payment.id + '/report'" method="POST">
-                                                @csrf
-                                                <button class="reportButton btn btn-sm btn-warning" type="submit" title="{{ __('Report') }}">
-                                                    {{ __('Reporté') }}
+                                    <div class="dropdown" x-data="{ open: false }">
+                                        <button class="btn btn-sm btn-ghost-secondary btn-icon" @click="open = !open" @click.outside="open = false">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end" :class="{ 'show': open }" style="min-width: 180px;">
+                                            <template x-if="!payment.reported && !payment.cashed_in">
+                                                <form class="reportForm" :action="'/payments/' + payment.id + '/report'" method="POST">
+                                                    @csrf
+                                                    <button class="dropdown-item text-warning" type="submit">
+                                                        <i class="fas fa-flag me-2"></i>{{ __('Reporté') }}
+                                                    </button>
+                                                </form>
+                                            </template>
+                                            <template x-if="!payment.cashed_in">
+                                                <form :action="'/payments/' + payment.id + '/cash-in'" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="dropdown-item text-primary">
+                                                        <i class="fas fa-money-bill-wave me-2"></i>{{ __('Encaisser') }}
+                                                    </button>
+                                                </form>
+                                            </template>
+                                            <template x-if="(payment.payment_type === 'Cheque' || payment.payment_type === 'Exchange') && !payment.cheque_photo">
+                                                <button type="button" class="dropdown-item text-info" @click="open = false; openChequeUpload(payment)">
+                                                    <i class="fas fa-camera me-2"></i>{{ __('Attach Cheque Photo') }}
                                                 </button>
-                                            </form>
-                                        </template>
-                                        <template x-if="!payment.cashed_in">
-                                            <form :action="'/payments/' + payment.id + '/cash-in'" method="POST">
-                                                @csrf
-                                                <button type="submit" class="btn btn-sm btn-primary" title="{{ __('Cash In') }}">
-                                                    {{ __('Encaisser') }}
-                                                </button>
-                                            </form>
-                                        </template>
-                                        <template x-if="!payment.cashed_in">
-                                            <form :action="'/payments/' + payment.id" method="POST">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="{{ __('Delete') }}">
-                                                    X
-                                                </button>
-                                            </form>
-                                        </template>
+                                            </template>
+                                            <template x-if="!payment.cashed_in">
+                                                <div>
+                                                    <div class="dropdown-divider"></div>
+                                                    <form :action="'/payments/' + payment.id" method="POST"
+                                                          @submit.prevent="if(confirm('{{ __('Are you sure?') }}')) $el.submit()">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger">
+                                                            <i class="fas fa-trash me-2"></i>{{ __('Delete') }}
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </template>
+                                        </div>
                                     </div>
-                                    <span x-show="payment.cashed_in && !payment.reported">—</span>
                                 </td>
                             </tr>
                         </template>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CHEQUE UPLOAD MODAL ==================== -->
+    <div x-show="chequeUploadModal" x-cloak style="position: fixed; inset: 0; z-index: 9998;">
+        <div style="position: fixed; inset: 0; background: rgba(107,114,128,0.5); backdrop-filter: blur(2px);" @click="chequeUploadModal = false"></div>
+        <div style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+            <div class="card shadow-lg" style="width: 440px; max-width: 90vw; animation: slideIn 0.2s ease-out;" @click.stop>
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-camera me-2"></i>{{ __('Attach Cheque Photo') }}</h3>
+                    <div class="card-actions">
+                        <button class="btn btn-ghost-secondary btn-icon btn-sm" @click="chequeUploadModal = false">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">
+                        {{ __('Upload a cheque photo for payment') }} <strong x-text="chequeUploadPayment?.nature"></strong>
+                    </p>
+                    <input type="file" accept="image/*" capture="environment" class="form-control mb-3"
+                           @change="chequeUploadFile = $event.target.files[0]; chequeUploadPreview = chequeUploadFile ? URL.createObjectURL(chequeUploadFile) : null">
+                    <template x-if="chequeUploadPreview">
+                        <img :src="chequeUploadPreview" alt="Cheque" class="img-fluid rounded mb-3" style="max-height: 160px;">
+                    </template>
+                    <template x-if="chequeUploadError">
+                        <div class="alert alert-danger py-2 mb-3 small" x-text="chequeUploadError"></div>
+                    </template>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button class="btn btn-ghost-secondary" @click="chequeUploadModal = false">{{ __('Cancel') }}</button>
+                    <button class="btn btn-primary" :disabled="!chequeUploadFile || chequeUploadSubmitting" @click="submitChequeUpload()">
+                        <span x-show="!chequeUploadSubmitting"><i class="fas fa-upload me-1"></i>{{ __('Upload & Scan') }}</span>
+                        <span x-show="chequeUploadSubmitting"><span class="spinner-border spinner-border-sm me-1"></span>{{ __('Uploading...') }}</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>

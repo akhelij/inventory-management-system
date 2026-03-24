@@ -148,6 +148,30 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function attachCheque(Request $request, Payment $payment): JsonResponse
+    {
+        $request->validate(['cheque_image' => 'required|image|max:5120']);
+
+        $chequePhotoPath = $request->file('cheque_image')->store('payments/cheques', 'public');
+
+        $updateData = ['cheque_photo' => $chequePhotoPath];
+
+        // Run OCR to detect bank if not already set
+        if (empty($payment->bank)) {
+            $result = app(\App\Services\ChequeOcrService::class)->extract($request->file('cheque_image'));
+            if ($result['success'] && ! empty($result['data']['bank'])) {
+                $updateData['bank'] = $result['data']['bank'];
+            }
+        }
+
+        $payment->update($updateData);
+
+        return response()->json([
+            'cheque_photo' => $chequePhotoPath,
+            'bank' => $payment->bank,
+        ]);
+    }
+
     public function destroy(Payment $payment): RedirectResponse
     {
         $payment->delete();

@@ -116,6 +116,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Cheque OCR Scan
     Route::post('api/cheque-scan', [PaymentController::class, 'scanCheque'])->name('cheque.scan');
+    Route::post('api/payments/{payment}/attach-cheque', [PaymentController::class, 'attachCheque'])->name('payments.attach-cheque');
 
     // Payment Allocation
     Route::post('api/orders/{order}/payments/{payment}', [OrderPaymentController::class, 'store'])->name('order-payments.store');
