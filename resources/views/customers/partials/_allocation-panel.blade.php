@@ -249,6 +249,8 @@
     chequeScanning: false,
     chequeError: null,
     chequeSuccess: false,
+    activePaymentMenu: null,
+    menuStyle: { top: '0px', left: '0px' },
     chequeUploadModal: false,
     chequeUploadPayment: null,
     chequeUploadFile: null,
@@ -301,6 +303,21 @@
             this.chequeError = 'Failed to process cheque image.';
         }
         this.chequeScanning = false;
+    },
+
+    getActivePayment() {
+        return this.payments.find(p => p.id === this.activePaymentMenu);
+    },
+
+    positionPaymentMenu(btn) {
+        const rect = btn.getBoundingClientRect();
+        const menuH = 180;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const top = spaceBelow < menuH ? rect.top - menuH : rect.bottom + 4;
+        this.menuStyle = {
+            top: top + 'px',
+            left: (rect.right - 210) + 'px',
+        };
     },
 
     formatCurrency(amount) {
@@ -595,7 +612,7 @@
                     </button>
                 </div>
             </div>
-            <div class="table-responsive" style="max-height: 600px; overflow: visible;">
+            <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                 <table class="table table-vcenter table-nowrap">
                     <thead>
                         <tr>
@@ -662,53 +679,58 @@
                                         <x-status dot color="orange">{{ __('Pending') }}</x-status>
                                     </template>
                                 </td>
-                                <td x-data="{ open: false }">
-                                    <div class="dropup">
-                                        <button class="btn btn-sm btn-ghost-secondary btn-icon"
-                                                @click="open = !open" @click.outside="open = false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-end" :class="{ 'show': open }" style="min-width: 200px;">
-                                            <template x-if="!payment.reported && !payment.cashed_in">
-                                                <form class="reportForm" :action="'/payments/' + payment.id + '/report'" method="POST">
-                                                    @csrf
-                                                    <button class="dropdown-item text-warning" type="submit">
-                                                        <i class="fas fa-flag me-2"></i>{{ __('Reporté') }}
-                                                    </button>
-                                                </form>
-                                            </template>
-                                            <template x-if="!payment.cashed_in">
-                                                <form :action="'/payments/' + payment.id + '/cash-in'" method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="dropdown-item text-primary">
-                                                        <i class="fas fa-money-bill-wave me-2"></i>{{ __('Encaisser') }}
-                                                    </button>
-                                                </form>
-                                            </template>
-                                            <template x-if="payment.payment_type === 'Cheque' || payment.payment_type === 'Exchange'">
-                                                <button type="button" class="dropdown-item text-info" @click="open = false; openChequeUpload(payment)">
-                                                    <i class="fas fa-camera me-2"></i><span x-text="payment.cheque_photo ? '{{ __('Update Cheque Photo') }}' : '{{ __('Attach Cheque Photo') }}'"></span>
-                                                </button>
-                                            </template>
-                                            <template x-if="!payment.cashed_in">
-                                                <div>
-                                                    <div class="dropdown-divider"></div>
-                                                    <form :action="'/payments/' + payment.id" method="POST"
-                                                          @submit.prevent="if(confirm('{{ __('Are you sure?') }}')) $el.submit()">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="dropdown-item text-danger">
-                                                            <i class="fas fa-trash me-2"></i>{{ __('Delete') }}
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </div>
+                                <td>
+                                    <button class="btn btn-sm btn-ghost-secondary btn-icon"
+                                            @click="activePaymentMenu = activePaymentMenu === payment.id ? null : payment.id; if(activePaymentMenu === payment.id) { $nextTick(() => { positionPaymentMenu($event.target.closest('button')) }) }">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                    </button>
                                 </td>
                             </tr>
                         </template>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PAYMENT ACTIONS DROPDOWN (fixed position, outside table) ==================== -->
+    <div x-show="activePaymentMenu" x-cloak>
+        <div class="position-fixed top-0 start-0 w-100 h-100" style="z-index: 1050;" @click="activePaymentMenu = null"></div>
+        <div class="payment-actions-floating" x-bind:style="'position:fixed; z-index:1060; top:' + menuStyle.top + '; left:' + menuStyle.left + ';'">
+            <div class="dropdown-menu show" style="min-width: 210px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+                <template x-if="getActivePayment() && !getActivePayment().reported && !getActivePayment().cashed_in">
+                    <form class="reportForm" :action="'/payments/' + activePaymentMenu + '/report'" method="POST">
+                        @csrf
+                        <button class="dropdown-item text-warning" type="submit">
+                            <i class="fas fa-flag me-2"></i>{{ __('Reporté') }}
+                        </button>
+                    </form>
+                </template>
+                <template x-if="getActivePayment() && !getActivePayment().cashed_in">
+                    <form :action="'/payments/' + activePaymentMenu + '/cash-in'" method="POST">
+                        @csrf
+                        <button type="submit" class="dropdown-item text-primary">
+                            <i class="fas fa-money-bill-wave me-2"></i>{{ __('Encaisser') }}
+                        </button>
+                    </form>
+                </template>
+                <template x-if="getActivePayment() && (getActivePayment().payment_type === 'Cheque' || getActivePayment().payment_type === 'Exchange')">
+                    <button type="button" class="dropdown-item text-info" @click="openChequeUpload(getActivePayment()); activePaymentMenu = null;">
+                        <i class="fas fa-camera me-2"></i><span x-text="getActivePayment()?.cheque_photo ? '{{ __('Update Cheque Photo') }}' : '{{ __('Attach Cheque Photo') }}'"></span>
+                    </button>
+                </template>
+                <template x-if="getActivePayment() && !getActivePayment().cashed_in">
+                    <div>
+                        <div class="dropdown-divider"></div>
+                        <form :action="'/payments/' + activePaymentMenu" method="POST"
+                              @submit.prevent="if(confirm('{{ __('Are you sure?') }}')) $el.submit()">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="dropdown-item text-danger">
+                                <i class="fas fa-trash me-2"></i>{{ __('Delete') }}
+                            </button>
+                        </form>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
