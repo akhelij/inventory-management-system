@@ -132,6 +132,22 @@ class PaymentController extends Controller
         return to_route('customers.show', $payment->customer->uuid);
     }
 
+    public function scanCheque(Request $request): JsonResponse
+    {
+        $request->validate(['cheque_image' => 'required|image|max:5120']);
+
+        $result = app(\App\Services\ChequeOcrService::class)->extract($request->file('cheque_image'));
+
+        $chequePhotoPath = $request->file('cheque_image')->store('payments/cheques', 'public');
+
+        return response()->json([
+            'success' => $result['success'],
+            'data' => $result['data'] ?? null,
+            'error' => $result['error'] ?? null,
+            'cheque_photo' => $chequePhotoPath,
+        ]);
+    }
+
     public function destroy(Payment $payment): RedirectResponse
     {
         $payment->delete();

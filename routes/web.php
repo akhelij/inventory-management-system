@@ -114,6 +114,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('payments/{payment}/cash-in', [PaymentController::class, 'cash_in'])->name('payments.cash_in');
     Route::delete('payments/{payment}', [PaymentController::class, 'destroy'])->name('payments.destroy');
 
+    // Cheque OCR Scan
+    Route::post('api/cheque-scan', [PaymentController::class, 'scanCheque'])->name('cheque.scan');
+
     // Payment Allocation
     Route::post('api/orders/{order}/payments/{payment}', [OrderPaymentController::class, 'store'])->name('order-payments.store');
     Route::delete('api/orders/{order}/payments/{payment}', [OrderPaymentController::class, 'destroy'])->name('order-payments.destroy');

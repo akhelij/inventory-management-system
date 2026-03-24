@@ -244,6 +244,11 @@
     modalOrderId: null,
     modalOrderInvoice: '',
     modalErrors: {},
+    chequeFile: null,
+    chequePreview: null,
+    chequeScanning: false,
+    chequeError: null,
+    chequeSuccess: false,
     form: {
         nature: '',
         payment_type: 'HandCash',
@@ -253,6 +258,43 @@
         amount: '',
         description: '',
         cheque_photo: '',
+    },
+
+    async scanCheque() {
+        if (!this.chequeFile) return;
+        this.chequeScanning = true;
+        this.chequeError = null;
+        this.chequeSuccess = false;
+        this.chequePreview = URL.createObjectURL(this.chequeFile);
+
+        const formData = new FormData();
+        formData.append('cheque_image', this.chequeFile);
+
+        try {
+            const res = await fetch('/api/cheque-scan', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                    'Accept': 'application/json',
+                },
+                body: formData,
+            });
+            const data = await res.json();
+            if (data.success) {
+                const d = data.data;
+                if (d.nature) this.form.nature = d.nature;
+                if (d.amount) this.form.amount = d.amount;
+                if (d.echeance) this.form.echeance = d.echeance;
+                if (d.bank) this.form.bank = d.bank;
+                if (data.cheque_photo) this.form.cheque_photo = data.cheque_photo;
+                this.chequeSuccess = true;
+            } else {
+                this.chequeError = data.error || 'Failed to scan cheque.';
+            }
+        } catch (e) {
+            this.chequeError = 'Failed to process cheque image.';
+        }
+        this.chequeScanning = false;
     },
 
     formatCurrency(amount) {
@@ -274,6 +316,10 @@
         this.modalOrderId = order ? order.id : null;
         this.modalOrderInvoice = order ? order.invoice_no : '';
         this.modalSubmitting = false;
+        this.chequeFile = null;
+        this.chequePreview = null;
+        this.chequeError = null;
+        this.chequeSuccess = false;
         this.showModal = true;
     },
 
@@ -615,29 +661,6 @@
         </div>
     </template>
 
-    <!-- ==================== CHEQUE SCANNER (outside template x-if for Livewire compatibility) ==================== -->
-    <div x-show="showModal && form.payment_type === 'Cheque'" x-cloak
-         style="position: fixed; z-index: 10001; top: 60px; left: 50%; transform: translateX(-50%); width: 500px; max-width: 90vw;"
-         @cheque-scanned.window="
-             if ($event.detail.data) {
-                 const d = $event.detail.data;
-                 if (d.nature) form.nature = d.nature;
-                 if (d.amount) form.amount = d.amount;
-                 if (d.echeance) form.echeance = d.echeance;
-                 if (d.bank) form.bank = d.bank;
-                 if (d.cheque_photo) form.cheque_photo = d.cheque_photo;
-             }
-         ">
-        <div class="card shadow-lg mb-0">
-            <div class="card-header py-2">
-                <h4 class="card-title mb-0"><i class="fas fa-money-check me-1"></i>{{ __('Scan Cheque') }}</h4>
-            </div>
-            <div class="card-body py-2">
-                <livewire:cheque-scanner />
-            </div>
-        </div>
-    </div>
-
     <!-- ==================== PAYMENT MODAL ==================== -->
     <template x-if="showModal">
         <div>
@@ -663,6 +686,32 @@
                                     </template>
                                 </template>
                             </ul>
+                        </div>
+
+                        {{-- Cheque Scanner (plain HTML, no Livewire) --}}
+                        <div x-show="form.payment_type === 'Cheque'" x-cloak class="mb-3 p-3" style="background: #f8fafc; border-radius: 8px; border: 1px dashed #cbd5e1;">
+                            <label class="form-label fw-bold mb-2"><i class="fas fa-money-check me-1"></i>{{ __('Scan Cheque') }}</label>
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <input type="file" accept="image/*" capture="environment" class="form-control form-control-sm flex-grow-1"
+                                       @change="chequeFile = $event.target.files[0]">
+                                <button type="button" class="btn btn-sm btn-primary flex-shrink-0"
+                                        x-show="chequeFile" x-cloak
+                                        :disabled="chequeScanning"
+                                        @click="scanCheque()">
+                                    <span x-show="!chequeScanning"><i class="fas fa-search me-1"></i>{{ __('Scan') }}</span>
+                                    <span x-show="chequeScanning"><span class="spinner-border spinner-border-sm me-1"></span>{{ __('Processing...') }}</span>
+                                </button>
+                            </div>
+                            <p class="text-muted small mb-2"><i class="fas fa-info-circle me-1"></i>{{ __('Upload a cheque photo then click Scan to auto-fill.') }}</p>
+                            <template x-if="chequePreview">
+                                <img :src="chequePreview" alt="Cheque" class="img-fluid rounded mb-2" style="max-height: 120px;">
+                            </template>
+                            <template x-if="chequeError">
+                                <div class="alert alert-warning py-1 px-2 mb-0 small" x-text="chequeError"></div>
+                            </template>
+                            <template x-if="chequeSuccess">
+                                <div class="alert alert-success py-1 px-2 mb-0 small"><i class="fas fa-check me-1"></i>{{ __('Cheque data extracted!') }}</div>
+                            </template>
                         </div>
 
                         <div class="form-grid">
