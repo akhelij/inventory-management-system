@@ -565,6 +565,29 @@
         </div>
     </template>
 
+    <!-- ==================== CHEQUE SCANNER (outside template x-if for Livewire compatibility) ==================== -->
+    <div x-show="showModal && form.payment_type === 'Cheque'" x-cloak
+         style="position: fixed; z-index: 10001; top: 60px; left: 50%; transform: translateX(-50%); width: 500px; max-width: 90vw;"
+         @cheque-scanned.window="
+             if ($event.detail.data) {
+                 const d = $event.detail.data;
+                 if (d.nature) form.nature = d.nature;
+                 if (d.amount) form.amount = d.amount;
+                 if (d.echeance) form.echeance = d.echeance;
+                 if (d.bank) form.bank = d.bank;
+                 if (d.cheque_photo) form.cheque_photo = d.cheque_photo;
+             }
+         ">
+        <div class="card shadow-lg mb-0">
+            <div class="card-header py-2">
+                <h4 class="card-title mb-0"><i class="fas fa-money-check me-1"></i>{{ __('Scan Cheque') }}</h4>
+            </div>
+            <div class="card-body py-2">
+                <livewire:cheque-scanner />
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== PAYMENT MODAL ==================== -->
     <template x-if="showModal">
         <div>
@@ -590,21 +613,6 @@
                                     </template>
                                 </template>
                             </ul>
-                        </div>
-
-                        <div class="mb-3" x-show="form.payment_type === 'Cheque'" x-cloak
-                             @cheque-scanned.window="
-                                 if ($event.detail.data) {
-                                     const d = $event.detail.data;
-                                     if (d.nature) form.nature = d.nature;
-                                     if (d.amount) form.amount = d.amount;
-                                     if (d.echeance) form.echeance = d.echeance;
-                                     if (d.bank) form.bank = d.bank;
-                                     if (d.cheque_photo) form.cheque_photo = d.cheque_photo;
-                                 }
-                             ">
-                            <label class="form-label fw-bold"><i class="fas fa-money-check me-1"></i>{{ __('Scan Cheque') }}</label>
-                            <livewire:cheque-scanner />
                         </div>
 
                         <div class="form-grid">
