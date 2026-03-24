@@ -14,7 +14,8 @@ class UpdateCustomerRequest extends FormRequest
 
     public function rules(): array
     {
-        $customer = $this->route('customer');
+        $uuid = $this->route('customer');
+        $customer = \App\Models\Customer::where('uuid', $uuid)->firstOrFail();
 
         $rules = [
             'name' => 'required|string|max:50',
