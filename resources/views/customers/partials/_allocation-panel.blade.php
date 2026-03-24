@@ -663,7 +663,7 @@
                                     </template>
                                 </td>
                                 <td x-data="{ open: false }">
-                                    <div class="dropdown">
+                                    <div class="dropup">
                                         <button class="btn btn-sm btn-ghost-secondary btn-icon"
                                                 @click="open = !open" @click.outside="open = false">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
@@ -685,9 +685,9 @@
                                                     </button>
                                                 </form>
                                             </template>
-                                            <template x-if="(payment.payment_type === 'Cheque' || payment.payment_type === 'Exchange') && !payment.cheque_photo">
+                                            <template x-if="payment.payment_type === 'Cheque' || payment.payment_type === 'Exchange'">
                                                 <button type="button" class="dropdown-item text-info" @click="open = false; openChequeUpload(payment)">
-                                                    <i class="fas fa-camera me-2"></i>{{ __('Attach Cheque Photo') }}
+                                                    <i class="fas fa-camera me-2"></i><span x-text="payment.cheque_photo ? '{{ __('Update Cheque Photo') }}' : '{{ __('Attach Cheque Photo') }}'"></span>
                                                 </button>
                                             </template>
                                             <template x-if="!payment.cashed_in">
