@@ -112,6 +112,20 @@
                         </a>
                     </th>
                     <th scope="col" class="align-middle text-center">
+                        <a wire:click.prevent="sortBy('phone')" href="#" role="button">
+                            {{ __('Phone') }}
+                            @include('inclues._sort-icon', ['field' => 'phone'])
+                        </a>
+                    </th>
+                    @if($category === 'b2c')
+                    <th scope="col" class="align-middle text-center">
+                        <a wire:click.prevent="sortBy('cin')" href="#" role="button">
+                            {{ __('CIN') }}
+                            @include('inclues._sort-icon', ['field' => 'cin'])
+                        </a>
+                    </th>
+                    @endif
+                    <th scope="col" class="align-middle text-center">
                         <a wire:click.prevent="sortBy('email')" href="#" role="button">
                             {{ __('Email') }}
                             @include('inclues._sort-icon', ['field' => 'email'])
@@ -154,6 +168,14 @@
                             @endif
                         </td>
                         <td class="align-middle text-center">
+                            {{ $customer->phone ?? '—' }}
+                        </td>
+                        @if($category === 'b2c')
+                        <td class="align-middle text-center">
+                            {{ $customer->cin ?? '—' }}
+                        </td>
+                        @endif
+                        <td class="align-middle text-center">
                             {{ $customer->email }}
                         </td>
                         <td class="align-middle text-center">
@@ -170,7 +192,7 @@
                     </tr>
                 @empty
                     <tr>
-                            <td class="align-middle text-center" colspan="7">
+                            <td class="align-middle text-center" colspan="9">
                                 {{ __('No results found') }}
                             </td>
                         </tr>
