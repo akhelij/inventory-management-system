@@ -20,36 +20,48 @@
             <div class="row row-cards">
 
                 <form action="{{ route('customers.update', $customer->uuid) }}" method="POST"
-                      enctype="multipart/form-data">
+                      enctype="multipart/form-data"
+                      @if ($customer->category?->value === 'b2c')
+                          x-data="{}"
+                          x-on:cin-scanned.window="
+                              const d = $event.detail.data || $event.detail;
+                              if (d.name) $refs.name.value = d.name;
+                              if (d.cin) $refs.cin.value = d.cin;
+                              if (d.date_of_birth) $refs.date_of_birth.value = d.date_of_birth;
+                              if (d.address) $refs.address.value = d.address;
+                              if (d.cin_photo) $refs.cin_photo.value = d.cin_photo;
+                          "
+                      @endif
+                >
                     @csrf
                     @method('put')
+                    @if ($customer->category?->value === 'b2c')
+                        <input type="hidden" name="cin_photo" x-ref="cin_photo" value="{{ old('cin_photo', $customer->cin_photo) }}">
+                    @endif
                     <div class="row">
+                        @if ($customer->category?->value === 'b2c')
                         <div class="col-lg-4">
                             <div class="card">
-                                <div class="card-body">
+                                <div class="card-header">
                                     <h3 class="card-title">
-                                        {{ __('Profile Image') }}
+                                        <i class="fas fa-id-card me-2"></i>{{ __('CIN Scanner') }}
                                     </h3>
+                                </div>
+                                <div class="card-body">
+                                    <livewire:cin-scanner />
 
-                                    <img class="img-account-profile mb-2"
-                                         src="{{ $customer->photo ? asset('storage/' . $customer->photo) : asset('assets/img/demo/user-placeholder.svg') }}"
-                                         alt="" id="image-preview"/>
-
-                                    <div class="small font-italic text-muted mb-2">{{ __('JPG or PNG no larger than 2 MB') }}</div>
-
-                                    <input class="form-control @error('photo') is-invalid @enderror" type="file"
-                                           id="image" name="photo" accept="image/*" onchange="previewImage();">
-
-                                    @error('photo')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
+                                    @if ($customer->cin_photo)
+                                        <div class="mt-3">
+                                            <label class="form-label small text-muted">{{ __('Current CIN Photo') }}</label>
+                                            <img src="{{ asset('storage/' . $customer->cin_photo) }}" alt="CIN" class="img-fluid rounded" style="max-height: 160px;">
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
+                        @endif
 
-                        <div class="col-lg-8">
+                        <div class="{{ $customer->category?->value === 'b2c' ? 'col-lg-8' : 'col-lg-12' }}">
                             <div class="card">
                                 <div class="card-body">
                                     <h3 class="card-title">
@@ -58,8 +70,16 @@
 
                                     <div class="row row-cards">
                                         <div class="col-md-12">
-                                            <x-input name="name" :value="old('name', $customer->name)"
-                                                     :required="true"/>
+                                            <div class="mb-3">
+                                                <label for="name" class="form-label required">{{ __('Name') }}</label>
+                                                <input type="text" id="name" name="name"
+                                                       x-ref="name"
+                                                       value="{{ old('name', $customer->name) }}"
+                                                       class="form-control @error('name') is-invalid @enderror" required>
+                                                @error('name')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
 
                                             <x-input label="{{ __('Email address') }}" name="email"
                                                      :value="old('email', $customer->email)"
@@ -80,16 +100,29 @@
 
                                         @if ($customer->category?->value === 'b2c')
                                             <div class="col-sm-6 col-md-6">
-                                                <x-input label="{{ __('CIN') }}" name="cin"
-                                                         :value="old('cin', $customer->cin)"
-                                                />
+                                                <div class="mb-3">
+                                                    <label for="cin" class="form-label">{{ __('CIN') }}</label>
+                                                    <input type="text" id="cin" name="cin"
+                                                           x-ref="cin"
+                                                           value="{{ old('cin', $customer->cin) }}"
+                                                           class="form-control @error('cin') is-invalid @enderror">
+                                                    @error('cin')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
                                             </div>
 
                                             <div class="col-sm-6 col-md-6">
-                                                <x-input label="{{ __('Date of Birth') }}" name="date_of_birth"
-                                                         type="date"
-                                                         :value="old('date_of_birth', $customer->date_of_birth?->format('Y-m-d'))"
-                                                />
+                                                <div class="mb-3">
+                                                    <label for="date_of_birth" class="form-label">{{ __('Date of Birth') }}</label>
+                                                    <input type="date" id="date_of_birth" name="date_of_birth"
+                                                           x-ref="date_of_birth"
+                                                           value="{{ old('date_of_birth', $customer->date_of_birth?->format('Y-m-d')) }}"
+                                                           class="form-control @error('date_of_birth') is-invalid @enderror">
+                                                    @error('date_of_birth')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
                                             </div>
                                         @endif
 
@@ -142,6 +175,7 @@
                                                 </label>
 
                                                 <textarea id="address" name="address" rows="3"
+                                                          x-ref="address"
                                                           class="form-control @error('address') is-invalid @enderror">{{ old('address', $customer->address) }}</textarea>
 
                                                 @error('address')
@@ -171,7 +205,3 @@
         </div>
     </div>
 @endsection
-
-@pushonce('page-scripts')
-    <script src="{{ asset('assets/js/img-preview.js') }}"></script>
-@endpushonce

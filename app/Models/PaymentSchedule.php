@@ -17,6 +17,8 @@ class PaymentSchedule extends Model
         'total_installments',
         'period_days',
         'total_amount',
+        'advance_amount',
+        'advance_payment_id',
         'user_id',
     ];
 
@@ -33,6 +35,11 @@ class PaymentSchedule extends Model
     public function entries(): HasMany
     {
         return $this->hasMany(InstallmentEntry::class);
+    }
+
+    public function advancePayment(): BelongsTo
+    {
+        return $this->belongsTo(Payment::class, 'advance_payment_id');
     }
 
     public function user(): BelongsTo

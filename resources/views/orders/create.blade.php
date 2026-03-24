@@ -199,6 +199,89 @@
                                     <x-action.close route="{{ route('orders.index') }}"/>
                                 </div>
                             </div>
+                            {{-- Installment Panel (collapsible, at top of cart) --}}
+                            <div x-show="paymentMode === 'installment'" x-cloak class="border-bottom bg-light">
+                                <div class="p-3">
+                                    <h4 class="mb-3">
+                                        <i class="fas fa-calendar-alt me-1"></i>{{ __('Installment Plan') }}
+                                    </h4>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label class="small mb-1">{{ __('Number of installments') }}</label>
+                                            <input type="number" name="installment_count" class="form-control form-control-sm" value="4" min="2" max="24">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="small mb-1">{{ __('Period (days)') }}</label>
+                                            <input type="number" name="installment_period_days" class="form-control form-control-sm" value="30" min="7" max="365">
+                                        </div>
+                                    </div>
+
+                                    {{-- Advance Payment Section --}}
+                                    <div class="card card-sm mb-0">
+                                        <div class="card-header py-2 cursor-pointer" @click="showAdvance = !showAdvance" style="cursor: pointer;">
+                                            <h4 class="card-title mb-0 small">
+                                                <i class="fas fa-hand-holding-usd me-1"></i>{{ __('Advance Payment (Avance)') }}
+                                            </h4>
+                                            <div class="card-actions">
+                                                <span class="badge bg-blue-lt" x-show="advanceAmount > 0" x-text="formatCurrency(advanceAmount) + ' MAD'"></span>
+                                                <i class="fas" :class="showAdvance ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                                            </div>
+                                        </div>
+                                        <div class="card-body py-2" x-show="showAdvance" x-cloak>
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <label class="small mb-1">{{ __('Advance Amount') }}</label>
+                                                    <input type="number" name="advance_amount" class="form-control form-control-sm"
+                                                           x-model="advanceAmount" step="0.01" min="0" placeholder="0.00">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="small mb-1">{{ __('Type') }}</label>
+                                                    <select name="advance_type" class="form-select form-select-sm" x-model="advanceType">
+                                                        <option value="HandCash">{{ __('Cash') }}</option>
+                                                        <option value="Cheque">{{ __('Cheque') }}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            {{-- Cheque fields --}}
+                                            <div x-show="advanceType === 'Cheque'" x-cloak class="mt-2">
+                                                <div class="mb-2">
+                                                    <livewire:cheque-scanner />
+                                                </div>
+                                                <div class="row g-2">
+                                                    <div class="col-6">
+                                                        <label class="small mb-1">{{ __('Cheque Number') }}</label>
+                                                        <input type="text" name="advance_nature" x-ref="advance_nature"
+                                                               class="form-control form-control-sm" placeholder="{{ __('Cheque number') }}">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="small mb-1">{{ __('Bank') }}</label>
+                                                        <select name="advance_bank" x-ref="advance_bank" class="form-select form-select-sm">
+                                                            <option value="">{{ __('Select bank') }}</option>
+                                                            @foreach (\App\Enums\MoroccanBank::cases() as $bank)
+                                                                <option value="{{ $bank->value }}">{{ $bank->value }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="small mb-1">{{ __('Echeance') }}</label>
+                                                        <input type="text" name="advance_echeance" x-ref="advance_echeance"
+                                                               class="form-control form-control-sm datepicker" placeholder="dd/mm/yyyy">
+                                                    </div>
+                                                    <div class="col-6 d-flex align-items-end">
+                                                        <label class="form-check">
+                                                            <input type="checkbox" name="advance_cash_in_immediately" class="form-check-input" value="1">
+                                                            <span class="form-check-label small">{{ __('Cash in immediately') }}</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="advance_cheque_photo" x-ref="advance_cheque_photo">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="card-body d-flex flex-column flex-grow-1" style="overflow-y: auto;">
                                 <div class="row gx-3 mb-3">
                                     <div class="col-md-4">
@@ -271,25 +354,12 @@
                                     </div>
                                     @endif
 
-                                    <div class="col-md-4" x-data="{ showInstallments: false }">
+                                    <div class="col-md-4">
                                         <label class="small mb-1">{{ __('Payment Mode') }}</label>
-                                        <select name="payment_mode" class="form-select" @change="showInstallments = $event.target.value === 'installment'">
+                                        <select name="payment_mode" class="form-select" x-model="paymentMode">
                                             <option value="full">{{ __('Full Payment') }}</option>
                                             <option value="installment">{{ __('Installments') }}</option>
                                         </select>
-
-                                        <template x-if="showInstallments">
-                                            <div class="row mt-2">
-                                                <div class="col-6">
-                                                    <label class="small mb-1">{{ __('Number of installments') }}</label>
-                                                    <input type="number" name="installment_count" class="form-control form-control-sm" value="4" min="2" max="24">
-                                                </div>
-                                                <div class="col-6">
-                                                    <label class="small mb-1">{{ __('Period (days)') }}</label>
-                                                    <input type="number" name="installment_period_days" class="form-control form-control-sm" value="30" min="7" max="365">
-                                                </div>
-                                            </div>
-                                        </template>
                                     </div>
                                     
                                     <div class="col-md-4">
@@ -398,6 +468,18 @@
                                                 <td colspan="4" class="text-end small fw-bold">Total</td>
                                                 <td class="text-center small fw-bold" x-text="formatCurrency(getTotal())"></td>
                                             </tr>
+                                            <template x-if="paymentMode === 'installment' && advanceAmount > 0">
+                                                <tr class="table-info">
+                                                    <td colspan="4" class="text-end small fw-bold">{{ __('Advance') }}</td>
+                                                    <td class="text-center small fw-bold" x-text="'-' + formatCurrency(advanceAmount)"></td>
+                                                </tr>
+                                            </template>
+                                            <template x-if="paymentMode === 'installment' && advanceAmount > 0">
+                                                <tr class="table-success">
+                                                    <td colspan="4" class="text-end small fw-bold">{{ __('To Install') }}</td>
+                                                    <td class="text-center small fw-bold" x-text="formatCurrency(getTotal() - advanceAmount)"></td>
+                                                </tr>
+                                            </template>
                                         </tbody>
                                     </table>
                                 </div>
@@ -623,11 +705,31 @@
             return {
                 cart: [],
                 isLoading: true,
+                paymentMode: 'full',
+                showAdvance: false,
+                advanceAmount: 0,
+                advanceType: 'HandCash',
                 
                 init() {
                     this.fetchCart();
                     document.addEventListener('cart-updated', event => {
                         this.cart = event.detail;
+                    });
+                    document.addEventListener('cheque-scanned', event => {
+                        if (event.detail?.data) {
+                            const d = event.detail.data;
+                            if (d.nature && this.$refs.advance_nature) this.$refs.advance_nature.value = d.nature;
+                            if (d.amount) this.advanceAmount = d.amount;
+                            if (d.echeance && this.$refs.advance_echeance) this.$refs.advance_echeance.value = d.echeance;
+                            if (d.bank && this.$refs.advance_bank) {
+                                for (let opt of this.$refs.advance_bank.options) {
+                                    if (opt.value.toLowerCase().includes(d.bank.toLowerCase())) {
+                                        this.$refs.advance_bank.value = opt.value; break;
+                                    }
+                                }
+                            }
+                            if (d.cheque_photo && this.$refs.advance_cheque_photo) this.$refs.advance_cheque_photo.value = d.cheque_photo;
+                        }
                     });
                 },
                 
@@ -735,5 +837,16 @@
                 }
             };
         }
+        // Initialize datepicker formatting for dd/mm/yyyy inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.datepicker').forEach(function(input) {
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 2) value = value.substring(0,2) + '/' + value.substring(2);
+                    if (value.length >= 5) value = value.substring(0,5) + '/' + value.substring(5,9);
+                    e.target.value = value;
+                });
+            });
+        });
     </script>
 @endpushonce

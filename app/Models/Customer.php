@@ -24,7 +24,6 @@ class Customer extends Model
         'phone',
         'address',
         'city',
-        'photo',
         'limit',
         'account_holder',
         'account_number',
@@ -41,15 +40,17 @@ class Customer extends Model
     protected $appends = [
         'total_orders',
         'total_payments',
-        'is_out_of_limit',
+        'has_missed_installments',
         'have_unpaid_checks',
     ];
 
     protected $with = ['user'];
 
-    public function getIsOutOfLimitAttribute(): bool
+    public function getHasMissedInstallmentsAttribute(): bool
     {
-        return $this->total_orders - $this->total_payments + $this->total_pending_payments > $this->limit;
+        return $this->paymentSchedules()
+            ->whereHas('entries', fn ($q) => $q->where('status', '!=', 'paid')->where('due_date', '<', now()->startOfDay()))
+            ->exists();
     }
 
     public function getHaveUnpaidChecksAttribute(): bool
@@ -111,7 +112,8 @@ class Customer extends Model
     {
         $query->where('name', 'like', "%{$value}%")
             ->orWhere('email', 'like', "%{$value}%")
-            ->orWhere('phone', 'like', "%{$value}%");
+            ->orWhere('phone', 'like', "%{$value}%")
+            ->orWhere('cin', 'like', "%{$value}%");
     }
 
     public function scopeOfAuth($query)

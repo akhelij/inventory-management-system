@@ -35,16 +35,48 @@
                     </div>
                 </div>
 
-                <form action="{{ route('payments.store', $customer->id) }}" method="POST">
+                <form action="{{ route('payments.store', $customer->id) }}" method="POST"
+                      x-data="{ paymentType: '{{ old('payment_type', 'HandCash') }}' }"
+                      @cheque-scanned.window="
+                          if ($event.detail.data) {
+                              const d = $event.detail.data;
+                              if (d.nature) $refs.nature.value = d.nature;
+                              if (d.amount) $refs.amount.value = d.amount;
+                              if (d.echeance) $refs.echeance.value = d.echeance;
+                              if (d.bank) {
+                                  const bankSelect = $refs.bank;
+                                  for (let opt of bankSelect.options) {
+                                      if (opt.value.toLowerCase().includes(d.bank.toLowerCase())) {
+                                          bankSelect.value = opt.value;
+                                          break;
+                                      }
+                                  }
+                              }
+                              if (d.cheque_photo) $refs.cheque_photo.value = d.cheque_photo;
+                          }
+                      ">
                     @csrf
                     <input name="customer_id" value="{{ $customer->id }}" hidden/>
+                    <input type="hidden" name="cheque_photo" x-ref="cheque_photo" value="{{ old('cheque_photo') }}">
                     <div class="card-body">
+                        <div x-show="paymentType === 'Cheque'" x-cloak class="mb-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-money-check me-2"></i>{{ __('Scan Cheque') }}
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <livewire:cheque-scanner />
+                                </div>
+                            </div>
+                        </div>
                         <div class="row gx-3 mb-3">
                             <div class="col-6">
                                 <label for="nature" class="small my-1">
                                     {{ __('Nature') }}
                                 </label>
-                                <input name="nature" id="nature" type="text"
+                                <input name="nature" id="nature" x-ref="nature" type="text"
                                        class="form-control example-date-input @error('nature') is-invalid @enderror"
                                        value="{{ old('nature') }}"
                                        required
@@ -54,7 +86,7 @@
                                 <label for="bank" class="small my-1">
                                     {{ __('Bank') }}
                                 </label>
-                                <select name="bank" id="bank"
+                                <select name="bank" id="bank" x-ref="bank"
                                         class="form-select @error('bank') is-invalid @enderror">
                                     <option value="">{{ __('Select a bank:') }}</option>
                                     @foreach ($banks as $bank)
@@ -82,7 +114,7 @@
                                 <label for="echeance" class="small my-1">
                                     {{ __('Echeance') }}
                                 </label>
-                                <input name="echeance" id="echeance" type="text"
+                                <input name="echeance" id="echeance" x-ref="echeance" type="text"
                                        class="form-control datepicker @error('echeance') is-invalid @enderror"
                                        value="{{ old('echeance') ?: '' }}"
                                        placeholder="dd/mm/yyyy"
@@ -96,7 +128,8 @@
                                     {{ __('Payment type') }}
                                 </label>
 
-                                <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type">
+                                <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type"
+                                        x-model="paymentType">
                                     <option value="HandCash">Cash</option>
                                     <option value="Cheque">Cheque</option>
                                     <option value="Exchange">Lettre de change</option>
@@ -106,7 +139,7 @@
                                 <label for="amount" class="small my-1">
                                     {{ __('Amount') }}
                                 </label>
-                                <input name="amount" id="amount" type="text"
+                                <input name="amount" id="amount" x-ref="amount" type="text"
                                        class="form-control example-date-input @error('amount') is-invalid @enderror"
                                        value="{{ old('amount') }}"
                                        required

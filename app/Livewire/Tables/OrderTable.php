@@ -5,7 +5,6 @@ namespace App\Livewire\Tables;
 use App\Enums\OrderStatus;
 use App\Models\Customer;
 use App\Models\Order;
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -24,6 +23,8 @@ class OrderTable extends Component
     public ?string $startDate = null;
 
     public ?string $endDate = null;
+
+    public ?string $customerType = null;
 
     public array $order_ids = [];
 
@@ -113,12 +114,29 @@ class OrderTable extends Component
         $this->reset(['showWarningModal', 'selectedOrder', 'newStatus', 'statusReason', 'isOverLimit']);
     }
 
+    public function setCustomerType(?string $type): void
+    {
+        $this->customerType = $this->customerType === $type ? null : $type;
+        $this->resetPage();
+    }
+
     public function render()
     {
         $query = Order::query();
 
         if ($this->startDate && $this->endDate) {
-            $query->whereBetween('order_date', [$this->startDate, $this->endDate]);
+            try {
+                $start = \Carbon\Carbon::createFromFormat('d/m/Y', $this->startDate)->startOfDay();
+                $end = \Carbon\Carbon::createFromFormat('d/m/Y', $this->endDate)->endOfDay();
+                $query->whereBetween('order_date', [$start, $end]);
+            } catch (\Exception) {
+                // Fallback: try Y-m-d format for backward compatibility
+                $query->whereBetween('order_date', [$this->startDate, $this->endDate]);
+            }
+        }
+
+        if ($this->customerType) {
+            $query->whereHas('customer', fn ($q) => $q->where('category', $this->customerType));
         }
 
         return view('livewire.tables.order-table', [

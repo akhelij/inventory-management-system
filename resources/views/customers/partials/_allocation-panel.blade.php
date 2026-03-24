@@ -220,6 +220,7 @@
         echeance: '',
         amount: '',
         description: '',
+        cheque_photo: '',
     },
 
     formatCurrency(amount) {
@@ -236,6 +237,7 @@
             echeance: '',
             amount: order ? order.due : '',
             description: '',
+            cheque_photo: '',
         };
         this.modalOrderId = order ? order.id : null;
         this.modalOrderInvoice = order ? order.invoice_no : '';
@@ -270,6 +272,7 @@
             echeance: this.form.echeance,
             amount: this.form.amount,
             description: this.form.description || null,
+            cheque_photo: this.form.cheque_photo || null,
         };
         if (this.modalOrderId) body.order_id = this.modalOrderId;
 
@@ -587,6 +590,21 @@
                                     </template>
                                 </template>
                             </ul>
+                        </div>
+
+                        <div class="mb-3" x-show="form.payment_type === 'Cheque'" x-cloak
+                             @cheque-scanned.window="
+                                 if ($event.detail.data) {
+                                     const d = $event.detail.data;
+                                     if (d.nature) form.nature = d.nature;
+                                     if (d.amount) form.amount = d.amount;
+                                     if (d.echeance) form.echeance = d.echeance;
+                                     if (d.bank) form.bank = d.bank;
+                                     if (d.cheque_photo) form.cheque_photo = d.cheque_photo;
+                                 }
+                             ">
+                            <label class="form-label fw-bold"><i class="fas fa-money-check me-1"></i>{{ __('Scan Cheque') }}</label>
+                            <livewire:cheque-scanner />
                         </div>
 
                         <div class="form-grid">

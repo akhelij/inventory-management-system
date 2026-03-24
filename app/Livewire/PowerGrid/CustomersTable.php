@@ -51,7 +51,6 @@ final class CustomersTable extends PowerGridComponent
             ->add('email')
             ->add('phone')
             ->add('address')
-            ->add('photo')
             ->add('account_holder')
             ->add('account_number')
             ->add('bank_name')

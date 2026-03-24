@@ -121,6 +121,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Payment Schedules
     Route::post('orders/{order}/payment-schedule', [PaymentScheduleController::class, 'store'])->name('payment-schedules.store');
     Route::post('installments/{entry}/pay', [PaymentScheduleController::class, 'markPaid'])->name('installments.pay');
+    Route::post('payment-schedules/{customer}/export', [PaymentScheduleController::class, 'export'])->name('payment-schedules.export');
 
     Route::get('lang/{lang}', function (string $lang) {
         $supportedLocales = ['en', 'fr'];

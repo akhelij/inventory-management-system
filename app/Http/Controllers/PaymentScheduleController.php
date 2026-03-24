@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PaymentScheduleExport;
+use App\Models\Customer;
 use App\Models\InstallmentEntry;
 use App\Models\Order;
 use App\Models\Payment;
@@ -49,25 +51,40 @@ class PaymentScheduleController extends Controller
 
     public function markPaid(Request $request, InstallmentEntry $entry): RedirectResponse
     {
+        $request->validate([
+            'paid_date' => 'required|string',
+        ]);
+
+        $paidDate = \Carbon\Carbon::createFromFormat('d/m/Y', $request->paid_date);
         $schedule = $entry->schedule;
 
-        DB::transaction(function () use ($entry, $schedule) {
+        DB::transaction(function () use ($entry, $schedule, $paidDate) {
             $payment = Payment::create([
                 'customer_id' => $schedule->customer_id,
-                'date' => now()->format('Y-m-d'),
+                'date' => $paidDate->format('Y-m-d'),
                 'nature' => 'INST-'.$schedule->order->invoice_no.'-'.$entry->installment_number,
                 'payment_type' => 'HandCash',
-                'echeance' => now()->format('Y-m-d'),
+                'echeance' => $paidDate->format('Y-m-d'),
                 'amount' => $entry->amount,
             ]);
 
             $entry->update([
                 'status' => 'paid',
-                'paid_at' => now(),
+                'paid_at' => $paidDate,
                 'payment_id' => $payment->id,
             ]);
         });
 
         return back()->with('success', 'Installment marked as paid.');
+    }
+
+    public function export(Request $request, Customer $customer): void
+    {
+        $request->validate([
+            'schedule_ids' => 'required|array',
+            'schedule_ids.*' => 'integer|exists:payment_schedules,id',
+        ]);
+
+        (new PaymentScheduleExport($customer, $request->schedule_ids))->export();
     }
 }

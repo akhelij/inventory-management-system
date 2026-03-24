@@ -45,14 +45,9 @@ class CustomerController extends Controller
         $permission = $category === 'b2c' ? PermissionEnum::CREATE_CLIENTS : PermissionEnum::CREATE_CUSTOMERS;
         abort_unless(auth()->user()->can($permission), 403);
 
-        $image = $request->hasFile('photo')
-            ? $request->file('photo')->store('customers', 'public')
-            : '';
-
         $data = array_merge($request->safe()->all(), [
             'user_id' => auth()->id(),
             'uuid' => Str::uuid(),
-            'photo' => $image,
         ]);
 
         if ($category === 'b2c') {
@@ -72,7 +67,7 @@ class CustomerController extends Controller
             ? ['orders.payments', 'payments.orders']
             : ['orders', 'payments'];
 
-        $customer = Customer::where('uuid', $uuid)->with([...$eagerLoads, 'user', 'paymentSchedules.entries', 'paymentSchedules.order'])->firstOrFail();
+        $customer = Customer::where('uuid', $uuid)->with([...$eagerLoads, 'user', 'paymentSchedules.entries', 'paymentSchedules.order', 'paymentSchedules.advancePayment'])->firstOrFail();
 
         $permission = $customer->category?->value === 'b2c' ? PermissionEnum::READ_CLIENTS : PermissionEnum::READ_CUSTOMERS;
         abort_unless(auth()->user()->can($permission), 403);
@@ -113,17 +108,7 @@ class CustomerController extends Controller
         $permission = $category === 'b2c' ? PermissionEnum::UPDATE_CLIENTS : PermissionEnum::UPDATE_CUSTOMERS;
         abort_unless(auth()->user()->can($permission), 403);
 
-        $image = $customer->photo;
-        if ($request->hasFile('photo')) {
-            if ($customer->photo) {
-                unlink(public_path('storage/').$customer->photo);
-            }
-            $image = $request->file('photo')->store('customers', 'public');
-        }
-
-        $customer->update(array_merge($request->safe()->all(), [
-            'photo' => $image,
-        ]));
+        $customer->update($request->safe()->all());
 
         return to_route('customers.index', ['category' => $category])->with('success', 'Customer has been updated!');
     }
@@ -136,10 +121,6 @@ class CustomerController extends Controller
         $permission = $category === 'b2c' ? PermissionEnum::DELETE_CLIENTS : PermissionEnum::DELETE_CUSTOMERS;
         abort_unless(auth()->user()->can($permission), 403);
 
-        if ($customer->photo) {
-            unlink(public_path('storage/customers/').$customer->photo);
-        }
-
         $customer->delete();
 
         return redirect()->back()->with('success', 'Customer has been deleted!');
@@ -147,7 +128,8 @@ class CustomerController extends Controller
 
     public function downloadPayments(Customer $customer): View
     {
-        abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
+        $permission = $customer->category?->value === 'b2c' ? PermissionEnum::READ_CLIENTS : PermissionEnum::READ_CUSTOMERS;
+        abort_unless(auth()->user()->can($permission), 403);
 
         return view('customer.print-payments', [
             'payments' => $customer->payments,
@@ -156,9 +138,10 @@ class CustomerController extends Controller
 
     public function exportPendingPayments(string $uuid)
     {
-        abort_unless(auth()->user()->can(PermissionEnum::READ_CUSTOMERS), 403);
-
         $customer = Customer::where('uuid', $uuid)->with('payments')->firstOrFail();
+
+        $permission = $customer->category?->value === 'b2c' ? PermissionEnum::READ_CLIENTS : PermissionEnum::READ_CUSTOMERS;
+        abort_unless(auth()->user()->can($permission), 403);
 
         return (new PendingPaymentsExport($customer))->export();
     }

@@ -14,7 +14,6 @@ class StoreCustomerRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'photo' => 'image|file|max:1024',
             'category' => 'nullable|string|in:b2b,b2c',
             'name' => 'required|string|max:50',
             'email' => 'nullable|email|max:50',

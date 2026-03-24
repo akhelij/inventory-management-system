@@ -77,6 +77,12 @@
                         @livewire('profile-stats', ['user' => $user])
                     </div>
                 </div>
+
+                <div class="row mt-3">
+                    <div class="col-12">
+                        @livewire('user-orders-table', ['userId' => $user->id])
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -53,16 +53,20 @@
                            aria-label="Search invoice">
                 </div>
             </div>
-            <div class="ms-auto text-secondary">
-                {{__('Filter by Date')}}:
-                <div class="ms-2 d-inline-block">
-                    <input type="date" wire:model.live="startDate" class="form-control form-control-sm"
-                           aria-label="Start date">
+            <div class="ms-auto d-flex align-items-center gap-2">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn {{ $customerType === null ? 'btn-primary' : 'btn-outline-primary' }}"
+                        wire:click="setCustomerType(null)">{{ __('All') }}</button>
+                    <button type="button" class="btn {{ $customerType === 'b2b' ? 'btn-primary' : 'btn-outline-primary' }}"
+                        wire:click="setCustomerType('b2b')">{{ __('Customers') }}</button>
+                    <button type="button" class="btn {{ $customerType === 'b2c' ? 'btn-primary' : 'btn-outline-primary' }}"
+                        wire:click="setCustomerType('b2c')">{{ __('Clients') }}</button>
                 </div>
-                <div class="ms-2 d-inline-block">
-                    <input type="date" wire:model.live="endDate" class="form-control form-control-sm"
-                           aria-label="End date">
-                </div>
+                <span class="text-secondary small">{{__('Date')}}:</span>
+                <input type="text" wire:model.blur="startDate" class="form-control form-control-sm" style="width: 110px;"
+                       placeholder="dd/mm/yyyy" aria-label="Start date">
+                <input type="text" wire:model.blur="endDate" class="form-control form-control-sm" style="width: 110px;"
+                       placeholder="dd/mm/yyyy" aria-label="End date">
             </div>
         </div>
     </div>

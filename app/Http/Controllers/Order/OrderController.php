@@ -42,7 +42,11 @@ class OrderController extends Controller
 
         return view('orders.create', [
             'products' => Product::with(['category', 'unit'])->get(),
-            'customers' => Customer::ofAuth()->orderBy('name')->get(['id', 'name']),
+            'customers' => Customer::ofAuth()
+                ->when(! Auth::user()->can(PermissionEnum::READ_CUSTOMERS), fn ($q) => $q->where('category', '!=', 'b2b'))
+                ->when(! Auth::user()->can(PermissionEnum::READ_CLIENTS), fn ($q) => $q->where('category', '!=', 'b2c'))
+                ->orderBy('name')
+                ->get(['id', 'name']),
             'users' => User::query()->get(['id', 'name']),
         ]);
     }
@@ -98,6 +102,41 @@ class OrderController extends Controller
             if ($request->input('payment_mode') === 'installment') {
                 $installmentCount = (int) $request->input('installment_count', 4);
                 $periodDays = (int) $request->input('installment_period_days', 30);
+                $advanceAmount = (float) $request->input('advance_amount', 0);
+                $advancePaymentId = null;
+
+                if ($advanceAmount > 0) {
+                    $advanceType = $request->input('advance_type', 'HandCash');
+                    $advanceData = [
+                        'customer_id' => $order->customer_id,
+                        'date' => now()->format('Y-m-d'),
+                        'nature' => 'ADV-'.$order->invoice_no,
+                        'payment_type' => $advanceType,
+                        'echeance' => $advanceType === 'Cheque'
+                            ? Carbon::createFromFormat('d/m/Y', $request->input('advance_echeance'))->format('Y-m-d')
+                            : now()->format('Y-m-d'),
+                        'amount' => $advanceAmount,
+                    ];
+
+                    if ($advanceType === 'Cheque') {
+                        $advanceData['bank'] = $request->input('advance_bank');
+                        $advanceData['nature'] = $request->input('advance_nature', 'ADV-'.$order->invoice_no);
+                        $advanceData['cheque_photo'] = $request->input('advance_cheque_photo');
+                        $advanceData['cashed_in'] = $request->boolean('advance_cash_in_immediately');
+                        $advanceData['cashed_in_at'] = $request->boolean('advance_cash_in_immediately') ? now() : null;
+                    }
+
+                    $advancePayment = \App\Models\Payment::create($advanceData);
+                    $advancePaymentId = $advancePayment->id;
+
+                    $order->payments()->attach($advancePayment->id, [
+                        'allocated_amount' => $advanceAmount,
+                        'user_id' => Auth::id(),
+                    ]);
+                    $order->recalculatePayments();
+                }
+
+                $installableAmount = $order->total - $advanceAmount;
 
                 $schedule = PaymentSchedule::create([
                     'order_id' => $order->id,
@@ -105,11 +144,13 @@ class OrderController extends Controller
                     'total_installments' => $installmentCount,
                     'period_days' => $periodDays,
                     'total_amount' => $order->total,
+                    'advance_amount' => $advanceAmount,
+                    'advance_payment_id' => $advancePaymentId,
                     'user_id' => Auth::id(),
                 ]);
 
-                $baseAmount = floor($order->total / $installmentCount * 100) / 100;
-                $remainder = $order->total - ($baseAmount * ($installmentCount - 1));
+                $baseAmount = floor($installableAmount / $installmentCount * 100) / 100;
+                $remainder = $installableAmount - ($baseAmount * ($installmentCount - 1));
 
                 for ($i = 1; $i <= $installmentCount; $i++) {
                     InstallmentEntry::create([
@@ -145,7 +186,11 @@ class OrderController extends Controller
 
         return view($viewName, [
             'products' => Product::with(['category', 'unit'])->get(),
-            'customers' => Customer::ofAuth()->orderBy('name')->get(['id', 'name']),
+            'customers' => Customer::ofAuth()
+                ->when(! Auth::user()->can(PermissionEnum::READ_CUSTOMERS), fn ($q) => $q->where('category', '!=', 'b2b'))
+                ->when(! Auth::user()->can(PermissionEnum::READ_CLIENTS), fn ($q) => $q->where('category', '!=', 'b2c'))
+                ->orderBy('name')
+                ->get(['id', 'name']),
             'users' => User::query()->get(['id', 'name']),
             'order' => $order,
         ]);

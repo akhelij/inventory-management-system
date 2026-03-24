@@ -237,7 +237,7 @@
                     
                     @can(PermissionEnum::READ_CUSTOMERS)
                     <!-- Customers (B2B) -->
-                    <li class="nav-item {{ request('category') === 'b2b' || (request()->is('customers*') && request('category') !== 'b2c') ? 'active' : null }}">
+                    <li class="nav-item {{ request('category') === 'b2b' || (request()->is('customers*') && request('category') !== 'b2c' && !(isset($customer) && $customer->category?->value === 'b2c')) ? 'active' : null }}">
                         <a class="nav-link" href="{{ route('customers.index', ['category' => 'b2b']) }}">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fas fa-building"></i>
@@ -249,7 +249,7 @@
 
                     @can(PermissionEnum::READ_CLIENTS)
                     <!-- Clients (B2C) -->
-                    <li class="nav-item {{ request('category') === 'b2c' ? 'active' : null }}">
+                    <li class="nav-item {{ request('category') === 'b2c' || (isset($customer) && $customer->category?->value === 'b2c') ? 'active' : null }}">
                         <a class="nav-link" href="{{ route('customers.index', ['category' => 'b2c']) }}">
                             <span class="nav-link-icon d-md-none d-lg-inline-block">
                                 <i class="fas fa-address-book"></i>

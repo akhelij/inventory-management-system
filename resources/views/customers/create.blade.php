@@ -50,34 +50,7 @@
                         <input type="hidden" name="cin_photo" x-ref="cin_photo" value="">
                     @endif
                     <div class="row">
-                        @if (($category ?? 'b2b') !== 'b2c')
-                            <div class="col-lg-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h3 class="card-title">
-                                            {{ __('Customer Image') }}
-                                        </h3>
-
-                                        <img class="img-account-profile rounded-circle mb-2"
-                                             src="{{ asset('assets/img/demo/user-placeholder.svg') }}" alt=""
-                                             id="image-preview"/>
-
-                                        <div class="small font-italic text-muted mb-2">{{ __('JPG or PNG no larger than 2 MB') }}</div>
-
-                                        <input class="form-control @error('photo') is-invalid @enderror" type="file"
-                                               id="image" name="photo" accept="image/*" onchange="previewImage();">
-
-                                        @error('photo')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="{{ ($category ?? 'b2b') === 'b2c' ? 'col-lg-12' : 'col-lg-8' }}">
+                        <div class="col-lg-12">
                             <div class="card">
                                 <div class="card-body">
                                     <h3 class="card-title">
@@ -217,6 +190,3 @@
     </div>
 @endsection
 
-@pushonce('page-scripts')
-    <script src="{{ asset('assets/js/img-preview.js') }}"></script>
-@endpushonce

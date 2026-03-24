@@ -9,7 +9,7 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        $models = ['Users', 'Roles & Permissions', 'Products', 'Orders', 'Categories', 'Customers', 'RepairTickets'];
+        $models = ['Users', 'Roles & Permissions', 'Products', 'Orders', 'Categories', 'Customers', 'Clients', 'RepairTickets'];
 
         foreach ($models as $model) {
             Permission::insert([
