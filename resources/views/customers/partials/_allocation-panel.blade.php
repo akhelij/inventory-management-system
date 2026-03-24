@@ -160,6 +160,36 @@
         font-size: 0.8rem;
         margin-bottom: 1rem;
     }
+
+    /* Cheque preview popup on hover */
+    .cheque-preview-trigger {
+        display: inline-block;
+    }
+    .cheque-preview-popup {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1050;
+        background: #fff;
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        white-space: nowrap;
+    }
+    .cheque-preview-trigger:hover .cheque-preview-popup {
+        display: block;
+    }
+    .cheque-preview-popup::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: #fff;
+    }
 </style>
 
 @php
@@ -190,11 +220,13 @@
         'id' => $payment->id,
         'nature' => $payment->nature,
         'payment_type' => $payment->payment_type,
+        'bank' => $payment->bank,
         'date' => $payment->date,
         'echeance' => $payment->echeance,
         'amount' => $payment->amount,
         'cashed_in' => (bool) $payment->cashed_in,
         'reported' => (bool) $payment->reported,
+        'cheque_photo' => $payment->cheque_photo,
         'unallocated_amount' => $payment->unallocated_amount,
         'is_fully_allocated' => $payment->is_fully_allocated,
         'dragging' => false,
@@ -493,7 +525,25 @@
                                 :style="allocationEnabled && !payment.is_fully_allocated ? 'cursor: grab;' : ''">
                                 <td x-text="payment.date"></td>
                                 <td>
-                                    <span class="fw-bold" x-text="payment.nature"></span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-bold" x-text="payment.nature"></span>
+                                        <template x-if="payment.cheque_photo">
+                                            <span class="position-relative cheque-preview-trigger" style="cursor: pointer;">
+                                                <i class="fas fa-image text-primary"></i>
+                                                <div class="cheque-preview-popup">
+                                                    <img :src="'/storage/' + payment.cheque_photo" alt="Cheque" style="max-width: 300px; max-height: 200px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                                                    <template x-if="payment.bank">
+                                                        <div class="mt-1 text-center">
+                                                            <span class="badge bg-blue-lt" x-text="payment.bank"></span>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </span>
+                                        </template>
+                                        <template x-if="payment.bank && !payment.cheque_photo">
+                                            <span class="badge bg-blue-lt" x-text="payment.bank" style="font-size: 0.7rem;"></span>
+                                        </template>
+                                    </div>
                                     <template x-if="payment.amount > 0 && payment.unallocated_amount < payment.amount">
                                         <div class="mt-1">
                                             <div class="progress progress-sm" style="min-width: 80px;">

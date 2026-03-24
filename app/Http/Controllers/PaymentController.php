@@ -37,6 +37,7 @@ class PaymentController extends Controller
             'echeance' => 'required|date_format:d/m/Y',
             'amount' => 'required|numeric',
             'description' => 'nullable|string|max:1000',
+            'cheque_photo' => 'nullable|string|max:500',
             'order_id' => 'nullable|integer',
         ]);
 
@@ -52,12 +53,13 @@ class PaymentController extends Controller
                     'id' => $payment->id,
                     'nature' => $payment->nature,
                     'payment_type' => $payment->payment_type,
+                    'bank' => $payment->bank,
                     'date' => $payment->date,
                     'echeance' => $payment->echeance,
                     'amount' => (float) $payment->amount,
-                    'bank' => $payment->bank,
                     'cashed_in' => (bool) $payment->cashed_in,
                     'reported' => (bool) $payment->reported,
+                    'cheque_photo' => $payment->cheque_photo,
                     'unallocated_amount' => $payment->unallocated_amount,
                     'is_fully_allocated' => $payment->is_fully_allocated,
                     'dragging' => false,
