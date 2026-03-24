@@ -35,6 +35,10 @@ class CustomerTable extends Component
             ->search($this->search)
             ->get();
 
+        if (request()->input('only_out_of_limit')) {
+            $query = $query->where('is_out_of_limit', true);
+        }
+
         if (request()->input('only_missed_installments')) {
             $query = $query->where('has_missed_installments', true);
         }

@@ -54,6 +54,7 @@
                 </div>
             </div>
             <div class="ms-auto d-flex align-items-center gap-2">
+                <span class="text-secondary small fw-bold me-2">{{ __('Filters:') }}</span>
                 <div class="btn-group btn-group-sm" role="group">
                     <button type="button" class="btn {{ $customerType === null ? 'btn-primary' : 'btn-outline-primary' }}"
                         wire:click="setCustomerType(null)">{{ __('All') }}</button>
@@ -104,12 +105,6 @@
                     </a>
                 </th>
                 <th scope="col" class="align-middle text-center">
-                    <a wire:click.prevent="sortBy('payment_type')" href="#" role="button">
-                        {{ __('Payment') }}
-                        @include('inclues._sort-icon', ['field' => 'payment_type'])
-                    </a>
-                </th>
-                <th scope="col" class="align-middle text-center">
                     <a wire:click.prevent="sortBy('total')" href="#" role="button">
                         {{ __('Total') }}
                         @include('inclues._sort-icon', ['field' => 'total'])
@@ -147,9 +142,6 @@
                     </td>
                     <td class="align-middle text-center">
                         {{ $order->order_date->format('d-m-Y') }}
-                    </td>
-                    <td class="align-middle text-center">
-                        {{ $order->payment_type }}
                     </td>
                     <td class="align-middle text-center">
                         {{ Number::currency($order->total, 'MAD') }}

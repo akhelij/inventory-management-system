@@ -50,7 +50,6 @@
                         <th scope="col" class="text-center">{{ __('Invoice No.') }}</th>
                         <th scope="col" class="text-center">{{ __('Customer') }}</th>
                         <th scope="col" class="text-center">{{ __('Date') }}</th>
-                        <th scope="col" class="text-center">{{ __('Payment') }}</th>
                         <th scope="col" class="text-center">{{ __('Total') }}</th>
                         <th scope="col" class="text-center">{{ __('Status') }}</th>
                         <th scope="col" class="text-center">{{ __('Actions') }}</th>
@@ -65,7 +64,6 @@
                             <td class="text-center">{{ $order->invoice_no }}</td>
                             <td class="text-center">{{ $order->customer->name }}</td>
                             <td class="text-center">{{ $order->order_date->format('d-m-Y') }}</td>
-                            <td class="text-center">{{ $order->payment_type }}</td>
                             <td class="text-center">{{ Number::currency($order->total, 'MAD') }}</td>
                             <td class="text-center">
                                 <span class="badge bg-{{ $order->status_color }} text-white text-uppercase">

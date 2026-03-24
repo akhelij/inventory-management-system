@@ -28,7 +28,6 @@ class Order extends Model
         'vat',
         'total',
         'invoice_no',
-        'payment_type',
         'pay',
         'due',
         'user_id',
@@ -115,7 +114,6 @@ class Order extends Model
     {
         $query->where('invoice_no', 'like', "%{$value}%")
             ->orWhere('order_status', 'like', "%{$value}%")
-            ->orWhere('payment_type', 'like', "%{$value}%")
             ->orWhereRelation('user', 'name', 'like', "%{$value}%")
             ->orWhereRelation('customer', 'name', 'like', "%{$value}%");
     }

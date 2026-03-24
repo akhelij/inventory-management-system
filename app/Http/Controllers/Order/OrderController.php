@@ -69,7 +69,6 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
-                'payment_type' => $request->payment_type,
                 'pay' => 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
                 'order_status' => OrderStatus::PENDING,
@@ -107,15 +106,19 @@ class OrderController extends Controller
 
                 if ($advanceAmount > 0) {
                     $advanceType = $request->input('advance_type', 'HandCash');
+                    $advanceDate = $request->input('advance_date')
+                        ? Carbon::createFromFormat('d/m/Y', $request->input('advance_date'))->format('Y-m-d')
+                        : now()->format('Y-m-d');
                     $advanceData = [
                         'customer_id' => $order->customer_id,
-                        'date' => now()->format('Y-m-d'),
+                        'date' => $advanceDate,
                         'nature' => 'ADV-'.$order->invoice_no,
                         'payment_type' => $advanceType,
                         'echeance' => $advanceType === 'Cheque'
                             ? Carbon::createFromFormat('d/m/Y', $request->input('advance_echeance'))->format('Y-m-d')
-                            : now()->format('Y-m-d'),
+                            : $advanceDate,
                         'amount' => $advanceAmount,
+                        'description' => $request->input('advance_description'),
                     ];
 
                     if ($advanceType === 'Cheque') {
@@ -256,7 +259,6 @@ class OrderController extends Controller
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
             'purchase_date' => 'required|date',
-            'payment_type' => 'required|in:HandCash,Cheque,Exchange',
             'author_id' => 'nullable|exists:users,id',
             'tagged_user_id' => 'nullable|exists:users,id',
         ]);
@@ -274,7 +276,6 @@ class OrderController extends Controller
         $updateData = [
             'customer_id' => $validated['customer_id'],
             'purchase_date' => $validated['purchase_date'],
-            'payment_type' => $validated['payment_type'],
             'total_products' => $details->count(),
             'sub_total' => $total,
             'vat' => 0,

@@ -229,17 +229,27 @@
                                         </div>
                                         <div class="card-body py-2" x-show="showAdvance" x-cloak>
                                             <div class="row g-2">
-                                                <div class="col-6">
+                                                <div class="col-4">
                                                     <label class="small mb-1">{{ __('Advance Amount') }}</label>
                                                     <input type="number" name="advance_amount" class="form-control form-control-sm"
                                                            x-model="advanceAmount" step="0.01" min="0" placeholder="0.00">
                                                 </div>
-                                                <div class="col-6">
+                                                <div class="col-4">
                                                     <label class="small mb-1">{{ __('Type') }}</label>
                                                     <select name="advance_type" class="form-select form-select-sm" x-model="advanceType">
                                                         <option value="HandCash">{{ __('Cash') }}</option>
                                                         <option value="Cheque">{{ __('Cheque') }}</option>
                                                     </select>
+                                                </div>
+                                                <div class="col-4">
+                                                    <label class="small mb-1">{{ __('Date') }}</label>
+                                                    <input type="text" name="advance_date" class="form-control form-control-sm"
+                                                           value="{{ now()->format('d/m/Y') }}" placeholder="dd/mm/yyyy">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label class="small mb-1">{{ __('Description') }}</label>
+                                                    <textarea name="advance_description" class="form-control form-control-sm"
+                                                              rows="2" placeholder="{{ __('Optional description...') }}"></textarea>
                                                 </div>
                                             </div>
 
@@ -284,18 +294,6 @@
 
                             <div class="card-body d-flex flex-column flex-grow-1" style="overflow-y: auto;">
                                 <div class="row gx-3 mb-3">
-                                    <div class="col-md-4">
-                                        <label class="small mb-1" for="payment_type">
-                                            {{ __('Payment') }}
-                                        </label>
-
-                                        <select class="form-control @error('payment_type') is-invalid @enderror" id="payment_type" name="payment_type">
-                                            <option value="HandCash">Cash</option>
-                                            <option value="Cheque">Cheque</option>
-                                            <option value="Exchange">Lettre de change</option>
-                                        </select>
-                                    </div>
-
                                     <div class="col-md-4">
                                         <label for="purchase_date" class="small my-1">
                                             {{ __('Date') }}

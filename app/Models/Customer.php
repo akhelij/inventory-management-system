@@ -40,11 +40,17 @@ class Customer extends Model
     protected $appends = [
         'total_orders',
         'total_payments',
+        'is_out_of_limit',
         'has_missed_installments',
         'have_unpaid_checks',
     ];
 
     protected $with = ['user'];
+
+    public function getIsOutOfLimitAttribute(): bool
+    {
+        return $this->total_orders - $this->total_payments + $this->total_pending_payments > $this->limit;
+    }
 
     public function getHasMissedInstallmentsAttribute(): bool
     {

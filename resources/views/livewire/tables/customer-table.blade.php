@@ -19,7 +19,7 @@
             <div class="row mt-3">
                 <div class="col-12">
                     <div class="filter-status-badges">
-                        @if(request()->has('only_unpaid') || request()->has('only_missed_installments'))
+                        @if(request()->has('only_unpaid') || request()->has('only_missed_installments') || request()->has('only_out_of_limit'))
                             <div class="d-flex align-items-center">
                                 <div class="alert alert-info d-flex align-items-center p-3 mb-0 me-3">
                                     <i class="fas fa-filter me-2"></i>
@@ -28,6 +28,8 @@
                                             {{ __('Showing customers with unpaid checks') }}
                                         @elseif(request()->has('only_missed_installments'))
                                             {{ __('Showing clients with overdue installments') }}
+                                        @elseif(request()->has('only_out_of_limit'))
+                                            {{ __('Showing customers exceeding credit limit') }}
                                         @endif
                                     </span>
                                     <a href="{{ route('customers.index', ['category' => $category ?: null]) }}" class="ms-2 btn btn-sm btn-outline-info">
@@ -37,6 +39,20 @@
                             </div>
                         @else
                             <div class="d-flex flex-wrap gap-2">
+                                @if($category === 'b2b')
+                                <a href="{{ route('customers.index', ['category' => $category ?: null, 'only_out_of_limit' => 1]) }}" class="status-filter-card p-2 text-decoration-none">
+                                    <div class="d-flex align-items-center">
+                                        <div class="status-icon bg-danger p-2 rounded-circle me-2">
+                                            <i class="fas fa-exclamation-triangle text-white"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0">{{ __('Credit Limit Exceeded') }}</h6>
+                                            <small class="text-muted">{{ __('View customers over their credit threshold') }}</small>
+                                        </div>
+                                    </div>
+                                </a>
+                                @endif
+
                                 @if($category === 'b2c')
                                 <a href="{{ route('customers.index', ['category' => $category ?: null, 'only_missed_installments' => 1]) }}" class="status-filter-card p-2 text-decoration-none">
                                     <div class="d-flex align-items-center">
@@ -156,7 +172,12 @@
                         </td>
                         <td class="align-middle text-center">
                             {{ $customer->name }}
-                            @if($customer->has_missed_installments)
+                            @if($category === 'b2b' && $customer->is_out_of_limit)
+                                <span class="badge bg-danger ms-1" title="{{ __('Credit limit exceeded') }}">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </span>
+                            @endif
+                            @if($category === 'b2c' && $customer->has_missed_installments)
                                 <span class="badge bg-danger ms-1" title="{{ __('Missed installments') }}">
                                     <i class="fas fa-calendar-times"></i>
                                 </span>

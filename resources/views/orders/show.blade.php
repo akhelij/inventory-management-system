@@ -96,14 +96,6 @@
                                 disabled>
                         </div>
 
-                        <div class="col">
-                            <label for="payment_type" class="form-label required">
-                                {{ __('Payment Type') }}
-                            </label>
-
-                            <input type="text" id="payment_type" class="form-control" value="{{ $order->payment_type }}"
-                                disabled>
-                        </div>
                     </div>
 
                     <div class="table-responsive">

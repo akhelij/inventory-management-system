@@ -233,28 +233,6 @@
                                     />
                                 </div>
 
-                                <div class="col-md-4">
-                                    <label class="small mb-1" for="payment_type">
-                                        {{ __('Payment') }}
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <select class="form-control @error('payment_type') is-invalid @enderror"
-                                            id="payment_type" name="payment_type">
-                                        <option value="HandCash" @selected($order->payment_type == "HandCash")>
-                                            Cash
-                                        </option>
-                                        <option value="Cheque" @selected($order->payment_type == "Cheque")>Cheque
-                                        </option>
-                                        <option value="Exchange" @selected($order->payment_type == "Exchange")>Lettre de change
-                                        </option>
-                                    </select>
-
-                                    @error('payment_type')
-                                    <div class="invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
                                 
                                 @if(auth()->user()->hasRole('ADMIN'))
                                 <div class="col-md-4">
