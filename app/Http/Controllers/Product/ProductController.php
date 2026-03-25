@@ -74,7 +74,7 @@ class ProductController extends Controller
             'uuid' => Str::uuid(),
         ]);
 
-        return to_route('products.index')->with('success', 'Product has been created!');
+        return to_route('products.index')->with('success', __('Product has been created!'));
     }
 
     public function show(string $uuid): View
@@ -142,7 +142,7 @@ class ProductController extends Controller
             'product_image' => $image,
         ]));
 
-        return to_route('products.index')->with('success', 'Product has been updated!');
+        return to_route('products.index')->with('success', __('Product has been updated!'));
     }
 
     public function destroy(string $uuid): RedirectResponse
@@ -151,7 +151,7 @@ class ProductController extends Controller
 
         Product::where('uuid', $uuid)->firstOrFail()->delete();
 
-        return to_route('products.index')->with('success', 'Product has been deleted!');
+        return to_route('products.index')->with('success', __('Product has been deleted!'));
     }
 
     public function trashed(): View
@@ -169,7 +169,7 @@ class ProductController extends Controller
 
         Product::onlyTrashed()->where('uuid', $uuid)->firstOrFail()->restore();
 
-        return to_route('products.trashed')->with('success', 'Product has been restored!');
+        return to_route('products.trashed')->with('success', __('Product has been restored!'));
     }
 
     public function forceDelete(string $uuid): RedirectResponse
@@ -184,6 +184,6 @@ class ProductController extends Controller
 
         $product->forceDelete();
 
-        return to_route('products.trashed')->with('success', 'Product has been permanently deleted!');
+        return to_route('products.trashed')->with('success', __('Product has been permanently deleted!'));
     }
 }

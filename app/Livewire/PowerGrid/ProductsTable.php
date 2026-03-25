@@ -52,44 +52,44 @@ final class ProductsTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
+            Column::make(__('ID'), 'id')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center')
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Image', 'image')
+            Column::make(__('Image'), 'image')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center'),
 
-            Column::make('Name', 'name')
+            Column::make(__('Name'), 'name')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center')
                 ->searchable()
                 ->sortable(),
 
             Column::add()
-                ->title('Category')
+                ->title(__('Category'))
                 ->field('category_name')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center'),
 
-            Column::make('Quantity', 'quantity')
+            Column::make(__('Quantity'), 'quantity')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center')
                 ->sortable(),
 
-            Column::make('Unit', 'unit_name')
+            Column::make(__('Unit'), 'unit_name')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center'),
 
-            Column::make('Selling Price', 'selling_price')
+            Column::make(__('Selling Price'), 'selling_price')
                 ->headerAttribute('align-middle text-center')
                 ->bodyAttribute('align-middle text-center')
                 ->sortable()
                 ->searchable(),
 
-            Column::action('Action')
+            Column::action(__('Action'))
                 ->headerAttribute('align-middle text-center', styleAttr: 'width: 150px;')
                 ->bodyAttribute('align-middle text-center d-flex justify-content-around'),
         ];
@@ -105,7 +105,7 @@ final class ProductsTable extends PowerGridComponent
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))
                 ->class('btn btn-outline-info btn-icon')
-                ->tooltip('Show Product Details')
+                ->tooltip(__('Show Product Details'))
                 ->route('products.show', ['product' => $row])
                 ->method('get'),
 
@@ -113,12 +113,12 @@ final class ProductsTable extends PowerGridComponent
                 ->class('btn btn-outline-warning btn-icon')
                 ->route('products.edit', ['product' => $row])
                 ->method('get')
-                ->tooltip('Edit Product'),
+                ->tooltip(__('Edit Product')),
 
             Button::add('delete')
                 ->slot(file_get_contents('assets/svg/trash.svg'))
                 ->class('btn btn-outline-danger btn-icon')
-                ->tooltip('Delete Product')
+                ->tooltip(__('Delete Product'))
                 ->route('products.destroy', ['product' => $row])
                 ->method('delete'),
         ];

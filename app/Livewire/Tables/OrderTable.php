@@ -93,13 +93,13 @@ class OrderTable extends Component
             ]);
 
             $this->dispatch('orderStatusUpdated', [
-                'message' => 'Order status has been updated successfully!',
+                'message' => __('Order status has been updated successfully!'),
             ]);
 
             $this->reset(['showWarningModal', 'selectedOrder', 'newStatus', 'statusReason', 'isOverLimit']);
         } catch (\Exception $e) {
             $this->dispatch('orderStatusError', [
-                'message' => 'Error updating order status: '.$e->getMessage(),
+                'message' => __('Error updating order status: ').$e->getMessage(),
             ]);
         }
     }

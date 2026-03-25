@@ -2,7 +2,7 @@
     use App\Enums\PermissionEnum;
 @endphp
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ isRtl() ? 'rtl' : 'ltr' }}">
 
 <head>
     <meta charset="utf-8"/>
@@ -13,16 +13,25 @@
     <title>Alami Gestion</title>
 
     <!-- CSS files -->
+    @if(isRtl())
+    <link href="{{ asset('dist/css/tabler.rtl.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('dist/css/tabler-flags.rtl.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('dist/css/tabler-payments.rtl.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('dist/css/tabler-vendors.rtl.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('dist/css/demo.rtl.min.css') }}" rel="stylesheet"/>
+    @else
     <link href="{{ asset('dist/css/tabler.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('dist/css/tabler-flags.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('dist/css/tabler-payments.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('dist/css/tabler-vendors.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('dist/css/demo.min.css') }}" rel="stylesheet"/>
+    @endif
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <style>
         @import url('https://rsms.me/inter/inter.css');
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
 
         [x-cloak] { display: none !important; }
 
@@ -170,6 +179,26 @@
         
         [data-bs-theme="dark"] .input-icon-addon {
             color: #94a3b8;
+        }
+
+        /* RTL support */
+        [dir="rtl"] {
+            --tblr-font-sans-serif: 'IBM Plex Sans Arabic', 'Inter Var', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        [dir="rtl"] .navbar-vertical {
+            border-right: initial;
+            border-left: none;
+        }
+
+        [dir="rtl"] .navbar-vertical .navbar-brand span {
+            margin-left: 0;
+            margin-right: 8px;
+        }
+
+        [dir="rtl"] .navbar-vertical.navbar-dark .navbar-nav .nav-link-icon {
+            margin-right: 0;
+            margin-left: 12px;
         }
     </style>
 
@@ -414,15 +443,13 @@
                                 <i class="fas fa-globe"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
-                                @if(app()->getLocale() == 'en')
-                                    <a class="dropdown-item" href="{{ route('lang.switch', 'fr') }}">
-                                        <i class="flag flag-fr me-2"></i>Francais
-                                    </a>
-                                @else
-                                    <a class="dropdown-item" href="{{ route('lang.switch', 'en') }}">
-                                        <i class="flag flag-gb me-2"></i>English
-                                    </a>
-                                @endif
+                                @foreach(['en' => ['flag' => 'gb', 'label' => 'English'], 'fr' => ['flag' => 'fr', 'label' => 'Français'], 'ar' => ['flag' => 'sa', 'label' => 'العربية']] as $locale => $info)
+                                    @if(app()->getLocale() !== $locale)
+                                        <a class="dropdown-item" href="{{ route('lang.switch', $locale) }}">
+                                            <i class="flag flag-{{ $info['flag'] }} me-2"></i>{{ $info['label'] }}
+                                        </a>
+                                    @endif
+                                @endforeach
                             </div>
                         </div>
                     </div>

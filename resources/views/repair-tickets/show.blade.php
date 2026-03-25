@@ -422,7 +422,12 @@
         padding-left: 2rem;
         counter-increment: step;
     }
-    
+
+    [dir="rtl"] .steps-vertical .step-item {
+        padding-left: 0;
+        padding-right: 2rem;
+    }
+
     .steps-vertical .step-item:not(:last-child):before {
         content: "";
         position: absolute;
@@ -433,7 +438,13 @@
         background: var(--tblr-border-color);
         transform: translateX(-50%);
     }
-    
+
+    [dir="rtl"] .steps-vertical .step-item:not(:last-child):before {
+        left: auto;
+        right: 0.75rem;
+        transform: translateX(50%);
+    }
+
     .steps-vertical .step-item-marker {
         position: absolute;
         width: 1.5rem;
@@ -448,6 +459,11 @@
         font-weight: 600;
         z-index: 1;
     }
+
+    [dir="rtl"] .steps-vertical .step-item-marker {
+        left: auto;
+        right: 0;
+    }
     
     .steps-vertical .step-item-marker svg {
         width: 1rem;
@@ -458,10 +474,21 @@
     .steps-vertical .step-content {
         padding: 0 0 0 0.5rem;
     }
-    
+
+    [dir="rtl"] .steps-vertical .step-content {
+        padding: 0 0.5rem 0 0;
+    }
+
     .steps-vertical .step-details {
         border-left: 1px dashed var(--tblr-border-color);
         margin-left: 0.5rem;
+    }
+
+    [dir="rtl"] .steps-vertical .step-details {
+        border-left: none;
+        border-right: 1px dashed var(--tblr-border-color);
+        margin-left: 0;
+        margin-right: 0.5rem;
     }
     
     /* Status colors */

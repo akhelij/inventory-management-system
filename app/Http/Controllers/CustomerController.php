@@ -56,7 +56,7 @@ class CustomerController extends Controller
 
         Customer::create($data);
 
-        return to_route('customers.index', ['category' => $category])->with('success', 'New customer has been created!');
+        return to_route('customers.index', ['category' => $category])->with('success', __('New customer has been created!'));
     }
 
     public function show(string $uuid): View
@@ -110,7 +110,7 @@ class CustomerController extends Controller
 
         $customer->update($request->safe()->all());
 
-        return to_route('customers.index', ['category' => $category])->with('success', 'Customer has been updated!');
+        return to_route('customers.index', ['category' => $category])->with('success', __('Customer has been updated!'));
     }
 
     public function destroy(string $uuid): RedirectResponse
@@ -123,7 +123,7 @@ class CustomerController extends Controller
 
         $customer->delete();
 
-        return redirect()->back()->with('success', 'Customer has been deleted!');
+        return redirect()->back()->with('success', __('Customer has been deleted!'));
     }
 
     public function downloadPayments(Customer $customer): View

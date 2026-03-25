@@ -60,23 +60,23 @@ final class CustomersTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id')
+            Column::make(__('Id'), 'id')
                 ->headerAttribute('text-left')
                 ->bodyAttribute('text-left'),
 
-            Column::make('Name', 'name')
+            Column::make(__('Name'), 'name')
                 ->headerAttribute('text-left')
                 ->bodyAttribute('text-left')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Email', 'email')
+            Column::make(__('Email'), 'email')
                 ->headerAttribute('text-left')
                 ->bodyAttribute('text-left')
                 ->sortable()
                 ->searchable(),
 
-            Column::action('Action')
+            Column::action(__('Action'))
                 ->headerAttribute('align-middle text-center', styleAttr: 'width: 150px;')
                 ->bodyAttribute('align-middle text-center d-flex justify-content-around'),
         ];
@@ -92,7 +92,7 @@ final class CustomersTable extends PowerGridComponent
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))
                 ->class('btn btn-outline-info btn-icon w-100')
-                ->tooltip('Show Customer Details')
+                ->tooltip(__('Show Customer Details'))
                 ->route('customers.show', ['customer' => $row])
                 ->method('get'),
 
@@ -100,12 +100,12 @@ final class CustomersTable extends PowerGridComponent
                 ->class('btn btn-outline-warning btn-icon w-100')
                 ->route('customers.edit', ['customer' => $row])
                 ->method('get')
-                ->tooltip('Edit Customer'),
+                ->tooltip(__('Edit Customer')),
 
             Button::add('delete')
                 ->slot(file_get_contents('assets/svg/trash.svg'))
                 ->class('btn btn-outline-danger btn-icon w-100')
-                ->tooltip('Delete Customer')
+                ->tooltip(__('Delete Customer'))
                 ->route('customers.destroy', ['customer' => $row])
                 ->method('delete'),
         ];

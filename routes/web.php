@@ -128,7 +128,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('payment-schedules/{customer}/export', [PaymentScheduleController::class, 'export'])->name('payment-schedules.export');
 
     Route::get('lang/{lang}', function (string $lang) {
-        $supportedLocales = ['en', 'fr'];
+        $supportedLocales = ['en', 'fr', 'ar'];
         if (! in_array($lang, $supportedLocales)) {
             abort(400, 'Unsupported language');
         }

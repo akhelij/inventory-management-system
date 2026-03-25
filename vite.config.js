@@ -25,6 +25,12 @@ export default defineConfig({
                         'node_modules/@tabler/core/dist/css/tabler-vendors.min.css',
                         'node_modules/@tabler/core/dist/css/demo.min.css',
                         'node_modules/@tabler/core/dist/css/tabler-social.min.css',
+                        'node_modules/@tabler/core/dist/css/tabler.rtl.min.css',
+                        'node_modules/@tabler/core/dist/css/tabler-flags.rtl.min.css',
+                        'node_modules/@tabler/core/dist/css/tabler-payments.rtl.min.css',
+                        'node_modules/@tabler/core/dist/css/tabler-vendors.rtl.min.css',
+                        'node_modules/@tabler/core/dist/css/demo.rtl.min.css',
+                        'node_modules/@tabler/core/dist/css/tabler-social.rtl.min.css',
                     ],
                     dest: '../dist/css'
                 },

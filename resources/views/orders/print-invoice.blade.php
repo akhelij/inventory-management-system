@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ isRtl() ? 'rtl' : 'ltr' }}">
 <head>
     <title>Alami Gestion</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

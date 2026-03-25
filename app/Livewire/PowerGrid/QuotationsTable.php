@@ -56,29 +56,29 @@ final class QuotationsTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id'),
+            Column::make(__('Id'), 'id'),
 
-            Column::make('Reference', 'reference')
+            Column::make(__('Reference'), 'reference')
                 ->headerAttribute('align-middle text-center')
                 ->bodyAttribute('align-middle text-center')
                 ->searchable(),
 
-            Column::make('Date', 'date_formatted', 'date')
+            Column::make(__('Date'), 'date_formatted', 'date')
                 ->headerAttribute('align-middle text-center')
                 ->bodyAttribute('align-middle text-center')
                 ->sortable(),
 
-            Column::make('Customer name', 'customer_name')
+            Column::make(__('Customer name'), 'customer_name')
                 ->headerAttribute('align-middle text-center')
                 ->bodyAttribute('align-middle text-center')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Total amount', 'total_amount')
+            Column::make(__('Total amount'), 'total_amount')
                 ->headerAttribute('text-center align-middle')
                 ->bodyAttribute('text-center align-middle'),
 
-            Column::make('Status', 'status')
+            Column::make(__('Status'), 'status')
                 ->headerAttribute('text-center align-middle')
                 ->bodyAttribute('text-center align-middle')
                 ->contentClasses([
@@ -88,7 +88,7 @@ final class QuotationsTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::action('Action')
+            Column::action(__('Action'))
                 ->headerAttribute('text-center', styleAttr: 'width: 150px;')
                 ->bodyAttribute('text-center d-flex justify-content-around'),
         ];
@@ -104,7 +104,7 @@ final class QuotationsTable extends PowerGridComponent
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))
                 ->class('btn btn-outline-info btn-icon w-100')
-                ->tooltip('Show Quotation Details')
+                ->tooltip(__('Show Quotation Details'))
                 ->route('quotations.show', ['quotation' => $row])
                 ->method('get'),
 
@@ -112,12 +112,12 @@ final class QuotationsTable extends PowerGridComponent
                 ->class('btn btn-outline-warning btn-icon w-100')
                 ->route('quotations.edit', ['quotation' => $row])
                 ->method('get')
-                ->tooltip('Edit Quotation'),
+                ->tooltip(__('Edit Quotation')),
 
             Button::add('delete')
                 ->slot(file_get_contents('assets/svg/trash.svg'))
                 ->class('btn btn-outline-danger btn-icon w-100')
-                ->tooltip('Delete Quotation')
+                ->tooltip(__('Delete Quotation'))
                 ->route('quotations.destroy', ['quotation' => $row])
                 ->method('delete'),
         ];

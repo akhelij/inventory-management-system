@@ -48,21 +48,21 @@ final class OrderTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
+            Column::make(__('ID'), 'id')
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Name', 'name')
+            Column::make(__('Name'), 'name')
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Created at', 'created_at')
+            Column::make(__('Created at'), 'created_at')
                 ->hidden(),
 
             Column::make('Created at', 'created_at_formatted', 'created_at')
                 ->searchable(),
 
-            Column::action('Action'),
+            Column::action(__('Action')),
         ];
     }
 

@@ -57,30 +57,30 @@ final class UserTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id'),
+            Column::make(__('Id'), 'id'),
 
-            Column::make('Photo', 'photo')
+            Column::make(__('Photo'), 'photo')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Name', 'name')
+            Column::make(__('Name'), 'name')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Username', 'username')
+            Column::make(__('Username'), 'username')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Email', 'email')
+            Column::make(__('Email'), 'email')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Created at', 'created_at_formatted', 'created_at')
+            Column::make(__('Created at'), 'created_at_formatted', 'created_at')
                 ->headerAttribute('align-middle text-center')
                 ->bodyAttribute('align-middle text-center')
                 ->sortable(),
 
-            Column::action('Action')
+            Column::action(__('Action'))
                 ->headerAttribute('text-center', styleAttr: 'width: 150px;')
                 ->bodyAttribute('text-center d-flex justify-content-around'),
         ];
@@ -96,7 +96,7 @@ final class UserTable extends PowerGridComponent
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))
                 ->class('btn btn-outline-info btn-icon w-100')
-                ->tooltip('Show User Details')
+                ->tooltip(__('Show User Details'))
                 ->route('users.show', ['user' => $row])
                 ->method('get'),
 
@@ -104,12 +104,12 @@ final class UserTable extends PowerGridComponent
                 ->class('btn btn-outline-warning btn-icon w-100')
                 ->route('users.edit', ['user' => $row])
                 ->method('get')
-                ->tooltip('Edit User'),
+                ->tooltip(__('Edit User')),
 
             Button::add('delete')
                 ->slot(file_get_contents('assets/svg/trash.svg'))
                 ->class('btn btn-outline-danger btn-icon w-100')
-                ->tooltip('Delete User')
+                ->tooltip(__('Delete User'))
                 ->route('users.destroy', ['user' => $row])
                 ->method('delete'),
         ];

@@ -29,7 +29,7 @@ class WarehouseController extends Controller
 
         Warehouse::create($request->all());
 
-        return to_route('warehouses.index')->with('success', 'Warehouse has been created!');
+        return to_route('warehouses.index')->with('success', __('Warehouse has been created!'));
     }
 
     public function show(Warehouse $warehouse): View
@@ -54,13 +54,13 @@ class WarehouseController extends Controller
 
         $warehouse->update($request->all());
 
-        return to_route('warehouses.index')->with('success', 'Warehouse has been updated!');
+        return to_route('warehouses.index')->with('success', __('Warehouse has been updated!'));
     }
 
     public function destroy(Warehouse $warehouse): RedirectResponse
     {
         $warehouse->delete();
 
-        return to_route('warehouses.index')->with('success', 'Warehouse has been deleted!');
+        return to_route('warehouses.index')->with('success', __('Warehouse has been deleted!'));
     }
 }

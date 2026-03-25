@@ -38,7 +38,7 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name),
         ]);
 
-        return to_route('categories.index')->with('success', 'Category has been created!');
+        return to_route('categories.index')->with('success', __('Category has been created!'));
     }
 
     public function show(Category $category): View
@@ -68,7 +68,7 @@ class CategoryController extends Controller
             'slug' => Str::slug($request->name),
         ]);
 
-        return to_route('categories.index')->with('success', 'Category has been updated!');
+        return to_route('categories.index')->with('success', __('Category has been updated!'));
     }
 
     public function destroy(Category $category): RedirectResponse
@@ -77,6 +77,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return to_route('categories.index')->with('success', 'Category has been deleted!');
+        return to_route('categories.index')->with('success', __('Category has been deleted!'));
     }
 }

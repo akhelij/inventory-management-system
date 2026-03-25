@@ -31,7 +31,7 @@ class DriverController extends Controller
 
         Driver::create($request->all());
 
-        return to_route('drivers.index')->with('success', 'Driver has been created!');
+        return to_route('drivers.index')->with('success', __('Driver has been created!'));
     }
 
     public function edit(Driver $driver): View
@@ -51,13 +51,13 @@ class DriverController extends Controller
 
         $driver->update($request->all());
 
-        return to_route('drivers.index')->with('success', 'Driver has been updated!');
+        return to_route('drivers.index')->with('success', __('Driver has been updated!'));
     }
 
     public function destroy(Driver $driver): RedirectResponse
     {
         $driver->delete();
 
-        return to_route('drivers.index')->with('success', 'Driver has been deleted!');
+        return to_route('drivers.index')->with('success', __('Driver has been deleted!'));
     }
 }

@@ -18,9 +18,9 @@
             </div>
             <div class="mb-4">
                 <label for="password" class="visually-hidden">
-                    Password
+                    {{ __('Password') }}
                 </label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Password&hellip;">
+                <input type="password" name="password" id="password" class="form-control" placeholder="{{ __('Password') }}&hellip;">
             </div>
             <div>
                 <button type="submit" class="btn btn-primary w-100">

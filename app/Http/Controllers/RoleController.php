@@ -33,7 +33,7 @@ class RoleController extends Controller
             'guard_name' => 'web',
         ]);
 
-        return to_route('roles.index')->with('success', 'Role created successfully');
+        return to_route('roles.index')->with('success', __('Role created successfully'));
     }
 
     public function show(Role $role): View
@@ -62,13 +62,13 @@ class RoleController extends Controller
         $role->update(['name' => $request->name]);
         $role->syncPermissions(Permission::whereIn('id', $request->permissions)->get());
 
-        return to_route('roles.index')->with('success', 'Role updated successfully');
+        return to_route('roles.index')->with('success', __('Role updated successfully'));
     }
 
     public function destroy(Role $role): RedirectResponse
     {
         $role->delete();
 
-        return to_route('roles.index')->with('success', 'Role deleted successfully');
+        return to_route('roles.index')->with('success', __('Role deleted successfully'));
     }
 }

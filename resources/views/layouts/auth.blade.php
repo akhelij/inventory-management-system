@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ isRtl() ? 'rtl' : 'ltr' }}">
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
@@ -32,15 +32,27 @@
         <meta property="og:url" content="https://tabler.io/demo/static/og.png">
         <meta property="og:description" content="Tabler comes with tons of well-designed components and features. Start your adventure with Tabler and make your dashboard great again. For free!">
         <!-- CSS files -->
+        @if(isRtl())
+        <link href="{{ asset('dist/css/tabler.rtl.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('dist/css/tabler-flags.rtl.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('dist/css/tabler-payments.rtl.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('dist/css/tabler-vendors.rtl.min.css') }}" rel="stylesheet"/>
+        <link href="{{ asset('dist/css/demo.rtl.min.css') }}" rel="stylesheet"/>
+        @else
         <link href="{{ asset('dist/css/tabler.min.css') }}" rel="stylesheet"/>
         <link href="{{ asset('dist/css/tabler-flags.min.css') }}" rel="stylesheet"/>
         <link href="{{ asset('dist/css/tabler-payments.min.css') }}" rel="stylesheet"/>
         <link href="{{ asset('dist/css/tabler-vendors.min.css') }}" rel="stylesheet"/>
         <link href="{{ asset('dist/css/demo.min.css') }}" rel="stylesheet"/>
+        @endif
         <style>
             @import url('https://rsms.me/inter/inter.css');
+            @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap');
             :root {
                 --tblr-font-sans-serif: 'Inter Var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+            }
+            [dir="rtl"] {
+                --tblr-font-sans-serif: 'IBM Plex Sans Arabic', 'Inter Var', -apple-system, BlinkMacSystemFont, sans-serif;
             }
             body {
                 font-feature-settings: "cv03", "cv04", "cv11";
@@ -64,7 +76,7 @@
 
                 @if (session('status'))
                     <div class="alert alert-info alert-dismissible" role="alert">
-                        <h3 class="mb-1">Success</h3>
+                        <h3 class="mb-1">{{ __('Success') }}</h3>
                         <p>{{ session('status') }}</p>
 
                         <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>

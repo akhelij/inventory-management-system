@@ -62,7 +62,7 @@ class OrderController extends Controller
                 : [];
 
             if (empty($cartData)) {
-                return redirect()->back()->with('error', 'Cannot create an order with an empty cart');
+                return redirect()->back()->with('error', __('Cannot create an order with an empty cart'));
             }
 
             $subTotal = collect($cartData)->sum('subtotal');
@@ -170,7 +170,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return to_route('orders.index')->with('success', 'Order has been created!');
+            return to_route('orders.index')->with('success', __('Order has been created!'));
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -204,7 +204,7 @@ class OrderController extends Controller
         abort_unless(Auth::user()->can(PermissionEnum::UPDATE_ORDERS), 403);
 
         if (! $request->has('product_id') || empty($request->product_id)) {
-            return redirect()->back()->with('error', 'Cannot update an order with no items');
+            return redirect()->back()->with('error', __('Cannot update an order with no items'));
         }
 
         $order->details()->delete();
@@ -220,7 +220,7 @@ class OrderController extends Controller
             ]);
         }
 
-        return to_route('orders.index')->with('success', 'Order items has been updated!');
+        return to_route('orders.index')->with('success', __('Order items has been updated!'));
     }
 
     public function updateStatus(Order $order, int $order_status, Request $request): RedirectResponse
@@ -239,7 +239,7 @@ class OrderController extends Controller
 
             if (! $stockCheck['can_approve']) {
                 return redirect()->back()
-                    ->with('error', 'Cannot approve order due to insufficient stock: '.implode(', ', $stockCheck['issues']));
+                    ->with('error', __('Cannot approve order due to insufficient stock: ').implode(', ', $stockCheck['issues']));
             }
         }
 
@@ -252,10 +252,10 @@ class OrderController extends Controller
             });
         } catch (\RuntimeException $e) {
             return redirect()->back()
-                ->with('error', 'Failed to update order status: '.$e->getMessage());
+                ->with('error', __('Failed to update order status: ').$e->getMessage());
         }
 
-        return to_route('orders.index')->with('success', 'Order status has been updated!');
+        return to_route('orders.index')->with('success', __('Order status has been updated!'));
     }
 
     public function update(Request $request, Order $order): RedirectResponse
@@ -273,7 +273,7 @@ class OrderController extends Controller
         $details = OrderDetails::where('order_id', $order->id)->get();
 
         if ($details->isEmpty()) {
-            return redirect()->back()->with('error', 'Cannot update an order with no items');
+            return redirect()->back()->with('error', __('Cannot update an order with no items'));
         }
 
         $total = $details->sum('total');
@@ -301,7 +301,7 @@ class OrderController extends Controller
 
         $order->update($updateData);
 
-        return to_route('orders.index')->with('success', 'Order has been updated successfully!');
+        return to_route('orders.index')->with('success', __('Order has been updated successfully!'));
     }
 
     public function destroy(string $uuid): RedirectResponse
@@ -321,7 +321,7 @@ class OrderController extends Controller
 
             DB::commit();
 
-            return to_route('orders.index')->with('success', 'Order has been deleted!');
+            return to_route('orders.index')->with('success', __('Order has been deleted!'));
         } catch (\Exception $e) {
             DB::rollBack();
 

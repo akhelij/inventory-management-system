@@ -41,7 +41,7 @@ class UnitController extends Controller
             'short_code' => $request->short_code,
         ]);
 
-        return to_route('units.index')->with('success', 'Unit has been created!');
+        return to_route('units.index')->with('success', __('Unit has been created!'));
     }
 
     public function edit(Unit $unit): View
@@ -61,13 +61,13 @@ class UnitController extends Controller
             'short_code' => $request->short_code,
         ]);
 
-        return to_route('units.index')->with('success', 'Unit has been updated!');
+        return to_route('units.index')->with('success', __('Unit has been updated!'));
     }
 
     public function destroy(Unit $unit): RedirectResponse
     {
         $unit->delete();
 
-        return to_route('units.index')->with('success', 'Unit has been deleted!');
+        return to_route('units.index')->with('success', __('Unit has been deleted!'));
     }
 }

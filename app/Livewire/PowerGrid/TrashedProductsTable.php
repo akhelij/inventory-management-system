@@ -50,44 +50,44 @@ final class TrashedProductsTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
+            Column::make(__('ID'), 'id')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center')
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Name', 'name')
+            Column::make(__('Name'), 'name')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center')
                 ->searchable()
                 ->sortable(),
 
             Column::add()
-                ->title('Category')
+                ->title(__('Category'))
                 ->field('category_name')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center'),
 
-            Column::make('Quantity', 'quantity')
+            Column::make(__('Quantity'), 'quantity')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center')
                 ->sortable(),
 
-            Column::make('Unit', 'unit_name')
+            Column::make(__('Unit'), 'unit_name')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center'),
 
-            Column::make('Selling Price', 'selling_price')
+            Column::make(__('Selling Price'), 'selling_price')
                 ->headerAttribute('align-middle text-center')
                 ->bodyAttribute('align-middle text-center')
                 ->sortable(),
 
-            Column::make('Deleted At', 'deleted_at_formatted')
+            Column::make(__('Deleted At'), 'deleted_at_formatted')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center')
                 ->sortable(),
 
-            Column::action('Action')
+            Column::action(__('Action'))
                 ->headerAttribute('align-middle text-center', styleAttr: 'width: 200px;')
                 ->bodyAttribute('align-middle text-center d-flex justify-content-around'),
         ];
@@ -103,16 +103,16 @@ final class TrashedProductsTable extends PowerGridComponent
         return [
             Button::make('restore', '<i class="fas fa-undo"></i>')
                 ->class('btn btn-outline-success btn-sm')
-                ->tooltip('Restore Product')
+                ->tooltip(__('Restore Product'))
                 ->route('products.restore', ['product' => $row->uuid])
                 ->method('patch'),
 
             Button::make('force-delete', '<i class="fas fa-trash-alt"></i>')
                 ->class('btn btn-outline-danger btn-sm')
-                ->tooltip('Permanently Delete Product')
+                ->tooltip(__('Permanently Delete Product'))
                 ->route('products.force-delete', ['product' => $row->uuid])
                 ->method('delete')
-                ->confirm('Are you sure you want to permanently delete this product? This action cannot be undone.'),
+                ->confirm(__('Are you sure you want to permanently delete this product? This action cannot be undone.')),
         ];
     }
 }

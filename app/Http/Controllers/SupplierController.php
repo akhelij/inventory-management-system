@@ -44,7 +44,7 @@ class SupplierController extends Controller
             'address' => $request->address,
         ]);
 
-        return to_route('suppliers.index')->with('success', 'New supplier has been created!');
+        return to_route('suppliers.index')->with('success', __('New supplier has been created!'));
     }
 
     public function show(string $uuid): View
@@ -89,7 +89,7 @@ class SupplierController extends Controller
             'address' => $request->address,
         ]);
 
-        return to_route('suppliers.index')->with('success', 'Supplier has been updated!');
+        return to_route('suppliers.index')->with('success', __('Supplier has been updated!'));
     }
 
     public function destroy(string $uuid): RedirectResponse
@@ -102,6 +102,6 @@ class SupplierController extends Controller
 
         $supplier->delete();
 
-        return to_route('suppliers.index')->with('success', 'Supplier has been deleted!');
+        return to_route('suppliers.index')->with('success', __('Supplier has been deleted!'));
     }
 }

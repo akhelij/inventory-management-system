@@ -95,7 +95,7 @@ class PurchaseController extends Controller
             }
         }
 
-        return to_route('purchases.index')->with('success', 'Purchase has been created!');
+        return to_route('purchases.index')->with('success', __('Purchase has been created!'));
     }
 
     public function update(string $uuid, Request $request): RedirectResponse
@@ -113,14 +113,14 @@ class PurchaseController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
-        return to_route('purchases.index')->with('success', 'Purchase has been approved!');
+        return to_route('purchases.index')->with('success', __('Purchase has been approved!'));
     }
 
     public function destroy(string $uuid): RedirectResponse
     {
         Purchase::where('uuid', $uuid)->firstOrFail()->delete();
 
-        return to_route('purchases.index')->with('success', 'Purchase has been deleted!');
+        return to_route('purchases.index')->with('success', __('Purchase has been deleted!'));
     }
 
     public function dailyPurchaseReport(): View

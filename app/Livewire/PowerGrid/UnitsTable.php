@@ -51,34 +51,34 @@ final class UnitsTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('Id', 'id')
+            Column::make(__('Id'), 'id')
                 ->headerAttribute('align-middle text-left')
                 ->bodyAttribute('align-middle text-left'),
 
-            Column::make('Name', 'name')
+            Column::make(__('Name'), 'name')
                 ->headerAttribute('align-middle text-left')
                 ->bodyAttribute('align-middle text-left')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Slug', 'slug')
+            Column::make(__('Slug'), 'slug')
                 ->headerAttribute('align-middle text-left')
                 ->bodyAttribute('align-middle text-left')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Short code', 'short_code')
+            Column::make(__('Short code'), 'short_code')
                 ->headerAttribute('align-middle text-center')
                 ->bodyAttribute('align-middle text-center')
                 ->sortable()
                 ->searchable(),
 
-            Column::make('Created at', 'created_at_formatted', 'created_at')
+            Column::make(__('Created at'), 'created_at_formatted', 'created_at')
                 ->headerAttribute('align-middle text-center')
                 ->bodyAttribute('align-middle text-center')
                 ->sortable(),
 
-            Column::action('Action')
+            Column::action(__('Action'))
                 ->headerAttribute('text-center', styleAttr: 'width: 150px;')
                 ->bodyAttribute('text-center d-flex justify-content-around'),
         ];
@@ -96,20 +96,20 @@ final class UnitsTable extends PowerGridComponent
                 ->class('btn btn-outline-info btn-icon w-100')
                 ->route('units.show', ['unit' => $row])
                 ->method('get')
-                ->tooltip('Show Unit Details'),
+                ->tooltip(__('Show Unit Details')),
 
             Button::make('edit', file_get_contents('assets/svg/edit.svg'))
                 ->class('btn btn-outline-warning btn-icon w-100')
                 ->route('units.edit', ['unit' => $row])
                 ->method('get')
-                ->tooltip('Edit Unit'),
+                ->tooltip(__('Edit Unit')),
 
             Button::add('delete')
                 ->slot(file_get_contents('assets/svg/trash.svg'))
                 ->class('btn btn-outline-danger btn-icon w-100')
                 ->route('units.destroy', ['unit' => $row])
                 ->method('delete')
-                ->tooltip('Delete Unit'),
+                ->tooltip(__('Delete Unit')),
         ];
     }
 }

@@ -52,19 +52,19 @@ final class SuppliersTable extends PowerGridComponent
     public function columns(): array
     {
         return [
-            Column::make('ID', 'id')
+            Column::make(__('ID'), 'id')
                 ->headerAttribute('text-left')
                 ->bodyAttribute('text-left')
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Name', 'name')
+            Column::make(__('Name'), 'name')
                 ->headerAttribute('text-left')
                 ->bodyAttribute('text-left')
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Created at', 'created_at')
+            Column::make(__('Created at'), 'created_at')
                 ->headerAttribute('text-center')
                 ->bodyAttribute('text-center')
                 ->hidden(),
@@ -74,7 +74,7 @@ final class SuppliersTable extends PowerGridComponent
                 ->bodyAttribute('text-center')
                 ->searchable(),
 
-            Column::action('Action')
+            Column::action(__('Action'))
                 ->headerAttribute('text-center', styleAttr: 'width: 150px;')
                 ->bodyAttribute('text-center d-flex justify-content-around'),
         ];
@@ -90,7 +90,7 @@ final class SuppliersTable extends PowerGridComponent
         return [
             Button::make('show', file_get_contents('assets/svg/eye.svg'))
                 ->class('btn btn-outline-info btn-icon w-100')
-                ->tooltip('Show Supplier Details')
+                ->tooltip(__('Show Supplier Details'))
                 ->route('suppliers.show', ['supplier' => $row])
                 ->method('get'),
 
@@ -98,12 +98,12 @@ final class SuppliersTable extends PowerGridComponent
                 ->class('btn btn-outline-warning btn-icon w-100')
                 ->route('suppliers.edit', ['supplier' => $row])
                 ->method('get')
-                ->tooltip('Edit Supplier'),
+                ->tooltip(__('Edit Supplier')),
 
             Button::add('delete')
                 ->slot(file_get_contents('assets/svg/trash.svg'))
                 ->class('btn btn-outline-danger btn-icon w-100')
-                ->tooltip('Delete Supplier')
+                ->tooltip(__('Delete Supplier'))
                 ->route('suppliers.destroy', ['supplier' => $row])
                 ->method('delete'),
         ];

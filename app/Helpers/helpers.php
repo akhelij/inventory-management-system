@@ -46,6 +46,13 @@ if (! function_exists('amount_in_french_words')) {
     }
 }
 
+if (! function_exists('isRtl')) {
+    function isRtl(): bool
+    {
+        return in_array(app()->getLocale(), ['ar', 'he', 'fa']);
+    }
+}
+
 if (! function_exists('array_merge_numeric_values')) {
     function array_merge_numeric_values(array ...$arrays): array
     {

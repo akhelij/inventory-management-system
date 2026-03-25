@@ -4,13 +4,13 @@
 <div class="card card-md">
     <div class="card-body">
         <h2 class="h2 text-center mb-4">
-            Login to your account
+            {{ __('Login to your account') }}
         </h2>
         <form action="{{ route('login') }}" method="POST" autocomplete="off">
             @csrf
             <div class="mb-3">
                 <label for="email" class="form-label">
-                    Email address
+                    {{ __('Email address') }}
                 </label>
                 <input type="email"
                        name="email"
@@ -30,7 +30,7 @@
 
             <div class="mb-2">
                 <label for="password" class="form-label">
-                    Password
+                    {{ __('Password') }}
                 </label>
 
                 <div class="input-group input-group-flat">
@@ -38,7 +38,7 @@
                            name="password"
                            id="password"
                            class="form-control @error('password') is-invalid @enderror"
-                           placeholder="Your password"
+                           placeholder="{{ __('Your password') }}"
                            autocomplete="off"
                     >
 
@@ -53,25 +53,25 @@
             <div class="mb-2">
                 <label for="remember" class="form-check">
                     <input type="checkbox" id="remember" name="remember" class="form-check-input"/>
-                    <span class="form-check-label">Remember me on this device</span>
+                    <span class="form-check-label">{{ __('Remember me on this device') }}</span>
                 </label>
             </div>
 
             <div class="form-footer">
                 <button type="submit" class="btn btn-primary w-100">
-                    Sign in
+                    {{ __('Sign in') }}
                 </button>
             </div>
         </form>
     </div>
 </div>
 <div class="text-center text-secondary mt-3">
-    Don't have account yet? <a href="{{ route('register') }}" tabindex="-1">
-        Sign up
+    {{ __("Don't have account yet?") }} <a href="{{ route('register') }}" tabindex="-1">
+        {{ __('Sign up') }}
     </a>
 
     <span class="form-label-description">
-        <a href="{{ route('password.request') }}">I forgot password</a>
+        <a href="{{ route('password.request') }}">{{ __('I forgot password') }}</a>
     </span>
 </div>
 @endsection

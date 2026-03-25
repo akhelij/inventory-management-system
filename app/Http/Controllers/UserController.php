@@ -55,7 +55,7 @@ class UserController extends Controller
             $user->assignRole(Role::find($request->role_id)->name);
         }
 
-        return to_route('users.index')->with('success', 'New User has been created!');
+        return to_route('users.index')->with('success', __('New User has been created!'));
     }
 
     public function show(User $user): View
@@ -102,7 +102,7 @@ class UserController extends Controller
             $user->assignRole(Role::find($request->role_id)->name);
         }
 
-        return to_route('users.index')->with('success', 'User has been updated!');
+        return to_route('users.index')->with('success', __('User has been updated!'));
     }
 
     public function updatePassword(Request $request, string $username): RedirectResponse
@@ -118,7 +118,7 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        return to_route('users.index')->with('success', 'User has been updated!');
+        return to_route('users.index')->with('success', __('User has been updated!'));
     }
 
     public function destroy(User $user): RedirectResponse
@@ -131,7 +131,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return to_route('users.index')->with('success', 'User has been deleted!');
+        return to_route('users.index')->with('success', __('User has been deleted!'));
     }
 
     public function activityLogs(): View

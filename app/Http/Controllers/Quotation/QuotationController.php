@@ -73,7 +73,7 @@ class QuotationController extends Controller
             Cart::instance('quotation')->destroy();
         });
 
-        return to_route('quotations.index')->with('success', 'Quotation Created!');
+        return to_route('quotations.index')->with('success', __('Quotation Created!'));
     }
 
     public function show(string $uuid): View
@@ -99,6 +99,6 @@ class QuotationController extends Controller
 
         $quotation->update(['status' => 1]);
 
-        return to_route('quotations.index')->with('success', 'Quotation Completed!');
+        return to_route('quotations.index')->with('success', __('Quotation Completed!'));
     }
 }
