@@ -174,13 +174,13 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
-                                <div class="subheader">Sales</div>
+                                <div class="subheader">{{ __('Sales') }}</div>
                                 <div class="ms-auto lh-1">
                                     <div class="dropdown">
-                                        <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Last 30 days</a>
+                                        <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Last 30 days') }}</a>
                                         <div class="dropdown-menu dropdown-menu-end">
-{{--                                            <a class="dropdown-item active" href="#">Last 30 days</a>--}}
-                                            <a class="dropdown-item active" href="#">Last 30 days</a>
+{{--                                            <a class="dropdown-item active" href="#">{{ __('Last 30 days') }}</a>--}}
+                                            <a class="dropdown-item active" href="#">{{ __('Last 30 days') }}</a>
 {{--                                            <a class="dropdown-item" href="#">Last 3 months</a>--}}
                                         </div>
                                     </div>
@@ -188,7 +188,7 @@
                             </div>
                             <div class="h1 mb-3">{{$sales_growth_percentage}}%</div>
                             <div class="d-flex mb-2">
-                                <div>Conversion rate</div>
+                                <div>{{ __('Conversion rate') }}</div>
                                 <div class="ms-auto">
                                 <span class="text-green d-inline-flex align-items-center lh-1">
                                   {{$conversion_rate}}% <!-- Download SVG icon from http://tabler-icons.io/i/trending-up -->
@@ -208,12 +208,12 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
-                                <div class="subheader">Revenue</div>
+                                <div class="subheader">{{ __('Revenue') }}</div>
                                 <div class="ms-auto lh-1">
                                     <div class="dropdown">
-                                        <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Last 30 days</a>
+                                        <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Last 30 days') }}</a>
                                         <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item active" href="#">Last 30 days</a>
+                                            <a class="dropdown-item active" href="#">{{ __('Last 30 days') }}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -235,12 +235,12 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
-                                <div class="subheader">New clients</div>
+                                <div class="subheader">{{ __('New clients') }}</div>
                                 <div class="ms-auto lh-1">
                                     <div class="dropdown">
-                                        <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Last 30 days</a>
+                                        <a class="dropdown-toggle text-muted" href="#" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ __('Last 30 days') }}</a>
                                         <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item active" href="#">Last 30 days</a>
+                                            <a class="dropdown-item active" href="#">{{ __('Last 30 days') }}</a>
                                         </div>
                                     </div>
                                 </div>

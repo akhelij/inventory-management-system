@@ -94,7 +94,7 @@
                             <x-button.show class="btn-icon" route="{{ route('categories.show', $category) }}" />
                             <x-button.edit class="btn-icon" route="{{ route('categories.edit', $category) }}" />
                             <x-button.delete class="btn-icon" route="{{ route('categories.destroy', $category) }}"
-                                onclick="return confirm('are you sure!')" />
+                                onclick="return confirm('{{ __('Are you sure?') }}')" />
                         </td>
                     </tr>
                 @empty

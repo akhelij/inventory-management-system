@@ -66,14 +66,14 @@
                                 <table class="table table-bordered table-striped align-middle">
                                     <thead class="thead-light">
                                         <tr>
-                                            <th scope="col" class="align-middle text-center">No.</th>
-                                            <th scope="col" class="align-middle text-center">Photo</th>
-                                            <th scope="col" class="align-middle text-center">Product Name</th>
-                                            <th scope="col" class="align-middle text-center">Product Code</th>
-                                            <th scope="col" class="align-middle text-center">Current Stock</th>
-                                            <th scope="col" class="align-middle text-center">Quantity</th>
-                                            <th scope="col" class="align-middle text-center">Price</th>
-                                            <th scope="col" class="align-middle text-center">Total</th>
+                                            <th scope="col" class="align-middle text-center">{{ __('No.') }}</th>
+                                            <th scope="col" class="align-middle text-center">{{ __('Photo') }}</th>
+                                            <th scope="col" class="align-middle text-center">{{ __('Product Name') }}</th>
+                                            <th scope="col" class="align-middle text-center">{{ __('Product Code') }}</th>
+                                            <th scope="col" class="align-middle text-center">{{ __('Current Stock') }}</th>
+                                            <th scope="col" class="align-middle text-center">{{ __('Quantity') }}</th>
+                                            <th scope="col" class="align-middle text-center">{{ __('Price') }}</th>
+                                            <th scope="col" class="align-middle text-center">{{ __('Total') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -115,7 +115,7 @@
                                         {{-- created by --}}
                                         <tr>
                                             <td class="align-middle text-end" colspan="7">
-                                                Created By
+                                                {{ __('Created By') }}
                                             </td>
                                             <td class="align-middle text-center">
                                                 {{ $quotation->user->name }}
@@ -123,7 +123,7 @@
                                         </tr>
                                         <tr>
                                             <td class="align-middle text-end" colspan="7">
-                                                Total
+                                                {{ __('Total') }}
                                             </td>
                                             <td class="align-middle text-center">
                                                 {{ number_format($quotation->total_amount, 2) }}
@@ -132,7 +132,7 @@
 
                                         <tr>
                                             <td class="align-middle text-end" colspan="7">
-                                                Tax
+                                                {{ __('Tax') }}
                                             </td>
                                             <td class="align-middle text-center">
                                                 {{ number_format($quotation->tax_amount, 2) }}
@@ -141,7 +141,7 @@
 
                                         <tr>
                                             <td class="align-middle text-end" colspan="7">
-                                                Shipping
+                                                {{ __('Shipping') }}
                                             </td>
                                             <td class="align-middle text-center">
                                                 {{ number_format($quotation->shipping_amount, 2) }}
@@ -150,7 +150,7 @@
 
                                         <tr>
                                             <td class="align-middle text-end" colspan="7">
-                                                Discount
+                                                {{ __('Discount') }}
                                             </td>
                                             <td class="align-middle text-center">
                                                 {{ number_format($quotation->discount_amount, 2) }}
@@ -159,16 +159,16 @@
 
                                         <tr>
                                             <td class="align-middle text-end" colspan="7">
-                                                Status
+                                                {{ __('Status') }}
                                             </td>
                                             <td class="align-middle text-center">
                                                 @if ($quotation->status->value == 1)
                                                     <span class="badge bg-success-lt">
-                                                        Completed
+                                                        {{ __('Completed') }}
                                                     </span>
                                                 @else
                                                     <span class="badge bg-danger-lt">
-                                                        Pending
+                                                        {{ __('Pending') }}
                                                     </span>
                                                 @endif
                                             </td>
@@ -186,7 +186,7 @@
                                     @method('PUT')
                                     <button type="submit" class="btn btn-success">
                                         <i class="bi bi-check-circle"></i>
-                                        Complete Quotation
+                                        {{ __('Complete Quotation') }}
                                     </button>
                                 </form>
                             </div>

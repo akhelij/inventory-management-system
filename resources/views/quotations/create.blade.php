@@ -35,7 +35,7 @@
                 <div class="col">
                     <div class="card mb-4">
                         <div class="card-header">
-                            Products
+                            {{ __('Products') }}
                         </div>
                         <div class="card-body">
                             <livewire:search-product/>
@@ -53,7 +53,7 @@
                                 <div class="row gx-3 mb-3">
                                     <div class="col">
                                         <label class="small mb-1" for="date">
-                                            Date
+                                            {{ __('Date') }}
                                             <span class="text-danger">*</span>
                                         </label>
 
@@ -84,7 +84,7 @@
 
                                     <div class="col">
                                         <label for="status" class="small mb-1">
-                                            Status
+                                            {{ __('Status') }}
                                             <span class="text-danger">*</span>
                                         </label>
 

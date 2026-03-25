@@ -208,7 +208,7 @@
                         <td class="align-middle text-center">
                             <x-button.show class="btn-icon" route="{{ route('customers.show', $customer->uuid) }}"/>
                             <x-button.edit class="btn-icon" route="{{ route('customers.edit', $customer->uuid) }}"/>
-                            <x-button.delete class="btn-icon" route="{{ route('customers.destroy', $customer->uuid) }}" onclick="return confirm('are you sure!')"/>
+                            <x-button.delete class="btn-icon" route="{{ route('customers.destroy', $customer->uuid) }}" onclick="return confirm('{{ __('Are you sure?') }}')"/>
                         </td>
                     </tr>
                 @empty

@@ -100,7 +100,7 @@
                                                     </button>
                                                 </form>
                                                 <div class="text-muted small mt-1">
-                                                    {{ $photo->photo_type ? ucfirst($photo->photo_type) : 'Product' }} photo
+                                                    {{ $photo->photo_type ? ucfirst($photo->photo_type) : __('Product') }} {{ __('photo') }}
                                                 </div>
                                             </div>
                                         </div>

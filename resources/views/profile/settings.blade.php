@@ -8,7 +8,7 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Account Settings - Settings
+                            {{ __('Account Settings - Settings') }}
                         </h1>
                     </div>
                 </div>
@@ -37,9 +37,9 @@
 
                     <x-form action="{{ route('password.update') }}" method="PUT">
                         <div class="card-body">
-                            <x-input type="password" name="current_password" label="Current Password" required />
-                            <x-input type="password" name="password" label="New Password" required />
-                            <x-input type="password" name="password_confirmation" label="Confirm Password" required />
+                            <x-input type="password" name="current_password" label="{{ __('Current Password') }}" required />
+                            <x-input type="password" name="password" label="{{ __('New Password') }}" required />
+                            <x-input type="password" name="password_confirmation" label="{{ __('Confirm Password') }}" required />
                         </div>
 
                         <div class="card-footer text-end">
@@ -52,23 +52,21 @@
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-header">
-                        Two-Factor Authentication
+                        {{ __('Two-Factor Authentication') }}
                     </div>
                     <div class="card-body">
                         <p>
-                            Add another level of security to your account by enabling two-factor authentication.
-                            We will send you a text message to verify your login attempts on unrecognized devices and
-                            browsers.
+                            {{ __('Add another level of security to your account by enabling two-factor authentication.') }}
                         </p>
                         <form>
                             <div class="form-check">
                                 <input class="form-check-input" id="twoFactorOn" type="radio" name="twoFactor"
                                     checked="" />
-                                <label class="form-check-label" for="twoFactorOn">On</label>
+                                <label class="form-check-label" for="twoFactorOn">{{ __('On') }}</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" id="twoFactorOff" type="radio" name="twoFactor" />
-                                <label class="form-check-label" for="twoFactorOff">Off</label>
+                                <label class="form-check-label" for="twoFactorOff">{{ __('Off') }}</label>
                             </div>
                         </form>
                     </div>
@@ -76,15 +74,14 @@
 
                 <div class="card mb-4">
                     <div class="card-header">
-                        Delete Account
+                        {{ __('Delete Account') }}
                     </div>
                     <div class="card-body">
                         <p>
-                            Deleting your account is a permanent action and cannot be undone. If you are sure you want to
-                            delete your account, select the button below.
+                            {{ __('Deleting your account is a permanent action and cannot be undone. If you are sure you want to delete your account, select the button below.') }}
                         </p>
                         <button type="button" class="btn btn-danger-soft text-danger">
-                            I understand, delete my account
+                            {{ __('I understand, delete my account') }}
                         </button>
                     </div>
                 </div>

@@ -51,26 +51,26 @@
     @endforelse
     <tr>
         <td colspan="4" class="text-end">
-            Total Product
+            {{ __('Total Product') }}
         </td>
         <td class="text-center">
             {{ $order->total_products }}
         </td>
     </tr>
     <tr>
-        <td colspan="4" class="text-end">Subtotal</td>
+        <td colspan="4" class="text-end">{{ __('Subtotal') }}</td>
         <td class="text-center">
             {{ $order->sub_total }}
         </td>
     </tr>
     <tr>
-        <td colspan="4" class="text-end">Tax</td>
+        <td colspan="4" class="text-end">{{ __('Tax') }}</td>
         <td class="text-center">
             {{ $order->vat }}
         </td>
     </tr>
     <tr>
-        <td colspan="4" class="text-end">Total</td>
+        <td colspan="4" class="text-end">{{ __('Total') }}</td>
         <td class="text-center">
             {{ $order->total }}
         </td>

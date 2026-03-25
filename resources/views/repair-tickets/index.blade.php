@@ -4,8 +4,8 @@
     <div class="page-body">
         @if (!$tickets->count())
             <x-empty
-                title="No repair tickets found"
-                message="Try adjusting your search or filter to find what you're looking for."
+                title="{{ __('No repair tickets found') }}"
+                message="{{ __('Try adjusting your search or filter to find what you\'re looking for.') }}"
                 button_label="{{ __('Create Repair Ticket') }}"
                 button_route="{{ route('repair-tickets.create') }}"
             />

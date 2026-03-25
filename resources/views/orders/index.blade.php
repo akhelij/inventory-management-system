@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-body">
         @if (!$orders)
-            <x-empty title="No orders found" message="Try adjusting your search or filter to find what you're looking for."
+            <x-empty title="{{ __('No orders found') }}" message="{{ __('Try adjusting your search or filter to find what you\'re looking for.') }}"
                 button_label="{{ __('Add your first Order') }}" button_route="{{ route('orders.create') }}" />
         @else
             <div class="container-xl">
@@ -13,7 +13,7 @@
             <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
                 <div id="successToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-success text-white">
-                        <strong class="me-auto">Success</strong>
+                        <strong class="me-auto">{{ __('Success') }}</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body"></div>
@@ -21,7 +21,7 @@
 
                 <div id="errorToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header bg-danger text-white">
-                        <strong class="me-auto">Error</strong>
+                        <strong class="me-auto">{{ __('Error') }}</strong>
                         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                     </div>
                     <div class="toast-body"></div>

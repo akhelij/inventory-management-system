@@ -8,7 +8,7 @@
 
         <div class="card-actions">
             @if(auth()->user()->hasRole('ADMIN'))
-                <button onclick="recalculateAllTotals()" class="btn btn-warning me-2" title="Recalculate All Order Totals">
+                <button onclick="recalculateAllTotals()" class="btn btn-warning me-2" title="{{ __('Recalculate All Order Totals') }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calculator" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
                         <rect x="4" y="3" width="16" height="18" rx="2" />
@@ -20,7 +20,7 @@
                         <line x1="12" y1="17" x2="12" y2="17.01" />
                         <line x1="16" y1="17" x2="16" y2="17.01" />
                     </svg>
-                    Fix Totals
+                    {{ __('Fix Totals') }}
                 </button>
             @endif
             <form action="{{ route('order.bulk.download', ['order_ids' => $order_ids]) }}" method="POST" enctype="multipart/form-data" class="d-inline">
@@ -189,7 +189,7 @@
                         @if($order->order_status !== \App\Enums\OrderStatus::CANCELED)
                             <x-button.print class="btn-icon" route="{{ route('order.downloadInvoice', $order->uuid) }}"  target="_blank"/>
                         @endif
-                        <x-button.delete class="btn-icon" route="{{ route('orders.destroy', $order->uuid) }}"  onclick="return confirm('Vous etes sure !')"/>
+                        <x-button.delete class="btn-icon" route="{{ route('orders.destroy', $order->uuid) }}"  onclick="return confirm('{{ __('Are you sure?') }}')"/>
                     </td>
                 </tr>
             @empty
@@ -220,27 +220,27 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header bg-warning">
-                        <h5 class="modal-title">Warning: Customer Over Limit</h5>
+                        <h5 class="modal-title">{{ __('Warning: Customer Over Limit') }}</h5>
                         <button type="button" class="btn-close" wire:click="cancelStatusUpdate"></button>
                     </div>
                     <div class="modal-body">
                         <p class="text-warning">
                             <i class="fas fa-exclamation-triangle me-2"></i>
-                            This customer is currently over their credit limit. Are you sure you want to approve this order?
+                            {{ __('This customer is currently over their credit limit. Are you sure you want to approve this order?') }}
                         </p>
                         @if($newStatus == 0)
                             <div class="mb-3">
-                                <label for="statusReason" class="form-label">Reason for Cancellation</label>
+                                <label for="statusReason" class="form-label">{{ __('Reason for Cancellation') }}</label>
                                 <textarea wire:model="statusReason" id="statusReason" class="form-control" rows="3"></textarea>
                             </div>
                         @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" wire:click="cancelStatusUpdate">
-                            Cancel
+                            {{ __('Cancel') }}
                         </button>
                         <button type="button" class="btn btn-warning" wire:click="forceApprove">
-                            Approve Anyway
+                            {{ __('Approve Anyway') }}
                         </button>
                     </div>
                 </div>

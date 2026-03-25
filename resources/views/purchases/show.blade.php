@@ -29,7 +29,7 @@
                                         @method('put')
 
                                         <button type="submit" class="dropdown-item text-success"
-                                                onclick="return confirm('Are you sure you want to approve this purchase?')"
+                                                onclick="return confirm('{{ __('Are you sure you want to approve this purchase?') }}')"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-check" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M5 12l5 5l10 -10" /></svg>
 
@@ -97,14 +97,14 @@
                             <table class="table table-bordered table-striped align-middle">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th scope="col" class="align-middle text-center">No.</th>
-                                        <th scope="col" class="align-middle text-center">Photo</th>
-                                        <th scope="col" class="align-middle text-center">Product Name</th>
-                                        <th scope="col" class="align-middle text-center">Product Code</th>
-                                        <th scope="col" class="align-middle text-center">Current Stock</th>
-                                        <th scope="col" class="align-middle text-center">Quantity</th>
-                                        <th scope="col" class="align-middle text-center">Price</th>
-                                        <th scope="col" class="align-middle text-center">Total</th>
+                                        <th scope="col" class="align-middle text-center">{{ __('No.') }}</th>
+                                        <th scope="col" class="align-middle text-center">{{ __('Photo') }}</th>
+                                        <th scope="col" class="align-middle text-center">{{ __('Product Name') }}</th>
+                                        <th scope="col" class="align-middle text-center">{{ __('Product Code') }}</th>
+                                        <th scope="col" class="align-middle text-center">{{ __('Current Stock') }}</th>
+                                        <th scope="col" class="align-middle text-center">{{ __('Quantity') }}</th>
+                                        <th scope="col" class="align-middle text-center">{{ __('Price') }}</th>
+                                        <th scope="col" class="align-middle text-center">{{ __('Total') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -144,7 +144,7 @@
                                 @endforeach
                                     <tr>
                                         <td class="align-middle text-end" colspan="7">
-                                            Total
+                                            {{ __('Total') }}
                                         </td>
                                         <td class="align-middle text-center">
                                             {{ number_format($purchase->total_amount, 2) }}

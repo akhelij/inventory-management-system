@@ -21,13 +21,13 @@
                 <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col" class="text-center">No.</th>
-                            <th scope="col" class="text-center">Purchase</th>
-                            <th scope="col" class="text-center">Supplier</th>
-                            <th scope="col" class="text-center">Date</th>
-                            <th scope="col" class="text-center">Total</th>
-                            <th scope="col" class="text-center">Status</th>
-                            <th scope="col" class="text-center">Action</th>
+                            <th scope="col" class="text-center">{{ __('No.') }}</th>
+                            <th scope="col" class="text-center">{{ __('Purchase') }}</th>
+                            <th scope="col" class="text-center">{{ __('Supplier') }}</th>
+                            <th scope="col" class="text-center">{{ __('Date') }}</th>
+                            <th scope="col" class="text-center">{{ __('Total') }}</th>
+                            <th scope="col" class="text-center">{{ __('Status') }}</th>
+                            <th scope="col" class="text-center">{{ __('Action') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -49,7 +49,7 @@
                                 {{ Number::currency($purchase->total_amount, 'EUR') }}
                             </td>
                             <td class="text-center">
-                                <span class="btn btn-{{ $purchase->purchase_status == 0 ? 'warning' : 'success' }} btn-sm text-uppercase">{{ $purchase->purchase_status == 0 ? 'pending' : 'approved' }}</span>
+                                <span class="btn btn-{{ $purchase->purchase_status == 0 ? 'warning' : 'success' }} btn-sm text-uppercase">{{ $purchase->purchase_status == 0 ? __('pending') : __('approved') }}</span>
                             </td>
                             <td class="text-center">
                                 <a href="{{ route('purchases.show', $purchase) }}" class="btn btn-icon btn-outline-info">

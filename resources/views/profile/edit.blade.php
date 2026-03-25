@@ -8,7 +8,7 @@
                     <div class="col-auto mb-3">
                         <h1 class="page-header-title">
                             <div class="page-header-icon"><i data-feather="user"></i></div>
-                            Account Settings - Profile
+                            {{ __('Account Settings - Profile') }}
                         </h1>
                     </div>
                 </div>
@@ -30,14 +30,14 @@
                 <div class="col-xl-4">
                     <!-- Profile picture card -->
                     <div class="card mb-4 mb-xl-0">
-                        <div class="card-header">Profile Picture</div>
+                        <div class="card-header">{{ __('Profile Picture') }}</div>
                         <div class="card-body text-center">
                             <!-- Profile picture image -->
                             <img class="img-account-profile rounded-circle mb-2"
                                 src="{{ $user->photo ? asset('storage/profile//' . $user->photo) : asset('assets/img/illustrations/profiles/profile-1.png') }}"
                                 alt="" id="image-preview" />
                             <!-- Profile picture help block -->
-                            <div class="small font-italic text-muted mb-2">JPG or PNG no larger than 1 MB</div>
+                            <div class="small font-italic text-muted mb-2">{{ __('JPG or PNG no larger than 1 MB') }}</div>
                             <!-- Profile picture input -->
                             <input class="form-control form-control-solid mb-2 @error('photo') is-invalid @enderror"
                                 type="file" id="image" name="photo" accept="image/*" onchange="previewImage();">
@@ -54,12 +54,12 @@
                     <!-- Account details card -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            Account Details
+                            {{ __('Account Details') }}
                         </div>
                         <div class="card-body">
                             <!-- Form Group (username) -->
                             <div class="mb-3">
-                                <label class="small mb-1" for="username">Username</label>
+                                <label class="small mb-1" for="username">{{ __('Username') }}</label>
                                 <input class="form-control form-control-solid @error('username') is-invalid @enderror"
                                     id="username" name="username" type="text" placeholder=""
                                     value="{{ old('username', $user->username) }}" autocomplete="off" />
@@ -71,7 +71,7 @@
                             </div>
                             <!-- Form Group (name) -->
                             <div class="mb-3">
-                                <label class="small mb-1" for="name">Full name</label>
+                                <label class="small mb-1" for="name">{{ __('Full name') }}</label>
                                 <input class="form-control form-control-solid @error('name') is-invalid @enderror"
                                     id="name" name="name" type="text" placeholder=""
                                     value="{{ old('name', $user->name) }}" autocomplete="off" />
@@ -83,7 +83,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="small mb-1" for="email">
-                                    Email address
+                                    {{ __('Email address') }}
                                 </label>
 
                                 <input class="form-control form-control-solid @error('photo') is-invalid @enderror"

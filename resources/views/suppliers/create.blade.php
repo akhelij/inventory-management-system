@@ -31,7 +31,7 @@
 
                                 <img class="img-account-profile rounded-circle mb-2" src="{{ asset('assets/img/demo/user-placeholder.svg') }}" alt="" id="image-preview" />
 
-                                <div class="small font-italic text-muted mb-2">JPG or PNG no larger than 1 MB</div>
+                                <div class="small font-italic text-muted mb-2">{{ __('JPG or PNG no larger than 1 MB') }}</div>
 
                                 <input class="form-control @error('photo') is-invalid @enderror" type="file"  id="image" name="photo" accept="image/*" onchange="previewImage();">
 
@@ -55,21 +55,21 @@
                                     <div class="col-md-12">
                                         <x-input name="name" :required="true" />
 
-                                        <x-input name="email" label="Email address" :required="true" />
+                                        <x-input name="email" label="{{ __('Email address') }}" :required="true" />
 
-                                        <x-input name="shopname" label="Shop name" :required="true" />
+                                        <x-input name="shopname" label="{{ __('Shop name') }}" :required="true" />
 
-                                        <x-input name="phone" label="Phone number" :required="true" />
+                                        <x-input name="phone" label="{{ __('Phone number') }}" :required="true" />
                                     </div>
 
 
                                     <div class="col-sm-6 col-md-6">
                                         <label for="type" class="form-label required">
-                                            Type of supplier
+                                            {{ __('Type of supplier') }}
                                         </label>
 
                                         <select class="form-select @error('type') is-invalid @enderror" id="type" name="type">
-                                            <option selected="" disabled="">Select a type:</option>
+                                            <option selected="" disabled="">{{ __('Select a type:') }}</option>
 
                                             @foreach(\App\Enums\SupplierType::cases() as $supplierType)
                                                 <option value="{{ $supplierType->value }}" @selected(old('type') == $supplierType->value)>
@@ -87,11 +87,11 @@
 
                                     <div class="col-sm-6 col-md-6">
                                         <label for="bank_name" class="form-label required">
-                                            Bank Name
+                                            {{ __('Bank Name') }}
                                         </label>
 
                                         <select class="form-select @error('bank_name') is-invalid @enderror" id="bank_name" name="bank_name">
-                                            <option selected="" disabled="">Select a bank:</option>
+                                            <option selected="" disabled="">{{ __('Select a bank:') }}</option>
                                             <option value="BRI" @if(old('bank_name') == 'BRI')selected="selected"@endif>BRI</option>
                                             <option value="BNI" @if(old('bank_name') == 'BNI')selected="selected"@endif>BNI</option>
                                             <option value="BCA" @if(old('bank_name') == 'BCA')selected="selected"@endif>BCA</option>
@@ -106,11 +106,11 @@
                                     </div>
 
                                     <div class="col-sm-6 col-md-6">
-                                        <x-input name="account_holder" label="Account holder"/>
+                                        <x-input name="account_holder" label="{{ __('Account holder') }}"/>
                                     </div>
 
                                     <div class="col-sm-6 col-md-6">
-                                        <x-input name="account_number" label="Account number"/>
+                                        <x-input name="account_number" label="{{ __('Account number') }}"/>
                                     </div>
 
                                     <div class="col-md-12">

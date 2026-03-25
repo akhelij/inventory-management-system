@@ -32,7 +32,7 @@
 
                         <div x-show="isLoading" class="text-center p-3">
                             <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                                <span class="visually-hidden">{{ __('Loading...') }}</span>
                             </div>
                         </div>
 
@@ -95,7 +95,7 @@
                                                         </template>
                                                         <template x-if="isAddingToOrder">
                                                             <div class="spinner-border spinner-border-sm" style="width: 14px; height: 14px;">
-                                                                <span class="visually-hidden">Loading...</span>
+                                                                <span class="visually-hidden">{{ __('Loading...') }}</span>
                                                             </div>
                                                         </template>
                                                     </button>
@@ -104,7 +104,7 @@
                                                         @click="addFreeItem(product)"
                                                         :disabled="isAddingToOrder"
                                                         class="btn btn-icon btn-sm btn-outline-success p-1"
-                                                        title="Add as free item"
+                                                        title="{{ __('Add as free item') }}"
                                                         data-bs-toggle="tooltip">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                                             <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
@@ -244,7 +244,7 @@
                                         class="form-select form-control-solid @error('author_id') is-invalid @enderror"
                                         id="author_id" name="author_id">
                                         <option selected="" disabled="">
-                                            Select a user:
+                                            {{ __('Select a user') }}:
                                         </option>
                                         @if(isset($users))
                                             @foreach ($users as $user)
@@ -263,7 +263,7 @@
                                     @enderror
                                 </div>
                                 @endif
-                                
+
                                 <div class="col-md-4">
                                     <label class="small mb-1" for="tagged_user_id">
                                         {{ __('Tag') }}
@@ -273,7 +273,7 @@
                                         class="form-select form-control-solid @error('tagged_user_id') is-invalid @enderror"
                                         id="tagged_user_id" name="tagged_user_id">
                                         <option selected="" disabled="">
-                                            Select a user:
+                                            {{ __('Select a user') }}:
                                         </option>
                                         @if(isset($users))
                                             @foreach ($users as $user)
@@ -313,7 +313,7 @@
                                             <tr>
                                                 <td>
                                                     <span class="small" x-text="item.product.name"></span>
-                                                    <span x-show="item.unitcost == 0" class="badge bg-success ms-1 small">Gift</span>
+                                                    <span x-show="item.unitcost == 0" class="badge bg-success ms-1 small">{{ __('Gift') }}</span>
                                                 </td>
                                                 <td style="width: 120px;">
                                                     <div class="input-group" style="width:110px">
@@ -358,16 +358,16 @@
                                         </tr>
                                         <tr>
                                             <td colspan="4" class="text-end small fw-bold">
-                                                Total Product
+                                                {{ __('Total Product') }}
                                             </td>
                                             <td class="text-center small fw-bold" x-text="getTotalQuantity()"></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" class="text-end small fw-bold">Subtotal</td>
+                                            <td colspan="4" class="text-end small fw-bold">{{ __('Subtotal') }}</td>
                                             <td class="text-center small fw-bold" x-text="formatCurrency(getSubTotal())"></td>
                                         </tr>
                                         <tr>
-                                            <td colspan="4" class="text-end small fw-bold">Total</td>
+                                            <td colspan="4" class="text-end small fw-bold">{{ __('Total') }}</td>
                                             <td class="text-center small fw-bold" x-text="formatCurrency(getTotal())"></td>
                                         </tr>
                                     </tbody>

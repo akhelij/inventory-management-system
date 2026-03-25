@@ -4,8 +4,8 @@
 <div class="page-body">
     @if($roles->isEmpty())
         <x-empty
-            title="No units found"
-            message="Try adjusting your search or filter to find what you're looking for."
+            title="{{ __('No roles found') }}"
+            message="{{ __('Try adjusting your search or filter to find what you\'re looking for.') }}"
             button_label="{{ __('Add your first Role') }}"
             button_route="{{ route('roles.create') }}"
         />

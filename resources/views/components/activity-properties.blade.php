@@ -2,9 +2,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>Property</th>
-            <th>Old Value</th>
-            <th>New Value</th>
+            <th>{{ __('Property') }}</th>
+            <th>{{ __('Old Value') }}</th>
+            <th>{{ __('New Value') }}</th>
         </tr>
     </thead>
     <tbody>

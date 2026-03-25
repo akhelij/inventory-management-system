@@ -265,7 +265,7 @@
                             <td>
                                 {{ $item->product->name }}
                                 @if($item->unitcost == 0)
-                                    <span class="badge-gift">Gift</span>
+                                    <span class="badge-gift">{{ __('Gift') }}</span>
                                 @endif
                             </td>
                             <td class="text-center">{{ $item->quantity }}</td>

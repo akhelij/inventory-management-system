@@ -39,7 +39,7 @@
                                     </div>
 
                                     <div class="col-sm-3">
-                                        <h4 class="inv-title-1">Vendeur :</h4>
+                                        <h4 class="inv-title-1">{{ __('Seller') }} :</h4>
                                         <p class="inv-from-1">{{ $order->user->name }}</p>
                                     </div>
                             </div>
@@ -49,12 +49,12 @@
                                 <div class="col-sm-9">
                                     <div class="invoice">
                                         <h4 style="color:#910706">
-                                            FACTURE : <span>{{ $order->invoice_no }}</span>
+                                            {{ __('INVOICE') }} : <span>{{ $order->invoice_no }}</span>
                                         </h4>
                                     </div>
                                     <div class="invoice-number">
                                         <h4 class="inv-title-1">
-                                            Date de facture :
+                                            {{ __('Invoice date') }} :
                                         </h4>
                                         <p class="invo-addr-1">
                                             {{ $order->order_date->format('d M Y') }}
@@ -62,7 +62,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-3" style="margin-left: -15px;">
-                                    <h4 class="inv-title-1">Client :</h4>
+                                    <h4 class="inv-title-1">{{ __('Client') }} :</h4>
                                     <p class="inv-from-1">{{ $order->customer->name }}</p>
                                     <p class="inv-from-1">{{ $order->customer->phone }}</p>
                                     <p class="inv-from-1">{{ $order->customer->email }}</p>
@@ -80,10 +80,10 @@
                                 <table class="default-table invoice-table">
                                     <thead>
                                         <tr>
-                                            <th class="align-middle">Description</th>
-                                            <th class="align-middle text-center">Quantité</th>
-                                            <th class="align-middle text-center">Prix unitaire</th>
-                                            <th class="align-middle text-center">Prix total</th>
+                                            <th class="align-middle">{{ __('Description') }}</th>
+                                            <th class="align-middle text-center">{{ __('Quantity') }}</th>
+                                            <th class="align-middle text-center">{{ __('Unit Price') }}</th>
+                                            <th class="align-middle text-center">{{ __('Total Price') }}</th>
                                         </tr>
                                     </thead>
 
@@ -109,7 +109,7 @@
                                         <tr>
                                             <td colspan="3" class="text-end">
                                                 <strong>
-                                                    Total HT
+                                                    {{ __('Total excl. tax') }}
                                                 </strong>
                                             </td>
                                             <td class="align-middle text-center">
@@ -120,7 +120,7 @@
                                         </tr>
                                         <tr>
                                             <td colspan="3" class="text-end">
-                                                <strong>Tax</strong>
+                                                <strong>{{ __('Tax') }}</strong>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <strong>
@@ -130,7 +130,7 @@
                                         </tr>
                                         <tr>
                                             <td colspan="3" class="text-end">
-                                                <strong>Total</strong>
+                                                <strong>{{ __('Total') }}</strong>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <strong>
@@ -154,11 +154,11 @@
                     <div class="invoice-btn-section clearfix d-print-none">
                         <a href="{{ route('orders.index') }}" class="btn btn-lg btn-print">
                             <i class="fa fa-arrow-left"></i>
-                            Retour
+                            {{ __('Back') }}
                         </a>
                         <a id="invoice_download_btn" class="btn btn-lg btn-download">
                             <i class="fa fa-download"></i>
-                            Telecharger la facture
+                            {{ __('Download invoice') }}
                         </a>
                     </div>
                 </div>

@@ -71,7 +71,7 @@
                                     <td class="align-middle text-center" style="width: 15%">
                                         <x-button.edit class="btn-icon" route="{{ route('drivers.edit', $driver) }}" />
                                         <x-button.delete class="btn-icon" route="{{ route('drivers.destroy', $driver) }}"
-                                                         onclick="return confirm('are you sure!')" />
+                                                         onclick="return confirm('{{ __('Are you sure?') }}')" />
                                     </td>
                                 </tr>
                             @empty

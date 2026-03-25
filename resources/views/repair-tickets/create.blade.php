@@ -332,7 +332,7 @@
                                                 const files = Array.from(event.target.files);
 
                                                 if (files.length > 3) {
-                                                    alert('You can only upload up to 3 photos');
+                                                    alert('{{ __('You can only upload up to 3 photos') }}');
                                                     event.target.value = '';
                                                     return;
                                                 }

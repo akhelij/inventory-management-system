@@ -46,7 +46,7 @@
                             </td>
                             <td class="align-middle text-center">
                                 @if($activity->event == 'deleted')
-                                    Subject deleted
+                                    {{ __('Subject deleted') }}
                                 @else
                                     @php
                                         $modelName = str_replace('App\\Models\\', '', $activity->subject_type);

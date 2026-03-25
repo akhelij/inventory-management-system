@@ -4,8 +4,8 @@
 <div class="page-body">
     @if(!$purchases)
     <x-empty
-        title="No purchases found"
-        message="Try adjusting your search or filter to find what you're looking for."
+        title="{{ __('No purchases found') }}"
+        message="{{ __('Try adjusting your search or filter to find what you\'re looking for.') }}"
         button_label="{{ __('Add your first Purchase') }}"
         button_route="{{ route('purchases.create') }}"
     />

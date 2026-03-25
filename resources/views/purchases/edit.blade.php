@@ -21,46 +21,46 @@
             <div class="card-body">
                 <div class="row gx-3 mb-3">
                     <div class="col-md-6">
-                        <label class="small mb-1">Name</label>
+                        <label class="small mb-1">{{ __('Name') }}</label>
                         <div class="form-control form-control-solid">{{ $purchase->supplier->name }}</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="small mb-1">Email</label>
+                        <label class="small mb-1">{{ __('Email') }}</label>
                         <div class="form-control form-control-solid">{{ $purchase->supplier->email }}</div>
                     </div>
                 </div>
                 <div class="row gx-3 mb-3">
                     <div class="col-md-6">
-                        <label class="small mb-1">Phone</label>
+                        <label class="small mb-1">{{ __('Phone') }}</label>
                         <div class="form-control form-control-solid">{{ $purchase->supplier->phone }}</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="small mb-1">Order Date</label>
+                        <label class="small mb-1">{{ __('Order Date') }}</label>
                         <div class="form-control form-control-solid">{{ $purchase->date }}</div>
                     </div>
                 </div>
                 <div class="row gx-3 mb-3">
                     <div class="col-md-6">
-                        <label class="small mb-1">No Purchase</label>
+                        <label class="small mb-1">{{ __('No Purchase') }}</label>
                         <div class="form-control">{{ $purchase->purchase_no }}</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="small mb-1">Total</label>
+                        <label class="small mb-1">{{ __('Total') }}</label>
                         <div class="form-control form-control-solid">{{ $purchase->total_amount }}</div>
                     </div>
                 </div>
                 <div class="row gx-3 mb-3">
                     <div class="col-md-6">
-                        <label class="small mb-1">Created By</label>
+                        <label class="small mb-1">{{ __('Created By') }}</label>
                         <div class="form-control form-control-solid">{{ $purchase->createdBy->name ?? '-' }}</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="small mb-1">Updated By</label>
+                        <label class="small mb-1">{{ __('Updated By') }}</label>
                         <div class="form-control form-control-solid">{{ $purchase->updatedBy->name ?? '-' }}</div>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label  class="small mb-1">Address</label>
+                    <label  class="small mb-1">{{ __('Address') }}</label>
                     <div class="form-control form-control-solid">{{ $purchase->supplier->address }}</div>
                 </div>
             </div>
@@ -74,7 +74,7 @@
 
                         <button type="submit"
                                 class="btn btn-success"
-                                onclick="return confirm('Are you sure you want to approve this purchase?')"
+                                onclick="return confirm('{{ __('Are you sure you want to approve this purchase?') }}')"
                         >
                             {{ __('Approve Purchase') }}
                         </button>

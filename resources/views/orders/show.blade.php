@@ -50,7 +50,7 @@
                                         @method('put')
 
                                         <button type="submit" class="dropdown-item text-success"
-                                            onclick="return confirm('Are you sure you want to approve this order?')">
+                                            onclick="return confirm('{{ __('Are you sure you want to approve this order?') }}')">
                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                 class="icon icon-tabler icon-tabler-check" width="24" height="24"
                                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -102,13 +102,13 @@
                         <table class="table table-striped table-bordered align-middle">
                             <thead class="thead-light">
                                 <tr>
-                                    <th scope="col" class="align-middle text-center">No.</th>
-                                    <th scope="col" class="align-middle text-center">Photo</th>
-                                    <th scope="col" class="align-middle text-center">Product Name</th>
-                                    <th scope="col" class="align-middle text-center">Inventory</th>
-                                    <th scope="col" class="align-middle text-center">Quantity</th>
-                                    <th scope="col" class="align-middle text-center">Price</th>
-                                    <th scope="col" class="align-middle text-center">Total</th>
+                                    <th scope="col" class="align-middle text-center">{{ __('No.') }}</th>
+                                    <th scope="col" class="align-middle text-center">{{ __('Photo') }}</th>
+                                    <th scope="col" class="align-middle text-center">{{ __('Product Name') }}</th>
+                                    <th scope="col" class="align-middle text-center">{{ __('Inventory') }}</th>
+                                    <th scope="col" class="align-middle text-center">{{ __('Quantity') }}</th>
+                                    <th scope="col" class="align-middle text-center">{{ __('Price') }}</th>
+                                    <th scope="col" class="align-middle text-center">{{ __('Total') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -126,7 +126,7 @@
                                         <td class="align-middle text-center">
                                             {{ $item->product->name }}
                                             @if($item->unitcost == 0)
-                                                <span class="badge bg-success ms-1 small">Gift</span>
+                                                <span class="badge bg-success ms-1 small">{{ __('Gift') }}</span>
                                             @endif
                                         </td>
                                         <td class="align-middle text-center">
@@ -145,20 +145,20 @@
                                 @endforeach
                                 <tr>
                                     <td colspan="6" class="text-end">
-                                        Payed amount
+                                        {{ __('Paid amount') }}
                                     </td>
                                     <td class="text-center">{{ number_format($order->pay, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6" class="text-end">Due</td>
+                                    <td colspan="6" class="text-end">{{ __('Due') }}</td>
                                     <td class="text-center">{{ number_format($order->due, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6" class="text-end">VAT</td>
+                                    <td colspan="6" class="text-end">{{ __('VAT') }}</td>
                                     <td class="text-center">{{ number_format($order->vat, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6" class="text-end">Total</td>
+                                    <td colspan="6" class="text-end">{{ __('Total') }}</td>
                                     <td class="text-center">{{ number_format($order->total, 2) }}</td>
                                 </tr>
                             </tbody>
@@ -173,7 +173,7 @@
                             @csrf
 
                             <button type="submit" class="btn btn-success"
-                                onclick="return confirm('Are you sure you want to complete this order?')">
+                                onclick="return confirm('{{ __('Are you sure you want to complete this order?') }}')">
                                 {{ __('Complete Order') }}
                             </button>
                         </form>

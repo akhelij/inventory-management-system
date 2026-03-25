@@ -114,7 +114,7 @@
 
                                         <x-input name="code"
                                                  id="code"
-                                                 label="Référence"
+                                                 label="{{ __('Référence') }}"
                                                  placeholder="{{ __('Référence') }}"
                                                  value="{{ old('code') }}"
                                         />
@@ -158,7 +158,7 @@
 
                                     <div class="col-sm-6 col-md-6">
                                         <x-input type="number"
-                                                 label="Buying Price"
+                                                 label="{{ __('Buying Price') }}"
                                                  name="buying_price"
                                                  id="buying_price"
                                                  placeholder="0"
@@ -168,7 +168,7 @@
 
                                     <div class="col-sm-6 col-md-6">
                                         <x-input type="number"
-                                                 label="Selling Price"
+                                                 label="{{ __('Selling Price') }}"
                                                  name="selling_price"
                                                  id="selling_price"
                                                  placeholder="0"
@@ -178,7 +178,7 @@
 
                                     <div class="col-sm-6 col-md-6">
                                         <x-input type="number"
-                                                 label="Quantity"
+                                                 label="{{ __('Quantity') }}"
                                                  name="quantity"
                                                  id="quantity"
                                                  placeholder="0"
@@ -188,7 +188,7 @@
 
                                     <div class="col-sm-6 col-md-6" hidden>
                                         <x-input type="number"
-                                                 label="Quantity Alert"
+                                                 label="{{ __('Quantity Alert') }}"
                                                  name="quantity_alert"
                                                  id="quantity_alert"
                                                  placeholder="0"
@@ -198,7 +198,7 @@
 
                                     <div class="col-sm-6 col-md-6" hidden>
                                         <x-input type="number"
-                                                 label="Tax"
+                                                 label="{{ __('Tax') }}"
                                                  name="tax"
                                                  id="tax"
                                                  value="0"
@@ -241,7 +241,7 @@
                                                       id="notes"
                                                       rows="5"
                                                       class="form-control @error('notes') is-invalid @enderror"
-                                                      placeholder="Product notes"
+                                                      placeholder="{{ __('Product notes') }}"
                                             ></textarea>
 
                                             @error('notes')

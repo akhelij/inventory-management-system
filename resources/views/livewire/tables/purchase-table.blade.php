@@ -16,7 +16,7 @@
             <div class="text-secondary">
                 {{ __('products.showing') }}
                 <div class="mx-2 d-inline-block">
-                    <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
+                    <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="{{ __('result per page') }}">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
@@ -118,14 +118,14 @@
                         <td class="align-middle text-center" style="width: 10%">
                             <x-button.show class="btn-icon" route="{{ route('purchases.show', $purchase->uuid) }}"/>
                             <x-button.edit class="btn-icon" route="{{ route('purchases.edit', $purchase->uuid) }}"/>
-                            <x-button.delete class="btn-icon" onclick="return confirm('are you sure!')" route="{{ route('purchases.delete', $purchase->uuid) }}"/>
+                            <x-button.delete class="btn-icon" onclick="return confirm('{{ __('Are you sure!') }}')" route="{{ route('purchases.delete', $purchase->uuid) }}"/>
                         </td>
                     @endif
                 </tr>
                 @empty
                 <tr>
                     <td class="align-middle text-center" colspan="7">
-                        No results found
+                        {{ __('No results found') }}
                     </td>
                 </tr>
             @endforelse
@@ -135,8 +135,8 @@
 
     <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-secondary">
-            Showing <span>{{ $purchases->firstItem() }}</span>
-            to <span>{{ $purchases->lastItem() }}</span> of <span>{{ $purchases->total() }}</span> entries
+            {{ __('Showing') }} <span>{{ $purchases->firstItem() }}</span>
+            {{ __('to') }} <span>{{ $purchases->lastItem() }}</span> {{ __('of') }} <span>{{ $purchases->total() }}</span> {{ __('entries') }}
         </p>
 
         <ul class="pagination m-0 ms-auto">

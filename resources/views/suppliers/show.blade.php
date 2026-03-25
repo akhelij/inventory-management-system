@@ -50,39 +50,39 @@
                         <table class="table table-bordered card-table table-vcenter text-nowrap datatable">
                             <tbody>
                                 <tr>
-                                    <td>Name</td>
+                                    <td>{{ __('Name') }}</td>
                                     <td>{{ $supplier->name }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Email address</td>
+                                    <td>{{ __('Email address') }}</td>
                                     <td>{{ $supplier->email }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Phone number</td>
+                                    <td>{{ __('Phone number') }}</td>
                                     <td>{{ $supplier->phone }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Address</td>
+                                    <td>{{ __('Address') }}</td>
                                     <td>{{ $supplier->address }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Shop name</td>
+                                    <td>{{ __('Shop name') }}</td>
                                     <td>{{ $supplier->shopname }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Type</td>
+                                    <td>{{ __('Type') }}</td>
                                     <td>{{ $supplier->type->label() }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Account holder</td>
+                                    <td>{{ __('Account holder') }}</td>
                                     <td>{{ $supplier->account_holder }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Account number</td>
+                                    <td>{{ __('Account number') }}</td>
                                     <td>{{ $supplier->account_number }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Bank name</td>
+                                    <td>{{ __('Bank name') }}</td>
                                     <td>{{ $supplier->bank_name }}</td>
                                 </tr>
                             </tbody>

@@ -41,7 +41,7 @@
             <div class="text-secondary">
                 {{ __('Showing') }}
                 <div class="mx-2 d-inline-block">
-                    <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
+                    <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="{{ __('result per page') }}">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
@@ -52,7 +52,7 @@
             </div>
             @if ($warehouses->count() > 1 && auth()->user()->warehouse_id == null)
                 <select wire:change="filterByWarehouse($event.target.value)" name="warehouse_id" id="warehouse_id"  style="width:200px;margin-left: 20px;" class="ms-auto form-control form-control-sm selector">
-                    <option value=""> Choose warehouse</option>
+                    <option value="">{{ __('Choose warehouse') }}</option>
                     @foreach ($warehouses as $warehouse)
                         <option value="{{ $warehouse->id }}">
                             {{ $warehouse->name }}

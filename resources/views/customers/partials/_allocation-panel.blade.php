@@ -776,7 +776,7 @@
     <template x-if="loading">
         <div class="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
              style="background: rgba(0,0,0,0.1); z-index: 9999;">
-            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">{{ __('Loading...') }}</span></div>
         </div>
     </template>
 
@@ -843,9 +843,9 @@
                                 <label class="form-label">{{ __('Payment type') }}</label>
                                 <select class="form-select" x-model="form.payment_type"
                                         :class="{ 'is-invalid': modalErrors.payment_type }">
-                                    <option value="HandCash">Cash</option>
-                                    <option value="Cheque">Cheque</option>
-                                    <option value="Exchange">Lettre de change</option>
+                                    <option value="HandCash">{{ __('Cash') }}</option>
+                                    <option value="Cheque">{{ __('Cheque') }}</option>
+                                    <option value="Exchange">{{ __('Lettre de change') }}</option>
                                 </select>
                             </div>
                             <div x-show="form.payment_type !== 'HandCash'">

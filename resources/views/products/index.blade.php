@@ -3,7 +3,7 @@
 @section('content')
     <div class="page-body">
         @if (!$products)
-            <x-empty title="No products found" message="Try adjusting your search or filter to find what you're looking for."
+            <x-empty title="{{ __('No products found') }}" message="{{ __('Try adjusting your search or filter to find what you\'re looking for.') }}"
                 button_label="{{ __('Add your first Product') }}" button_route="{{ route('products.create') }}" />
 
             <div class="text-center" style="padding-top:-25px">

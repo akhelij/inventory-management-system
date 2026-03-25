@@ -79,7 +79,7 @@
                                                     <span class="text-danger">*</span>
                                                 </label>
                                                 <select class="form-control" id="role" name="role_id">
-                                                    <option selected="" disabled="">Select a role:</option>
+                                                    <option selected="" disabled="">{{ __('Select a role:') }}</option>
                                                     @foreach($roles as $role)
                                                         <option value="{{ $role->id }}">{{ $role->name }}</option>
                                                     @endforeach

@@ -2,11 +2,11 @@
     <table class="table table-bordered" id="products_table">
         <thead class="thead-dark">
             <tr>
-                <th class="align-middle">Product</th>
-                <th class="align-middle text-center">Quantity</th>
-                <th class="align-middle text-center">Price</th>
-                <th class="align-middle text-center">Total</th>
-                <th class="align-middle text-center">Action</th>
+                <th class="align-middle">{{ __('Product') }}</th>
+                <th class="align-middle text-center">{{ __('Quantity') }}</th>
+                <th class="align-middle text-center">{{ __('Price') }}</th>
+                <th class="align-middle text-center">{{ __('Total') }}</th>
+                <th class="align-middle text-center">{{ __('Action') }}</th>
             </tr>
         </thead>
 
@@ -26,7 +26,7 @@
                                 class="form-control text-center @error('invoiceProducts.' . $index . '.product_id') is-invalid @enderror"
                         >
 
-                            <option value="" class="text-center">-- choose product --</option>
+                            <option value="" class="text-center">-- {{ __('choose product') }} --</option>
 
                             @foreach ($allProducts as $product)
                                 <option value="{{ $product->id }}" class="text-center">
@@ -112,7 +112,7 @@
             </tr>
             <tr>
                 <th colspan="4" class="align-middle text-end">
-                    Subtotal
+                    {{ __('Subtotal') }}
                 </th>
                 <td class="text-center">
 {{--                    ${{ number_format($subtotal, 2) }}--}}
@@ -121,7 +121,7 @@
             </tr>
             <tr>
                 <th colspan="4" class="align-middle text-end">
-                    Taxes
+                    {{ __('Taxes') }}
                 </th>
                 <td width="150" class="align-middle text-center">
                     <input wire:model.blur="taxes" type="number" id="taxes" class="form-control w-75 d-inline" min="0" max="100">
@@ -136,7 +136,7 @@
             </tr>
             <tr>
                 <th colspan="4" class="align-middle text-end">
-                    Total
+                    {{ __('Total') }}
                 </th>
                 <td class="text-center">
                     {{ Number::currency($total, 'EUR') }}

@@ -53,10 +53,10 @@
 
 
                                     <x-tom-select
-                                        label="Suppliers"
+                                        label="{{ __('Suppliers') }}"
                                         id="supplier_id"
                                         name="supplier_id"
-                                        placeholder="Select Customer"
+                                        placeholder="{{ __('Select Customer') }}"
                                         :data="$suppliers"
                                     />
 

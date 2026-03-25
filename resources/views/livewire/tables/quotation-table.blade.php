@@ -16,7 +16,7 @@
             <div class="text-secondary">
                 {{ __('products.showing') }}
                 <div class="mx-2 d-inline-block">
-                    <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="result per page">
+                    <select wire:model.live="perPage" class="form-select form-select-sm" aria-label="{{ __('result per page') }}">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
@@ -121,7 +121,7 @@
 
     <div class="card-footer d-flex align-items-center">
         <p class="m-0 text-secondary">
-            Showing <span>{{ $quotations->firstItem() }}</span> to <span>{{ $quotations->lastItem() }}</span> of <span>{{ $quotations->total() }}</span> entries
+            {{ __('Showing') }} <span>{{ $quotations->firstItem() }}</span> {{ __('to') }} <span>{{ $quotations->lastItem() }}</span> {{ __('of') }} <span>{{ $quotations->total() }}</span> {{ __('entries') }}
         </p>
 
         <ul class="pagination m-0 ms-auto">

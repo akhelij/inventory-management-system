@@ -41,7 +41,7 @@ class PurchaseForm extends Component
     {
         foreach ($this->invoiceProducts as $key => $invoiceProduct) {
             if (! $invoiceProduct['is_saved']) {
-                $this->addError('invoiceProducts.'.$key, 'This line must be saved before creating a new one.');
+                $this->addError('invoiceProducts.'.$key, __('This line must be saved before creating a new one.'));
 
                 return;
             }
@@ -60,7 +60,7 @@ class PurchaseForm extends Component
     {
         foreach ($this->invoiceProducts as $key => $invoiceProduct) {
             if (! $invoiceProduct['is_saved']) {
-                $this->addError('invoiceProducts.'.$key, 'This line must be saved before editing another.');
+                $this->addError('invoiceProducts.'.$key, __('This line must be saved before editing another.'));
 
                 return;
             }

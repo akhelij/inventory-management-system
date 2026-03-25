@@ -60,7 +60,7 @@
                                     <td class="align-middle text-center" style="width: 15%">
                                         <x-button.edit class="btn-icon" route="{{ route('warehouses.edit', $warehouse) }}" />
                                         <x-button.delete class="btn-icon" route="{{ route('warehouses.destroy', $warehouse) }}"
-                                                         onclick="return confirm('are you sure!')" />
+                                                         onclick="return confirm('{{ __('Are you sure?') }}')" />
                                     </td>
                                 </tr>
                             @empty
