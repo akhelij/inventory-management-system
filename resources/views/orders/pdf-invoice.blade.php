@@ -161,34 +161,56 @@
             vertical-align: top;
         }
 
-        .cheque-info {
-            font-size: 9pt;
-            color: #333;
-            padding-top: 10px;
-        }
-
-        .cheque-label {
+        /* Cheque table */
+        .cheque-table {
+            border-collapse: collapse;
             font-size: 8pt;
-            text-transform: uppercase;
-            color: #666;
-            margin-bottom: 3px;
+            margin-top: 4px;
         }
 
-        .cheque-number {
-            font-size: 9pt;
+        .cheque-table th {
+            background-color: #f0f3f6;
+            color: #636e72;
+            font-size: 7pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            padding: 4px 8px;
+            text-align: left;
+            border-bottom: 1px solid #dfe6e9;
+        }
+
+        .cheque-table td {
+            padding: 3px 8px;
+            border-bottom: 1px solid #f0f3f6;
+            font-size: 8pt;
+        }
+
+        .cheque-table .cheque-num {
             color: #003366;
             font-weight: bold;
         }
 
+        .cheque-table .cheque-remaining {
+            color: #cc0000;
+            font-size: 7pt;
+        }
+
+        .cheque-section-label {
+            font-size: 8pt;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
         .totals-table {
-            width: 280px;
+            width: 200px;
             margin-left: auto;
             border-collapse: collapse;
         }
 
         .totals-table td {
-            padding: 8px 12px;
-            font-size: 10pt;
+            padding: 5px 8px;
+            font-size: 9pt;
         }
 
         .totals-table .label {
@@ -200,14 +222,14 @@
         .totals-table .value {
             text-align: right;
             font-weight: bold;
-            width: 120px;
+            width: 100px;
         }
 
         .totals-table .total-row td {
             border-top: 2px solid #003366;
-            font-size: 12pt;
+            font-size: 10pt;
             color: #003366;
-            padding-top: 10px;
+            padding-top: 8px;
         }
 
         .totals-table .paid-row td {
@@ -216,17 +238,17 @@
 
         .totals-table .due-row td {
             border-top: 1px solid #dfe6e9;
-            padding-top: 10px;
+            padding-top: 8px;
         }
 
         .due-red {
             color: #cc0000 !important;
-            font-size: 12pt;
+            font-size: 10pt;
         }
 
         .due-green {
             color: #00b894 !important;
-            font-size: 12pt;
+            font-size: 10pt;
         }
 
         /* ── Footer ── */
@@ -335,15 +357,34 @@
             <tr>
                 <td>
                     @php
-                        $chequePayments = $order->payments->filter(fn ($p) => $p->payment_type === 'Cheque');
+                        $chequePayments = $order->payments->filter(fn ($p) => in_array($p->payment_type, ['Cheque', 'Exchange']));
                     @endphp
                     @if($chequePayments->isNotEmpty())
-                        <div class="cheque-info">
-                            <div class="cheque-label">Ch&egrave;que(s) :</div>
-                            @foreach($chequePayments as $cheque)
-                                <div class="cheque-number">{{ $cheque->nature }}</div>
-                            @endforeach
-                        </div>
+                        <div class="cheque-section-label">Ch&egrave;que(s) :</div>
+                        <table class="cheque-table">
+                            <thead>
+                                <tr>
+                                    <th>N&deg;</th>
+                                    <th style="text-align: right;">Montant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($chequePayments as $cheque)
+                                    @php
+                                        $remaining = $cheque->unallocated_amount;
+                                    @endphp
+                                    <tr>
+                                        <td class="cheque-num">{{ $cheque->nature }}</td>
+                                        <td style="text-align: right;">
+                                            {{ number_format($cheque->amount, 2, ',', ' ') }}
+                                            @if($remaining > 0)
+                                                <br><span class="cheque-remaining">Reste: {{ number_format($remaining, 2, ',', ' ') }}</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     @endif
                 </td>
                 <td>
