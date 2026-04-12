@@ -69,6 +69,7 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
+                'payment_type' => $request->payment_type,
                 'pay' => 0,
                 'order_date' => Carbon::now()->format('Y-m-d'),
                 'order_status' => OrderStatus::PENDING,
@@ -268,6 +269,7 @@ class OrderController extends Controller
             'purchase_date' => 'required|date',
             'author_id' => 'nullable|exists:users,id',
             'tagged_user_id' => 'nullable|exists:users,id',
+            'payment_type' => 'nullable|string|in:HandCash,Cheque,Exchange',
         ]);
 
         $details = OrderDetails::where('order_id', $order->id)->get();
@@ -283,6 +285,7 @@ class OrderController extends Controller
         $updateData = [
             'customer_id' => $validated['customer_id'],
             'purchase_date' => $validated['purchase_date'],
+            'payment_type' => $validated['payment_type'] ?? null,
             'total_products' => $details->count(),
             'sub_total' => $total,
             'vat' => 0,

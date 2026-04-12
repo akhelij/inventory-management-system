@@ -412,6 +412,8 @@
     "Cash": "نقداً",
     "Cheque": "شيك",
     "Lettre de change": "كمبيالة",
+    "Payment Type": "نوع الدفع",
+    "Select a payment type": "اختر نوع الدفع",
 
     "Shop name": "اسم المتجر",
     "Type of supplier": "نوع المورد",

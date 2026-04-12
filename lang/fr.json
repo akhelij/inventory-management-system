@@ -314,6 +314,8 @@
     "Cash": "Espèces",
     "Cheque": "Chèque",
     "Lettre de change": "Lettre de change",
+    "Payment Type": "Type de paiement",
+    "Select a payment type": "Sélectionner un type de paiement",
 
     "Shop name": "Nom du magasin",
     "Type of supplier": "Type de fournisseur",

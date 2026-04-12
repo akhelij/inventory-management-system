@@ -96,6 +96,17 @@
                                 disabled>
                         </div>
 
+                        @if($order->payment_type)
+                        <div class="col">
+                            <label for="payment_type" class="form-label">
+                                {{ __('Payment Type') }}
+                            </label>
+                            <input type="text" id="payment_type" class="form-control"
+                                value="{{ match($order->payment_type) { 'HandCash' => __('Cash'), 'Cheque' => __('Cheque'), 'Exchange' => __('Lettre de change'), default => $order->payment_type } }}"
+                                disabled>
+                        </div>
+                        @endif
+
                     </div>
 
                     <div class="table-responsive">

@@ -291,6 +291,35 @@
                                     </div>
                                     @enderror
                                 </div>
+
+                                <div class="col-md-4">
+                                    <label class="small mb-1" for="payment_type">
+                                        {{ __('Payment Type') }}
+                                    </label>
+
+                                    <select
+                                        class="form-select form-control-solid @error('payment_type') is-invalid @enderror"
+                                        id="payment_type" name="payment_type">
+                                        <option value="">
+                                            {{ __('Select a payment type') }}
+                                        </option>
+                                        <option value="HandCash" @selected(old('payment_type', $order->payment_type) === 'HandCash')>
+                                            {{ __('Cash') }}
+                                        </option>
+                                        <option value="Cheque" @selected(old('payment_type', $order->payment_type) === 'Cheque')>
+                                            {{ __('Cheque') }}
+                                        </option>
+                                        <option value="Exchange" @selected(old('payment_type', $order->payment_type) === 'Exchange')>
+                                            {{ __('Lettre de change') }}
+                                        </option>
+                                    </select>
+
+                                    @error('payment_type')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
                             </form>
 
                             <div class="table-responsive flex-grow-1" x-data="orderItemsManager({{ $order->id }})">

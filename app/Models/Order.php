@@ -28,6 +28,7 @@ class Order extends Model
         'vat',
         'total',
         'invoice_no',
+        'payment_type',
         'pay',
         'due',
         'user_id',
