@@ -257,6 +257,9 @@
     chequeUploadPreview: null,
     chequeUploadSubmitting: false,
     chequeUploadError: null,
+    reportModal: false,
+    reportPaymentId: null,
+    reportDateIso: '',
     form: {
         nature: '',
         payment_type: 'HandCash',
@@ -331,6 +334,12 @@
         this.chequeUploadSubmitting = false;
         this.chequeUploadError = null;
         this.chequeUploadModal = true;
+    },
+
+    openReportModal(payment) {
+        this.reportPaymentId = payment.id;
+        this.reportDateIso = payment.echeance || '';
+        this.reportModal = true;
     },
 
     async submitChequeUpload() {
@@ -699,12 +708,10 @@
         <div class="payment-actions-floating" x-bind:style="'position:fixed; z-index:1060; top:' + menuStyle.top + '; left:' + menuStyle.left + ';'">
             <div class="dropdown-menu show" style="min-width: 210px; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
                 <template x-if="getActivePayment() && !getActivePayment().reported && !getActivePayment().cashed_in">
-                    <form class="reportForm" :action="'/payments/' + activePaymentMenu + '/report'" method="POST">
-                        @csrf
-                        <button class="reportButton dropdown-item text-warning" type="submit">
-                            <i class="fas fa-flag me-2"></i>{{ __('Reporté') }}
-                        </button>
-                    </form>
+                    <button class="dropdown-item text-warning" type="button"
+                            @click="openReportModal(getActivePayment()); activePaymentMenu = null;">
+                        <i class="fas fa-flag me-2"></i>{{ __('Reporté') }}
+                    </button>
                 </template>
                 <template x-if="getActivePayment() && !getActivePayment().cashed_in">
                     <form :action="'/payments/' + activePaymentMenu + '/cash-in'" method="POST">
@@ -769,6 +776,37 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- ==================== REPORT MODAL ==================== -->
+    <div x-show="reportModal" x-cloak style="position: fixed; inset: 0; z-index: 9998;">
+        <div style="position: fixed; inset: 0; background: rgba(107,114,128,0.5); backdrop-filter: blur(2px);" @click="reportModal = false"></div>
+        <div style="position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999;">
+            <form class="card shadow-lg" style="width: 440px; max-width: 90vw;"
+                  method="POST" :action="'/payments/' + reportPaymentId + '/report'" @click.stop>
+                @csrf
+                <input type="hidden" name="new_date"
+                       :value="reportDateIso ? reportDateIso.split('-').reverse().join('/') : ''">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-flag me-2 text-warning"></i>{{ __('Report Payment') }}</h3>
+                    <div class="card-actions">
+                        <button type="button" class="btn btn-ghost-secondary btn-icon btn-sm" @click="reportModal = false">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <label class="form-label">{{ __('New date') }}</label>
+                    <input type="date" class="form-control" x-model="reportDateIso" required>
+                </div>
+                <div class="card-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-ghost-secondary" @click="reportModal = false">{{ __('Cancel') }}</button>
+                    <button type="submit" class="btn btn-warning" :disabled="!reportDateIso">
+                        <i class="fas fa-flag me-1"></i>{{ __('Report') }}
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 

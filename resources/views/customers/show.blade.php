@@ -139,22 +139,4 @@
             @endif
         </div>
     </div>
-    <script>
-        document.addEventListener('click', function (event) {
-            const button = event.target.closest('.reportButton');
-            if (!button) return;
-
-            event.preventDefault();
-            var newDate = prompt('New date (dd/mm/yyyy)');
-            if (newDate) {
-                var input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'new_date';
-                input.value = newDate;
-                var form = button.closest('form');
-                form.appendChild(input);
-                form.submit();
-            }
-        });
-    </script>
 @endsection
