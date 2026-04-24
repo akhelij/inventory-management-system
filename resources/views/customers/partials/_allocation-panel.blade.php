@@ -701,7 +701,7 @@
                 <template x-if="getActivePayment() && !getActivePayment().reported && !getActivePayment().cashed_in">
                     <form class="reportForm" :action="'/payments/' + activePaymentMenu + '/report'" method="POST">
                         @csrf
-                        <button class="dropdown-item text-warning" type="submit">
+                        <button class="reportButton dropdown-item text-warning" type="submit">
                             <i class="fas fa-flag me-2"></i>{{ __('Reporté') }}
                         </button>
                     </form>
