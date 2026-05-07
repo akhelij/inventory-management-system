@@ -530,7 +530,13 @@
             <div class="toast-header bg-success text-white">
                 <i class="fas fa-check-circle me-2"></i>
                 <strong class="me-auto">{{ __('Success') }}</strong>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button"
+                        class="btn btn-link p-0 ms-2 text-white"
+                        data-bs-dismiss="toast"
+                        aria-label="Close"
+                        style="background: transparent; border: 0; line-height: 1;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="toast-body">
                 {{ session('success') }}
@@ -543,7 +549,13 @@
             <div class="toast-header bg-danger text-white">
                 <i class="fas fa-exclamation-circle me-2"></i>
                 <strong class="me-auto">{{ __('Error') }}</strong>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button"
+                        class="btn btn-link p-0 ms-2 text-white"
+                        data-bs-dismiss="toast"
+                        aria-label="Close"
+                        style="background: transparent; border: 0; line-height: 1;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             <div class="toast-body">
                 {{ session('error') }}
