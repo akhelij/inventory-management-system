@@ -38,6 +38,14 @@
 
                     @if ($type === 'person')
                         @if ($personPreview)
+                            @if (! empty($personPreview['cin_photo']))
+                                <div class="mb-3 text-center">
+                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($personPreview['cin_photo']) }}"
+                                         alt="CIN"
+                                         class="img-fluid rounded border"
+                                         style="max-height: 220px;">
+                                </div>
+                            @endif
                             <div class="card mb-3">
                                 <div class="card-body d-flex align-items-center justify-content-between">
                                     <div>
@@ -60,14 +68,25 @@
                                        placeholder="{{ __('Type a name or CIN…') }}">
 
                                 @if ($customerMatches->isNotEmpty())
-                                    <div class="list-group mt-2" style="max-height: 240px; overflow-y: auto;">
+                                    <div class="list-group mt-2" style="max-height: 280px; overflow-y: auto;">
                                         @foreach ($customerMatches as $c)
                                             <button type="button"
-                                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                                    class="list-group-item list-group-item-action d-flex align-items-center gap-2"
                                                     wire:click="selectPerson({{ $c->id }})">
-                                                <span>
-                                                    <strong>{{ $c->name }}</strong>
-                                                    <span class="text-muted small ms-2">
+                                                @if ($c->cin_photo)
+                                                    <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($c->cin_photo) }}"
+                                                         alt=""
+                                                         class="rounded"
+                                                         style="height: 40px; width: 60px; object-fit: cover; flex-shrink: 0;">
+                                                @else
+                                                    <div class="rounded bg-light d-flex align-items-center justify-content-center text-muted"
+                                                         style="height: 40px; width: 60px; flex-shrink: 0;">
+                                                        <i class="fas fa-user"></i>
+                                                    </div>
+                                                @endif
+                                                <span class="flex-fill text-start">
+                                                    <strong class="d-block">{{ $c->name }}</strong>
+                                                    <span class="text-muted small">
                                                         {{ $c->cin ?? '—' }} · {{ $c->phone ?? '—' }}
                                                     </span>
                                                 </span>

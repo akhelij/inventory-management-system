@@ -72,6 +72,7 @@ class InstallmentGuaranteeForm extends Component
                     'name' => $g->person->name,
                     'cin' => $g->person->cin,
                     'phone' => $g->person->phone,
+                    'cin_photo' => $g->person->cin_photo,
                 ];
             }
 
@@ -106,7 +107,7 @@ class InstallmentGuaranteeForm extends Component
         $this->customerMatches = Customer::query()
             ->search($this->customerSearch)
             ->limit(8)
-            ->get(['id', 'name', 'cin', 'phone']);
+            ->get(['id', 'name', 'cin', 'phone', 'cin_photo']);
     }
 
     public function selectPerson(int $customerId): void
@@ -122,6 +123,7 @@ class InstallmentGuaranteeForm extends Component
             'name' => $customer->name,
             'cin' => $customer->cin,
             'phone' => $customer->phone,
+            'cin_photo' => $customer->cin_photo,
         ];
         $this->customerSearch = '';
         $this->customerMatches = collect();
