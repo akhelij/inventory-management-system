@@ -33,8 +33,6 @@ class InstallmentGuaranteeForm extends Component
 
     public ?string $chequeEcheance = null;
 
-    public ?string $chequeAccountHolder = null;
-
     public ?string $chequePhoto = null;
 
     public ?string $error = null;
@@ -49,7 +47,7 @@ class InstallmentGuaranteeForm extends Component
     {
         $this->reset(['guaranteeId', 'customerSearch', 'personCustomerId', 'personPreview',
             'chequeNature', 'chequeAmount', 'chequeBank', 'chequeEcheance',
-            'chequeAccountHolder', 'chequePhoto', 'error']);
+            'chequePhoto', 'error']);
         $this->customerMatches = collect();
         $this->type = 'person';
 
@@ -82,7 +80,6 @@ class InstallmentGuaranteeForm extends Component
                 $this->chequeAmount = $g->cheque_amount !== null ? (float) $g->cheque_amount : null;
                 $this->chequeBank = $g->cheque_bank;
                 $this->chequeEcheance = $g->cheque_echeance?->format('Y-m-d');
-                $this->chequeAccountHolder = $g->cheque_account_holder;
                 $this->chequePhoto = $g->cheque_photo;
             }
         }
@@ -143,7 +140,6 @@ class InstallmentGuaranteeForm extends Component
         $this->chequeAmount = isset($data['amount']) ? (float) $data['amount'] : null;
         $this->chequeBank = $data['bank'] ?? null;
         $this->chequePhoto = $data['cheque_photo'] ?? null;
-        $this->chequeAccountHolder = $data['account_holder'] ?? null;
 
         if (! empty($data['echeance']) && preg_match('#^(\d{2})/(\d{2})/(\d{4})$#', $data['echeance'], $m)) {
             $this->chequeEcheance = $m[3].'-'.$m[2].'-'.$m[1];
@@ -180,7 +176,6 @@ class InstallmentGuaranteeForm extends Component
                 'chequeNature' => 'nullable|string|max:255',
                 'chequeBank' => 'nullable|string|max:255',
                 'chequeEcheance' => 'nullable|date',
-                'chequeAccountHolder' => 'nullable|string|max:255',
                 'chequePhoto' => 'nullable|string|max:500',
             ]);
 
@@ -192,7 +187,7 @@ class InstallmentGuaranteeForm extends Component
                 'cheque_amount' => $this->chequeAmount,
                 'cheque_bank' => $this->chequeBank,
                 'cheque_echeance' => $this->chequeEcheance,
-                'cheque_account_holder' => $this->chequeAccountHolder,
+                'cheque_account_holder' => null,
                 'cheque_photo' => $this->chequePhoto,
             ];
         }

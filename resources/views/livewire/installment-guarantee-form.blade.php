@@ -85,20 +85,23 @@
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     @else
+                        @if ($chequePhoto)
+                            <div class="mb-3 text-center">
+                                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($chequePhoto) }}"
+                                     alt="Cheque"
+                                     class="img-fluid rounded border"
+                                     style="max-height: 220px;">
+                            </div>
+                        @endif
+
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h6 class="mb-2">
-                                    <i class="fas fa-camera me-1"></i>{{ __('Scan cheque (optional)') }}
+                                    <i class="fas fa-camera me-1"></i>{{ $chequePhoto ? __('Replace cheque image (optional)') : __('Scan cheque (optional)') }}
                                 </h6>
-                                <livewire:cheque-scanner :key="'guarantee-scanner-'.($scheduleId ?? 0)" />
+                                <livewire:cheque-scanner :key="'guarantee-scanner-'.($scheduleId ?? 0).'-'.($guaranteeId ?? 'new')" />
                             </div>
                         </div>
-
-                        @if ($chequePhoto)
-                            <div class="mb-3">
-                                <img src="{{ asset('storage/'.$chequePhoto) }}" alt="Cheque" class="img-fluid rounded" style="max-height: 160px;">
-                            </div>
-                        @endif
 
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -117,10 +120,6 @@
                             <div class="col-md-6">
                                 <label class="form-label">{{ __('Echeance') }}</label>
                                 <input type="date" class="form-control" wire:model="chequeEcheance">
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label">{{ __('Account holder') }}</label>
-                                <input type="text" class="form-control" wire:model="chequeAccountHolder">
                             </div>
                         </div>
                     @endif
