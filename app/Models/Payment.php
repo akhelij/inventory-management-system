@@ -57,6 +57,8 @@ class Payment extends Model
 
     protected static function booted(): void
     {
-        static::creating(fn (Payment $payment) => $payment->user_id = auth()->id());
+        static::creating(function (Payment $payment): void {
+            $payment->user_id = auth()->id();
+        });
     }
 }

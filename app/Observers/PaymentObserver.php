@@ -9,9 +9,11 @@ class PaymentObserver
 {
     public function creating(Payment $payment): void
     {
-        if ($payment->payment_type === 'HandCash' && $payment->cashed_in === null) {
+        if ($payment->payment_type === 'HandCash') {
             $payment->cashed_in = true;
-            $payment->cashed_in_at = $payment->cashed_in_at ?? now();
+            if (empty($payment->cashed_in_at)) {
+                $payment->cashed_in_at = now();
+            }
         }
     }
 
