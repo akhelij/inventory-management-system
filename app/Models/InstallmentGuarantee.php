@@ -15,7 +15,6 @@ class InstallmentGuarantee extends Model
         'cheque_amount',
         'cheque_bank',
         'cheque_echeance',
-        'cheque_account_holder',
         'cheque_photo',
         'user_id',
     ];

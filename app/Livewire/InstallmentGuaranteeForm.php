@@ -169,7 +169,6 @@ class InstallmentGuaranteeForm extends Component
                 'cheque_amount' => null,
                 'cheque_bank' => null,
                 'cheque_echeance' => null,
-                'cheque_account_holder' => null,
                 'cheque_photo' => null,
             ];
         } else {
@@ -189,7 +188,6 @@ class InstallmentGuaranteeForm extends Component
                 'cheque_amount' => $this->chequeAmount,
                 'cheque_bank' => $this->chequeBank,
                 'cheque_echeance' => $this->chequeEcheance,
-                'cheque_account_holder' => null,
                 'cheque_photo' => $this->chequePhoto,
             ];
         }
