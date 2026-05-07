@@ -90,7 +90,7 @@
                                 <h6 class="mb-2">
                                     <i class="fas fa-camera me-1"></i>{{ __('Scan cheque (optional)') }}
                                 </h6>
-                                <livewire:cheque-scanner :key="'guarantee-scanner-'.($entryId ?? 0)" />
+                                <livewire:cheque-scanner :key="'guarantee-scanner-'.($scheduleId ?? 0)" />
                             </div>
                         </div>
 

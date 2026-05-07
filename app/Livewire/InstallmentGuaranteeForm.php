@@ -3,15 +3,15 @@
 namespace App\Livewire;
 
 use App\Models\Customer;
-use App\Models\InstallmentEntry;
 use App\Models\InstallmentGuarantee;
+use App\Models\PaymentSchedule;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class InstallmentGuaranteeForm extends Component
 {
-    public ?int $entryId = null;
+    public ?int $scheduleId = null;
 
     public ?int $guaranteeId = null;
 
@@ -53,17 +53,17 @@ class InstallmentGuaranteeForm extends Component
         $this->customerMatches = collect();
         $this->type = 'person';
 
-        $this->entryId = (int) $data['entryId'];
+        $this->scheduleId = (int) $data['scheduleId'];
 
-        $entry = InstallmentEntry::with('guarantee.person')->find($this->entryId);
-        if (! $entry) {
-            $this->error = __('Installment not found.');
+        $schedule = PaymentSchedule::with('guarantee.person')->find($this->scheduleId);
+        if (! $schedule) {
+            $this->error = __('Schedule not found.');
 
             return;
         }
 
-        if ($entry->guarantee) {
-            $g = $entry->guarantee;
+        if ($schedule->guarantee) {
+            $g = $schedule->guarantee;
             $this->guaranteeId = $g->id;
             $this->type = $g->type;
 
@@ -154,7 +154,7 @@ class InstallmentGuaranteeForm extends Component
 
     public function save(): void
     {
-        if (! $this->entryId) {
+        if (! $this->scheduleId) {
             return;
         }
 
@@ -164,7 +164,7 @@ class InstallmentGuaranteeForm extends Component
             ]);
 
             $payload = [
-                'installment_entry_id' => $this->entryId,
+                'payment_schedule_id' => $this->scheduleId,
                 'type' => 'person',
                 'person_customer_id' => $this->personCustomerId,
                 'cheque_nature' => null,
@@ -185,7 +185,7 @@ class InstallmentGuaranteeForm extends Component
             ]);
 
             $payload = [
-                'installment_entry_id' => $this->entryId,
+                'payment_schedule_id' => $this->scheduleId,
                 'type' => 'cheque',
                 'person_customer_id' => null,
                 'cheque_nature' => $this->chequeNature,
@@ -198,7 +198,7 @@ class InstallmentGuaranteeForm extends Component
         }
 
         InstallmentGuarantee::updateOrCreate(
-            ['installment_entry_id' => $this->entryId],
+            ['payment_schedule_id' => $this->scheduleId],
             $payload
         );
 
@@ -211,11 +211,11 @@ class InstallmentGuaranteeForm extends Component
 
     public function delete(): void
     {
-        if (! $this->entryId) {
+        if (! $this->scheduleId) {
             return;
         }
 
-        InstallmentGuarantee::where('installment_entry_id', $this->entryId)->delete();
+        InstallmentGuarantee::where('payment_schedule_id', $this->scheduleId)->delete();
 
         session()->flash('success', __('Guarantee removed.'));
         $this->js('

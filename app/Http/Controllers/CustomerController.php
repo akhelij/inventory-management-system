@@ -67,7 +67,7 @@ class CustomerController extends Controller
             ? ['orders.payments', 'payments.orders']
             : ['orders', 'payments'];
 
-        $customer = Customer::where('uuid', $uuid)->with([...$eagerLoads, 'user', 'paymentSchedules.entries.guarantee.person', 'paymentSchedules.order', 'paymentSchedules.advancePayment'])->firstOrFail();
+        $customer = Customer::where('uuid', $uuid)->with([...$eagerLoads, 'user', 'paymentSchedules.entries', 'paymentSchedules.order', 'paymentSchedules.advancePayment', 'paymentSchedules.guarantee.person'])->firstOrFail();
 
         $permission = $customer->category?->value === 'b2c' ? PermissionEnum::READ_CLIENTS : PermissionEnum::READ_CUSTOMERS;
         abort_unless(auth()->user()->can($permission), 403);

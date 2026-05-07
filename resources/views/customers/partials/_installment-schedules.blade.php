@@ -66,6 +66,41 @@
                         <span class="text-muted small">{{ Number::currency($schedule->total_amount, 'MAD') }}</span>
                     </div>
                 </div>
+
+                @php $guarantee = $schedule->guarantee; @endphp
+                <div class="px-3 py-2 border-bottom bg-light-subtle">
+                    @if ($guarantee)
+                        <button type="button"
+                                class="btn btn-sm btn-link text-decoration-none p-0 align-baseline"
+                                @click="Livewire.dispatch('guarantee:prepare', { scheduleId: {{ $schedule->id }} })">
+                            <i class="fas fa-shield-alt text-primary me-1"></i>
+                            @if ($guarantee->type === 'cheque')
+                                <span class="text-muted small">{{ __('Guarantee · Cheque') }}:</span>
+                                <strong>{{ $guarantee->cheque_bank ?? '—' }}</strong>
+                                @if ($guarantee->cheque_nature)
+                                    #{{ $guarantee->cheque_nature }}
+                                @endif
+                                @if ($guarantee->cheque_amount)
+                                    — {{ Number::currency($guarantee->cheque_amount, 'MAD') }}
+                                @endif
+                            @else
+                                <span class="text-muted small">{{ __('Guarantee · Person') }}:</span>
+                                <strong>{{ $guarantee->person?->name ?? __('Deleted customer') }}</strong>
+                                @if ($guarantee->person?->cin)
+                                    ({{ $guarantee->person->cin }})
+                                @endif
+                            @endif
+                            <i class="fas fa-pen text-muted small ms-2"></i>
+                        </button>
+                    @else
+                        <button type="button"
+                                class="btn btn-sm btn-link text-muted text-decoration-none p-0 align-baseline"
+                                @click="Livewire.dispatch('guarantee:prepare', { scheduleId: {{ $schedule->id }} })">
+                            <i class="fas fa-shield-alt me-1"></i>{{ __('Add guarantee (Person · Cheque)') }}
+                        </button>
+                    @endif
+                </div>
+
                 <div class="table-responsive">
                     <table class="table table-vcenter card-table">
                         <thead>
@@ -101,7 +136,6 @@
                             @foreach ($schedule->entries as $entry)
                                 @php
                                     $remaining = (float) $entry->amount - (float) $entry->paid_amount;
-                                    $guarantee = $entry->guarantee;
                                 @endphp
                                 <tr>
                                     <td>{{ $entry->installment_number }}</td>
@@ -132,40 +166,6 @@
                                             <button type="button" class="btn btn-sm btn-success"
                                                 @click="openPayModal({{ $entry->id }}, {{ $remaining }}, '{{ $entry->installment_number }}')">
                                                 <i class="fas fa-plus me-1"></i>{{ __('Add Payment') }}
-                                            </button>
-                                        @endif
-                                    </td>
-                                </tr>
-                                <tr class="guarantee-row">
-                                    <td colspan="6" class="bg-light-subtle py-1 ps-4 border-bottom-0">
-                                        @if ($guarantee)
-                                            <button type="button"
-                                                    class="btn btn-sm btn-link text-decoration-none p-0"
-                                                    @click="Livewire.dispatch('guarantee:prepare', { entryId: {{ $entry->id }} })">
-                                                <i class="fas fa-shield-alt text-primary me-1"></i>
-                                                @if ($guarantee->type === 'cheque')
-                                                    <span class="text-muted small">{{ __('Cheque') }}:</span>
-                                                    <strong>{{ $guarantee->cheque_bank ?? '—' }}</strong>
-                                                    @if ($guarantee->cheque_nature)
-                                                        #{{ $guarantee->cheque_nature }}
-                                                    @endif
-                                                    @if ($guarantee->cheque_amount)
-                                                        — {{ Number::currency($guarantee->cheque_amount, 'MAD') }}
-                                                    @endif
-                                                @else
-                                                    <span class="text-muted small">{{ __('Person') }}:</span>
-                                                    <strong>{{ $guarantee->person?->name ?? __('Deleted customer') }}</strong>
-                                                    @if ($guarantee->person?->cin)
-                                                        ({{ $guarantee->person->cin }})
-                                                    @endif
-                                                @endif
-                                                <i class="fas fa-pen text-muted small ms-2"></i>
-                                            </button>
-                                        @else
-                                            <button type="button"
-                                                    class="btn btn-sm btn-link text-muted text-decoration-none p-0"
-                                                    @click="Livewire.dispatch('guarantee:prepare', { entryId: {{ $entry->id }} })">
-                                                <i class="fas fa-plus me-1"></i>{{ __('Add guarantee (Person · Cheque)') }}
                                             </button>
                                         @endif
                                     </td>

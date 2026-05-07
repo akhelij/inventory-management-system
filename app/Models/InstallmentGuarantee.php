@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class InstallmentGuarantee extends Model
 {
     protected $fillable = [
-        'installment_entry_id',
+        'payment_schedule_id',
         'type',
         'person_customer_id',
         'cheque_nature',
@@ -25,9 +25,9 @@ class InstallmentGuarantee extends Model
         'cheque_amount' => 'decimal:2',
     ];
 
-    public function entry(): BelongsTo
+    public function schedule(): BelongsTo
     {
-        return $this->belongsTo(InstallmentEntry::class, 'installment_entry_id');
+        return $this->belongsTo(PaymentSchedule::class, 'payment_schedule_id');
     }
 
     public function person(): BelongsTo

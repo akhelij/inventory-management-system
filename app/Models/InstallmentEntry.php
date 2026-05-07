@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class InstallmentEntry extends Model
 {
@@ -43,11 +42,6 @@ class InstallmentEntry extends Model
     public function payment(): BelongsTo
     {
         return $this->belongsTo(Payment::class);
-    }
-
-    public function guarantee(): HasOne
-    {
-        return $this->hasOne(InstallmentGuarantee::class);
     }
 
     public function scopeOverdue($query): void
