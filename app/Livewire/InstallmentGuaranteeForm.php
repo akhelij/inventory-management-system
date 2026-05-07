@@ -45,7 +45,7 @@ class InstallmentGuaranteeForm extends Component
     }
 
     #[On('guarantee:prepare')]
-    public function prepare(array $data): void
+    public function prepare(int $scheduleId): void
     {
         $this->reset(['guaranteeId', 'customerSearch', 'personCustomerId', 'personPreview',
             'chequeNature', 'chequeAmount', 'chequeBank', 'chequeEcheance',
@@ -53,7 +53,7 @@ class InstallmentGuaranteeForm extends Component
         $this->customerMatches = collect();
         $this->type = 'person';
 
-        $this->scheduleId = (int) $data['scheduleId'];
+        $this->scheduleId = $scheduleId;
 
         $schedule = PaymentSchedule::with('guarantee.person')->find($this->scheduleId);
         if (! $schedule) {
