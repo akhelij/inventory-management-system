@@ -530,20 +530,20 @@
             <div class="toast-header bg-success text-white">
                 <i class="fas fa-check-circle me-2"></i>
                 <strong class="me-auto">{{ __('Success') }}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
                 {{ session('success') }}
             </div>
         </div>
     @endif
-    
+
     @if (session('error'))
         <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header bg-danger text-white">
                 <i class="fas fa-exclamation-circle me-2"></i>
                 <strong class="me-auto">{{ __('Error') }}</strong>
-                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
                 {{ session('error') }}
@@ -555,17 +555,12 @@
 <!-- Initialize toasts -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Auto hide toasts after 5 seconds
-        setTimeout(function() {
-            const toasts = document.querySelectorAll('.toast.show');
-            toasts.forEach(toast => {
-                const bsToast = new bootstrap.Toast(toast, {
-                    autohide: true,
-                    delay: 5000
-                });
-                // The toast is already shown, so this just sets up the autohide
+        document.querySelectorAll('.toast.show').forEach(toast => {
+            const instance = bootstrap.Toast.getOrCreateInstance(toast, {
+                autohide: false,
             });
-        }, 500);
+            setTimeout(() => instance.hide(), 3000);
+        });
     });
 </script>
 
