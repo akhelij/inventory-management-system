@@ -161,6 +161,14 @@
         margin-bottom: 1rem;
     }
 
+    /* Chevron rotation for collapsible card headers */
+    [data-bs-toggle="collapse"] .fa-chevron-down {
+        transition: transform 0.2s ease;
+    }
+    [data-bs-toggle="collapse"].collapsed .fa-chevron-down {
+        transform: rotate(-90deg);
+    }
+
     /* Cheque preview popup on hover */
     .cheque-preview-trigger {
         display: inline-block;
@@ -547,11 +555,17 @@
     <div class="col-5">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">{{ __('Orders') }}</h3>
+                <button type="button" class="btn btn-link p-0 me-2 text-muted" data-bs-toggle="collapse"
+                        data-bs-target="#orders-collapse" aria-expanded="true" aria-controls="orders-collapse"
+                        title="{{ __('Toggle') }}">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <h3 class="card-title mb-0">{{ __('Orders') }}</h3>
                 <div class="card-actions">
                     <x-status dot color="green" class="btn btn-sm">{{ $totalOrders }} MAD</x-status>
                 </div>
             </div>
+            <div id="orders-collapse" class="collapse show">
             <div class="card-body p-2" style="max-height: 600px; overflow-y: auto;">
                 <template x-for="order in orders" :key="order.id">
                     <div class="card mb-2"
@@ -601,6 +615,7 @@
                     </div>
                 </template>
             </div>
+            </div>
         </div>
     </div>
 
@@ -608,7 +623,12 @@
     <div class="col-7">
         <div class="card">
             <div class="card-header">
-                <div><h3 class="card-title">{{ __('Payments') }}</h3></div>
+                <button type="button" class="btn btn-link p-0 me-2 text-muted" data-bs-toggle="collapse"
+                        data-bs-target="#payments-collapse" aria-expanded="true" aria-controls="payments-collapse"
+                        title="{{ __('Toggle') }}">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div><h3 class="card-title mb-0">{{ __('Payments') }}</h3></div>
                 <div class="card-actions">
                     <x-status dot color="green" class="btn btn-sm"><small>{{ __('Paid') }}:</small> {{ $totalPayments }} MAD</x-status>
                     <x-status dot color="orange" class="btn btn-sm"><small>{{ __('Pending') }}:</small> {{ $amountPendingPayments }} MAD</x-status>
@@ -621,6 +641,7 @@
                     </button>
                 </div>
             </div>
+            <div id="payments-collapse" class="collapse show">
             <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
                 <table class="table table-vcenter table-nowrap">
                     <thead>
@@ -698,6 +719,7 @@
                         </template>
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
     </div>

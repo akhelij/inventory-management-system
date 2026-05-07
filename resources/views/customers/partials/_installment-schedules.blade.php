@@ -52,6 +52,12 @@
             <div class="card mb-3">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-link p-0 me-2 text-muted" data-bs-toggle="collapse"
+                                data-bs-target="#schedule-{{ $schedule->id }}-collapse"
+                                aria-expanded="true" aria-controls="schedule-{{ $schedule->id }}-collapse"
+                                title="{{ __('Toggle') }}">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
                         <label class="form-check me-2 mb-0">
                             <input type="checkbox" class="form-check-input"
                                    :checked="selectedSchedules.includes({{ $schedule->id }})"
@@ -66,6 +72,8 @@
                         <span class="text-muted small">{{ Number::currency($schedule->total_amount, 'MAD') }}</span>
                     </div>
                 </div>
+
+                <div id="schedule-{{ $schedule->id }}-collapse" class="collapse show">
 
                 @php $guarantee = $schedule->guarantee; @endphp
                 <div class="px-3 py-2 border-bottom bg-light-subtle">
@@ -173,6 +181,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div>
                 </div>
             </div>
         @endforeach
