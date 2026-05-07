@@ -45,6 +45,11 @@ class PaymentController extends Controller
         $data['date'] = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
         $data['echeance'] = Carbon::createFromFormat('d/m/Y', $request->echeance)->format('Y-m-d');
 
+        if ($request->payment_type === 'HandCash') {
+            $data['cashed_in'] = true;
+            $data['cashed_in_at'] = $data['cashed_in_at'] ?? now();
+        }
+
         $payment = Payment::create($data);
 
         if ($request->expectsJson()) {

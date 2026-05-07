@@ -68,6 +68,8 @@ class PaymentScheduleController extends Controller
         $amount = (float) $request->amount;
 
         DB::transaction(function () use ($entry, $schedule, $paidDate, $amount, $request) {
+            $isHandCash = $request->payment_type === 'HandCash';
+
             $payment = Payment::create([
                 'customer_id' => $schedule->customer_id,
                 'date' => $paidDate->format('Y-m-d'),
@@ -75,6 +77,8 @@ class PaymentScheduleController extends Controller
                 'payment_type' => $request->payment_type,
                 'echeance' => $paidDate->format('Y-m-d'),
                 'amount' => $amount,
+                'cashed_in' => $isHandCash,
+                'cashed_in_at' => $isHandCash ? $paidDate : null,
             ]);
 
             $newPaid = (float) $entry->paid_amount + $amount;
