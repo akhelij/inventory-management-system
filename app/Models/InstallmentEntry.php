@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasActivityLogs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class InstallmentEntry extends Model
 {
@@ -14,6 +15,7 @@ class InstallmentEntry extends Model
         'payment_schedule_id',
         'installment_number',
         'amount',
+        'paid_amount',
         'due_date',
         'status',
         'payment_id',
@@ -24,7 +26,14 @@ class InstallmentEntry extends Model
     protected $casts = [
         'due_date' => 'date',
         'paid_at' => 'date',
+        'amount' => 'decimal:2',
+        'paid_amount' => 'decimal:2',
     ];
+
+    public function getRemainingAmountAttribute(): float
+    {
+        return max(0, (float) $this->amount - (float) $this->paid_amount);
+    }
 
     public function schedule(): BelongsTo
     {
@@ -34,6 +43,11 @@ class InstallmentEntry extends Model
     public function payment(): BelongsTo
     {
         return $this->belongsTo(Payment::class);
+    }
+
+    public function guarantee(): HasOne
+    {
+        return $this->hasOne(InstallmentGuarantee::class);
     }
 
     public function scopeOverdue($query): void

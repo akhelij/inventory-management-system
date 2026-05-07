@@ -7,6 +7,14 @@ use App\Models\Payment;
 
 class PaymentObserver
 {
+    public function creating(Payment $payment): void
+    {
+        if ($payment->payment_type === 'HandCash' && $payment->cashed_in === null) {
+            $payment->cashed_in = true;
+            $payment->cashed_in_at = $payment->cashed_in_at ?? now();
+        }
+    }
+
     public function updated(Payment $payment): void
     {
         // Payment-to-order allocation is handled manually

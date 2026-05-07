@@ -5,7 +5,9 @@
         payEntryId: null,
         payDate: '{{ now()->format('d/m/Y') }}',
         payAmount: '',
+        payRemaining: 0,
         payNumber: '',
+        payType: 'HandCash',
 
         toggleSchedule(id) {
             const idx = this.selectedSchedules.indexOf(id);
@@ -21,11 +23,13 @@
             this.payDate = v;
         },
 
-        openPayModal(entryId, amount, number) {
+        openPayModal(entryId, remaining, number) {
             this.payEntryId = entryId;
-            this.payAmount = amount;
+            this.payRemaining = remaining;
+            this.payAmount = remaining;
             this.payNumber = number;
             this.payDate = '{{ now()->format('d/m/Y') }}';
+            this.payType = 'HandCash';
             this.showPayModal = true;
         }
     }">
@@ -95,13 +99,27 @@
                             @endif
 
                             @foreach ($schedule->entries as $entry)
+                                @php
+                                    $remaining = (float) $entry->amount - (float) $entry->paid_amount;
+                                    $guarantee = $entry->guarantee;
+                                @endphp
                                 <tr>
                                     <td>{{ $entry->installment_number }}</td>
-                                    <td>{{ Number::currency($entry->amount, 'MAD') }}</td>
+                                    <td>
+                                        {{ Number::currency($entry->amount, 'MAD') }}
+                                        @if ((float) $entry->paid_amount > 0 && $entry->status !== 'paid')
+                                            <div class="small text-muted">
+                                                {{ __('Paid') }}: {{ Number::currency($entry->paid_amount, 'MAD') }}
+                                                · {{ __('Remaining') }}: <span class="fw-bold">{{ Number::currency($remaining, 'MAD') }}</span>
+                                            </div>
+                                        @endif
+                                    </td>
                                     <td>{{ $entry->due_date->format('d/m/Y') }}</td>
                                     <td>
                                         @if ($entry->status === 'paid')
                                             <span class="badge bg-success">{{ __('Paid') }}</span>
+                                        @elseif ($entry->status === 'partial')
+                                            <span class="badge bg-orange-lt">{{ __('Partial') }}</span>
                                         @elseif ($entry->status === 'overdue')
                                             <span class="badge bg-danger">{{ __('Overdue') }}</span>
                                         @else
@@ -112,8 +130,42 @@
                                     <td class="text-end">
                                         @if ($entry->status !== 'paid')
                                             <button type="button" class="btn btn-sm btn-success"
-                                                @click="openPayModal({{ $entry->id }}, '{{ Number::currency($entry->amount, 'MAD') }}', '{{ $entry->installment_number }}')">
-                                                <i class="fas fa-check me-1"></i>{{ __('Mark Paid') }}
+                                                @click="openPayModal({{ $entry->id }}, {{ $remaining }}, '{{ $entry->installment_number }}')">
+                                                <i class="fas fa-plus me-1"></i>{{ __('Add Payment') }}
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr class="guarantee-row">
+                                    <td colspan="6" class="bg-light-subtle py-1 ps-4 border-bottom-0">
+                                        @if ($guarantee)
+                                            <button type="button"
+                                                    class="btn btn-sm btn-link text-decoration-none p-0"
+                                                    @click="Livewire.dispatch('guarantee:prepare', { entryId: {{ $entry->id }} })">
+                                                <i class="fas fa-shield-alt text-primary me-1"></i>
+                                                @if ($guarantee->type === 'cheque')
+                                                    <span class="text-muted small">{{ __('Cheque') }}:</span>
+                                                    <strong>{{ $guarantee->cheque_bank ?? '—' }}</strong>
+                                                    @if ($guarantee->cheque_nature)
+                                                        #{{ $guarantee->cheque_nature }}
+                                                    @endif
+                                                    @if ($guarantee->cheque_amount)
+                                                        — {{ Number::currency($guarantee->cheque_amount, 'MAD') }}
+                                                    @endif
+                                                @else
+                                                    <span class="text-muted small">{{ __('Person') }}:</span>
+                                                    <strong>{{ $guarantee->person?->name ?? __('Deleted customer') }}</strong>
+                                                    @if ($guarantee->person?->cin)
+                                                        ({{ $guarantee->person->cin }})
+                                                    @endif
+                                                @endif
+                                                <i class="fas fa-pen text-muted small ms-2"></i>
+                                            </button>
+                                        @else
+                                            <button type="button"
+                                                    class="btn btn-sm btn-link text-muted text-decoration-none p-0"
+                                                    @click="Livewire.dispatch('guarantee:prepare', { entryId: {{ $entry->id }} })">
+                                                <i class="fas fa-plus me-1"></i>{{ __('Add guarantee (Person · Cheque)') }}
                                             </button>
                                         @endif
                                     </td>
@@ -125,28 +177,46 @@
             </div>
         @endforeach
 
-        {{-- Mark Paid Modal --}}
+        {{-- Add Payment Modal --}}
         <div class="modal modal-blur" :class="{ 'show d-block': showPayModal }" tabindex="-1"
              x-show="showPayModal" x-cloak @click.self="showPayModal = false">
-            <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">{{ __('Mark Installment as Paid') }}</h5>
+                        <h5 class="modal-title">{{ __('Add Payment') }}</h5>
                         <button type="button" class="btn-close" @click="showPayModal = false"></button>
                     </div>
                     <div class="modal-body">
-                        <p class="mb-3">
-                            {{ __('Installment') }} #<span x-text="payNumber"></span> — <span x-text="payAmount"></span>
+                        <p class="mb-3 text-muted small">
+                            {{ __('Installment') }} #<span x-text="payNumber"></span> — {{ __('Remaining') }}: <span x-text="payRemaining.toFixed(2) + ' MAD'" class="fw-bold text-dark"></span>
                         </p>
-                        <label class="form-label">{{ __('Payment Date') }}</label>
-                        <input type="text" class="form-control" x-model="payDate" placeholder="dd/mm/yyyy"
-                               @input="formatDateField($event)">
+                        <div class="mb-3">
+                            <label class="form-label required">{{ __('Amount') }} (MAD)</label>
+                            <input type="number" step="0.01" min="0.01" class="form-control"
+                                   x-model.number="payAmount" :max="payRemaining">
+                            <div class="form-hint">{{ __('Defaults to remaining; lower for partial.') }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">{{ __('Payment Type') }}</label>
+                            <select class="form-select" x-model="payType">
+                                <option value="HandCash">{{ __('HandCash') }}</option>
+                                <option value="Cheque">{{ __('Cheque') }}</option>
+                                <option value="Exchange">{{ __('Exchange') }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label required">{{ __('Payment Date') }}</label>
+                            <input type="text" class="form-control" x-model="payDate" placeholder="dd/mm/yyyy"
+                                   @input="formatDateField($event)">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn" @click="showPayModal = false">{{ __('Cancel') }}</button>
                         <form :action="'/installments/' + payEntryId + '/pay'" method="POST">
                             @csrf
                             <input type="hidden" name="paid_date" :value="payDate">
+                            <input type="hidden" name="amount" :value="payAmount">
+                            <input type="hidden" name="payment_type" :value="payType">
                             <button type="submit" class="btn btn-success">
                                 <i class="fas fa-check me-1"></i>{{ __('Confirm') }}
                             </button>
@@ -156,5 +226,7 @@
             </div>
         </div>
         <div class="modal-backdrop fade show" x-show="showPayModal" x-cloak @click="showPayModal = false"></div>
+
+        @livewire('installment-guarantee-form')
     </div>
 @endif

@@ -176,6 +176,9 @@
                                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#refillModal">
                                                             {{ __('Refill Stock') }}
                                                         </button>
+                                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#transferModal">
+                                                            <i class="fas fa-exchange-alt me-1"></i>{{ __('Transfer') }}
+                                                        </button>
                                                     </div>
                                                     @error('quantity')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -266,6 +269,7 @@
                 </form>
 
                 @livewire('product-refill', ['product' => $product])
+                @livewire('product-transfer', ['product' => $product])
             </div>
         </div>
     </div>

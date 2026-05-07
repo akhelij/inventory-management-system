@@ -148,6 +148,34 @@ class StockService
         });
     }
 
+    public function transferStock(Product $source, Product $destination, int $quantity, ?string $reason = null): bool
+    {
+        if ($source->id === $destination->id) {
+            throw new \RuntimeException('Source and destination products must differ.');
+        }
+
+        if ($quantity < 1) {
+            throw new \RuntimeException('Transfer quantity must be at least 1.');
+        }
+
+        if ($source->quantity < $quantity) {
+            throw new \RuntimeException("Insufficient stock for {$source->name}. Available: {$source->quantity}, Requested: {$quantity}");
+        }
+
+        return DB::transaction(function () use ($source, $destination, $quantity, $reason): bool {
+            $sourceNew = $source->quantity - $quantity;
+            $source->update(['quantity' => $sourceNew]);
+
+            $destNew = $destination->quantity + $quantity;
+            $destination->update(['quantity' => $destNew]);
+
+            $this->logStockMovement($source->id, null, 'transferred_out', $quantity, $sourceNew, $reason);
+            $this->logStockMovement($destination->id, null, 'transferred_in', $quantity, $destNew, $reason);
+
+            return true;
+        });
+    }
+
     private function logStockMovement(
         int $productId,
         ?int $orderId,
