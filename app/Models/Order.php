@@ -66,7 +66,9 @@ class Order extends Model
 
     public function getIsUpdatableStatusAttribute(): bool
     {
-        return in_array($this->order_status, [OrderStatus::PENDING, null])
+        // Strict comparison: CANCELED is 0 and PENDING is null, so a loose
+        // in_array() would treat canceled orders as pending.
+        return $this->order_status === OrderStatus::PENDING
             && auth()->user()->can(PermissionEnum::UPDATE_ORDERS_STATUS);
     }
 

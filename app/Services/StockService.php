@@ -19,7 +19,15 @@ class StockService
 
         return DB::transaction(function () use ($order): bool {
             foreach ($order->details as $item) {
-                $product = Product::findOrFail($item->product_id);
+                if ($item->quantity < 1) {
+                    throw new \RuntimeException(
+                        "Invalid quantity ({$item->quantity}) for product ID {$item->product_id}."
+                    );
+                }
+
+                // lockForUpdate closes the race where two concurrent approvals
+                // read the same stock level and both pass the check below.
+                $product = Product::query()->lockForUpdate()->findOrFail($item->product_id);
 
                 if ($product->quantity < $item->quantity) {
                     throw new \RuntimeException(
@@ -88,6 +96,12 @@ class StockService
 
             if (! $product) {
                 $issues[] = "Product not found: ID {$item->product_id}";
+
+                continue;
+            }
+
+            if ($item->quantity < 1) {
+                $issues[] = "Invalid quantity ({$item->quantity}) for {$product->name}";
 
                 continue;
             }

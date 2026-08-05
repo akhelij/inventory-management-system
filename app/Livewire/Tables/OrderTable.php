@@ -5,6 +5,8 @@ namespace App\Livewire\Tables;
 use App\Enums\OrderStatus;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Services\StockService;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -86,22 +88,41 @@ class OrderTable extends Component
             return;
         }
 
+        if ($this->newStatus == OrderStatus::APPROVED) {
+            $stockCheck = app(StockService::class)->canApproveOrder($this->selectedOrder);
+
+            if (! $stockCheck['can_approve']) {
+                $this->dispatch('orderStatusError', [
+                    'message' => __('Cannot approve order due to insufficient stock: ').implode(', ', $stockCheck['issues']),
+                ]);
+
+                $this->reset(['showWarningModal', 'selectedOrder', 'newStatus', 'statusReason', 'isOverLimit']);
+
+                return;
+            }
+        }
+
         try {
-            $this->selectedOrder->update([
-                'order_status' => $this->newStatus,
-                'reason' => $this->statusReason,
-            ]);
+            // The transaction guarantees the status change rolls back when the
+            // observer's stock deduction fails — the status must never be
+            // persisted without its stock side effects.
+            DB::transaction(function (): void {
+                $this->selectedOrder->update([
+                    'order_status' => $this->newStatus,
+                    'reason' => $this->statusReason,
+                ]);
+            });
 
             $this->dispatch('orderStatusUpdated', [
                 'message' => __('Order status has been updated successfully!'),
             ]);
-
-            $this->reset(['showWarningModal', 'selectedOrder', 'newStatus', 'statusReason', 'isOverLimit']);
         } catch (\Exception $e) {
             $this->dispatch('orderStatusError', [
                 'message' => __('Error updating order status: ').$e->getMessage(),
             ]);
         }
+
+        $this->reset(['showWarningModal', 'selectedOrder', 'newStatus', 'statusReason', 'isOverLimit']);
     }
 
     public function forceApprove(): void

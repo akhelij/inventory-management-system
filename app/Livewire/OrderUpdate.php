@@ -25,6 +25,12 @@ class OrderUpdate extends Component
 
     public function updateQuantity(int $product_id, int $quantity): void
     {
+        if ($quantity < 1) {
+            session()->flash('warning', __('Quantity must be at least 1.'));
+
+            return;
+        }
+
         $product = Product::find($product_id);
 
         if ($product && $quantity > $product->quantity) {

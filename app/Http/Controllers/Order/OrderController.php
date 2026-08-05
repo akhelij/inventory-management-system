@@ -53,17 +53,31 @@ class OrderController extends Controller
 
     public function store(OrderStoreRequest $request): RedirectResponse
     {
+        abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
+
+        $cartData = $request->has('cart_data')
+            ? json_decode($request->input('cart_data'), true)
+            : [];
+
+        if (empty($cartData)) {
+            return redirect()->back()->with('error', __('Cannot create an order with an empty cart'));
+        }
+
+        // cart_data comes from a client-controlled hidden field; never trust it.
+        $validator = validator(['items' => $cartData], [
+            'items' => 'required|array|min:1',
+            'items.*.product_id' => 'required|integer|exists:products,id',
+            'items.*.qty' => 'required|integer|min:1',
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.subtotal' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->with('error', __('Invalid cart data: ').$validator->errors()->first());
+        }
+
         try {
             DB::beginTransaction();
-            abort_unless(Auth::user()->can(PermissionEnum::CREATE_ORDERS), 403);
-
-            $cartData = $request->has('cart_data')
-                ? json_decode($request->input('cart_data'), true)
-                : [];
-
-            if (empty($cartData)) {
-                return redirect()->back()->with('error', __('Cannot create an order with an empty cart'));
-            }
 
             $subTotal = collect($cartData)->sum('subtotal');
 
@@ -207,6 +221,17 @@ class OrderController extends Controller
         if (! $request->has('product_id') || empty($request->product_id)) {
             return redirect()->back()->with('error', __('Cannot update an order with no items'));
         }
+
+        $request->validate([
+            'product_id' => 'required|array|min:1',
+            'product_id.*' => 'integer|exists:products,id',
+            'quantity' => 'required|array',
+            'quantity.*' => 'integer|min:1',
+            'unitcost' => 'required|array',
+            'unitcost.*' => 'numeric|min:0',
+            'total' => 'required|array',
+            'total.*' => 'numeric|min:0',
+        ]);
 
         $order->details()->delete();
 
