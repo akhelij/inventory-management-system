@@ -237,6 +237,28 @@ class OrderApprovalStockTest extends TestCase
     }
 
     #[Test]
+    public function order_update_component_shows_warning_for_invalid_quantity(): void
+    {
+        $product = $this->makeProduct(5);
+        $order = $this->makePendingOrder([['product' => $product, 'qty' => 2]]);
+
+        Livewire::test(OrderUpdate::class, ['order_id' => $order->id])
+            ->call('updateQuantity', $product->id, 0)
+            ->assertSee(__('Quantity must be at least 1.'));
+    }
+
+    #[Test]
+    public function order_update_component_shows_warning_when_quantity_exceeds_stock(): void
+    {
+        $product = $this->makeProduct(5);
+        $order = $this->makePendingOrder([['product' => $product, 'qty' => 2]]);
+
+        Livewire::test(OrderUpdate::class, ['order_id' => $order->id])
+            ->call('updateQuantity', $product->id, 99)
+            ->assertSee('exceeds available stock');
+    }
+
+    #[Test]
     public function order_update_component_rejects_non_positive_quantity(): void
     {
         $product = $this->makeProduct(5);
