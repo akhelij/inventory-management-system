@@ -25,6 +25,7 @@
                                 {{ __('Search') }}
                                 <div class="ms-2 d-inline-block">
                                     <input type="text" x-model="search" x-on:input.debounce.300ms="searchProducts()" class="form-control form-control-sm"
+                                        placeholder="{{ __('Type product name or code....') }}"
                                         aria-label="{{ __('Search') }}">
                                 </div>
                             </div>
@@ -74,7 +75,10 @@
                                                     <img style="width: 32px; height: 32px; object-fit: contain; flex-shrink: 0;"
                                                         :src="product.product_image ? '/storage/' + product.product_image : '/assets/img/products/default.webp'"
                                                         >
-                                                    <span class="text-truncate fs-sm small" x-text="product.name"></span>
+                                                    <div class="d-flex flex-column overflow-hidden">
+                                                        <span class="text-truncate fs-sm small" x-text="product.name"></span>
+                                                        <span class="text-truncate text-secondary" style="font-size: .7rem;" x-text="product.code"></span>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td class="align-middle text-center fs-sm small" x-text="product.warehouse?.name || '--'"></td>

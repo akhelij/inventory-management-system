@@ -18,6 +18,7 @@ class ProductController extends Controller
             ->whereNull('deleted_at')
             ->when($search, fn ($query) => $query->where(function ($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%")
                     ->orWhereHas('category', fn ($q) => $q->where('name', 'like', "%{$search}%"))
                     ->orWhereHas('warehouse', fn ($q) => $q->where('name', 'like', "%{$search}%"));
             }))
