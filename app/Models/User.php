@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Services\CartService;
 use App\Traits\HasActivityLogs;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +14,7 @@ use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable
 {
     use HasActivityLogs, HasApiTokens, HasFactory, HasRoles, Notifiable;
 
@@ -25,7 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'username',
         'email',
-        'email_verified_atg',
+        'email_verified_at',
         'password',
         'store_name',
         'store_address',
