@@ -114,6 +114,7 @@
                                     <th scope="col" class="align-middle text-center">{{ __('No.') }}</th>
                                     <th scope="col" class="align-middle text-center">{{ __('Photo') }}</th>
                                     <th scope="col" class="align-middle text-center">{{ __('Product Name') }}</th>
+                                    <th scope="col" class="align-middle text-center">{{ __('Product Code') }}</th>
                                     <th scope="col" class="align-middle text-center">{{ __('Inventory') }}</th>
                                     <th scope="col" class="align-middle text-center">{{ __('Quantity') }}</th>
                                     <th scope="col" class="align-middle text-center">{{ __('Price') }}</th>
@@ -139,6 +140,11 @@
                                             @endif
                                         </td>
                                         <td class="align-middle text-center">
+                                            <span class="badge bg-indigo-lt">
+                                                {{ $item->product->code }}
+                                            </span>
+                                        </td>
+                                        <td class="align-middle text-center">
                                             {{ $item->product->warehouse->name }}
                                         </td>
                                         <td class="align-middle text-center">
@@ -153,21 +159,21 @@
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="6" class="text-end">
+                                    <td colspan="7" class="text-end">
                                         {{ __('Paid amount') }}
                                     </td>
                                     <td class="text-center">{{ number_format($order->pay, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6" class="text-end">{{ __('Due') }}</td>
+                                    <td colspan="7" class="text-end">{{ __('Due') }}</td>
                                     <td class="text-center">{{ number_format($order->due, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6" class="text-end">{{ __('VAT') }}</td>
+                                    <td colspan="7" class="text-end">{{ __('VAT') }}</td>
                                     <td class="text-center">{{ number_format($order->vat, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="6" class="text-end">{{ __('Total') }}</td>
+                                    <td colspan="7" class="text-end">{{ __('Total') }}</td>
                                     <td class="text-center">{{ number_format($order->total, 2) }}</td>
                                 </tr>
                             </tbody>

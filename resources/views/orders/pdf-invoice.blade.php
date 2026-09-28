@@ -107,6 +107,7 @@
             font-size: 9pt;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
 
         .products-table thead th:first-child {
@@ -328,7 +329,8 @@
     <table class="products-table">
         <thead>
             <tr>
-                <th style="width: 50%">Description</th>
+                <th style="width: 14%">Code</th>
+                <th style="width: 36%">Description</th>
                 <th class="text-center" style="width: 12%">Quantit&eacute;</th>
                 <th class="text-right" style="width: 19%">Prix unitaire</th>
                 <th class="text-right" style="width: 19%">Prix total</th>
@@ -337,6 +339,7 @@
         <tbody>
             @foreach ($order->details as $index => $item)
                 <tr class="{{ $index % 2 === 1 ? 'row-even' : '' }}">
+                    <td>{{ $item->product->code }}</td>
                     <td>
                         {{ $item->product->name }}
                         @if($item->unitcost == 0)
