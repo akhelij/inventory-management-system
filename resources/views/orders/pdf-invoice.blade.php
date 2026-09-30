@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <title>Facture {{ $order->invoice_no }}</title>
     <style>
+        /* The bottom margin is the band the fixed footer lives in; no row can be laid out there. */
         @page {
-            margin: 1.5cm 1cm 3cm 1cm;
+            margin: 1.5cm 0 3cm 0;
         }
 
-        * {
+        /* Scoped to body: dompdf builds the page box from <html>'s style, so a bare * reset wipes out the @page margins. */
+        body, body * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -255,7 +257,8 @@
         /* ── Footer ── */
         .footer {
             position: fixed;
-            bottom: 0;
+            /* Fixed boxes are placed relative to the page content area, so this pushes the footer into the @page bottom margin. */
+            bottom: -3cm;
             left: 0;
             right: 0;
             text-align: center;

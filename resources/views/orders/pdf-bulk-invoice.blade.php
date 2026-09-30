@@ -6,10 +6,11 @@
     <title>Rapport des Commandes</title>
     <style>
         @page {
-            margin: 1.5cm 2cm;
+            margin: 1.5cm 0;
         }
 
-        * {
+        /* Scoped to body: dompdf builds the page box from <html>'s style, so a bare * reset wipes out the @page margins. */
+        body, body * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
