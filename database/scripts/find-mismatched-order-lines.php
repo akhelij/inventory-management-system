@@ -38,7 +38,8 @@ $lines->each(function ($l) use ($status, $money): void {
     echo implode("\t", [
         $l->invoice_no, $status($l->order_status), $l->order_date, $l->customer, $l->code, $l->product,
         $l->quantity, $money($l->unitcost), $money($l->total), $money($expected), $money($expected - $l->total),
-        $money($l->selling_price), $money($l->order_total), $money($l->pay), $money($l->due),
+        // products.selling_price is stored in cents (Product's accessor divides by 100); order amounts are not.
+        $money($l->selling_price / 100), $money($l->order_total), $money($l->pay), $money($l->due),
     ])."\n";
 });
 
