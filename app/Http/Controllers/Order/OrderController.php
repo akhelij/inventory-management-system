@@ -69,17 +69,31 @@ class OrderController extends Controller
             'items.*.product_id' => 'required|integer|exists:products,id',
             'items.*.qty' => 'required|integer|min:1',
             'items.*.price' => 'required|numeric|min:0',
-            'items.*.subtotal' => 'required|numeric|min:0',
+            'items.*.is_free' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->with('error', __('Invalid cart data: ').$validator->errors()->first());
         }
 
+        // The submitted subtotal is ignored: the page can post a price/quantity edit before the cart
+        // endpoint has returned its new subtotal, which saved lines whose total wasn't qty × price.
+        // Prices are rounded first because order_details stores whole numbers.
+        $lines = collect($cartData)->map(function (array $item): array {
+            $unitcost = ($item['is_free'] ?? false) ? 0 : (int) round((float) $item['price']);
+
+            return [
+                'product_id' => $item['product_id'],
+                'quantity' => (int) $item['qty'],
+                'unitcost' => $unitcost,
+                'total' => $unitcost * (int) $item['qty'],
+            ];
+        });
+
         try {
             DB::beginTransaction();
 
-            $subTotal = collect($cartData)->sum('subtotal');
+            $subTotal = $lines->sum('total');
 
             $order = Order::create([
                 'customer_id' => $request->customer_id,
@@ -103,15 +117,7 @@ class OrderController extends Controller
                 'uuid' => Str::uuid(),
             ]);
 
-            foreach ($cartData as $item) {
-                OrderDetails::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item['product_id'],
-                    'quantity' => $item['qty'],
-                    'unitcost' => $item['price'],
-                    'total' => $item['subtotal'],
-                ]);
-            }
+            $lines->each(fn (array $line) => OrderDetails::create(['order_id' => $order->id, ...$line]));
 
             if ($request->input('payment_mode') === 'installment') {
                 $installmentCount = (int) $request->input('installment_count', 4);

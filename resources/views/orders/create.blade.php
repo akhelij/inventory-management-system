@@ -460,7 +460,7 @@
                                                                 :min="item.basePrice" required/>
                                                         </div>
                                                     </td>
-                                                    <td class="text-center small" x-text="formatCurrency(item.subtotal)"></td>
+                                                    <td class="text-center small" x-text="formatCurrency(lineTotal(item))"></td>
                                                     <td class="text-center">
                                                         <button 
                                                             type="button" 
@@ -817,6 +817,8 @@
                     })
                     .catch(error => {
                         console.error('Error updating cart:', error);
+                        // The server refused the edit (e.g. more than the stock), so put the boxes back to what it holds.
+                        this.fetchCart();
                     });
                 },
                 
@@ -846,8 +848,14 @@
                     return this.cart.reduce((total, item) => total + parseInt(item.qty), 0);
                 },
                 
+                // Computed here rather than read from the server's subtotal, which lags behind an edit
+                // until the cart update returns; the server recomputes it the same way on submit.
+                lineTotal(item) {
+                    return item.is_free ? 0 : Math.round(parseFloat(item.price) || 0) * (parseInt(item.qty) || 0);
+                },
+
                 getSubTotal() {
-                    return this.cart.reduce((total, item) => total + parseFloat(item.subtotal), 0);
+                    return this.cart.reduce((total, item) => total + this.lineTotal(item), 0);
                 },
                 
                 getTotal() {
