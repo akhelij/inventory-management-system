@@ -16,7 +16,7 @@ class OrderItemController extends Controller
     {
         Order::findOrFail($orderId);
 
-        $items = OrderDetails::with(['product' => fn ($query) => $query->select('id', 'name', 'quantity', 'selling_price', 'product_image')])
+        $items = OrderDetails::with(['product' => fn ($query) => $query->select('id', 'name', 'code', 'quantity', 'selling_price', 'product_image')])
             ->where('order_id', $orderId)
             ->get();
 

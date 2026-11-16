@@ -440,8 +440,11 @@
                                             <template x-for="(item, index) in cart" :key="item.uuid">
                                                 <tr>
                                                     <td>
-                                                        <span class="small" x-text="item.name"></span>
-                                                        <span x-show="item.is_free" class="badge bg-success ms-1 small">{{ __('Gift') }}</span>
+                                                        <div>
+                                                            <span class="small" x-text="item.name"></span>
+                                                            <span x-show="item.is_free" class="badge bg-success ms-1 small">{{ __('Gift') }}</span>
+                                                        </div>
+                                                        <div x-show="item.code" class="text-secondary" style="font-size: .7rem;" x-text="item.code"></div>
                                                     </td>
                                                     <td style="width: 120px;">
                                                         <div class="input-group" style="width:110px">

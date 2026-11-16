@@ -224,7 +224,7 @@ class CartController extends Controller
 
     protected function formatCartItems(Cart $cart): array
     {
-        $cart->load('items');
+        $cart->load('items.product:id,code');
 
         return $cart->items->map(function ($item) {
             $options = $item->options ?? [];
@@ -233,6 +233,7 @@ class CartController extends Controller
                 'uuid' => $options['uuid'] ?? Str::uuid()->toString(),
                 'product_id' => $item->product_id,
                 'name' => $item->name,
+                'code' => $item->product?->code,
                 'qty' => $item->quantity,
                 'price' => (float) $item->price,
                 'basePrice' => $options['basePrice'] ?? (float) $item->price,

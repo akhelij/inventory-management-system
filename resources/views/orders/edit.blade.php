@@ -345,8 +345,11 @@
                                         <template x-for="(item, index) in orderItems" :key="item.id">
                                             <tr>
                                                 <td>
-                                                    <span class="small" x-text="item.product.name"></span>
-                                                    <span x-show="item.unitcost == 0" class="badge bg-success ms-1 small">{{ __('Gift') }}</span>
+                                                    <div>
+                                                        <span class="small" x-text="item.product.name"></span>
+                                                        <span x-show="item.unitcost == 0" class="badge bg-success ms-1 small">{{ __('Gift') }}</span>
+                                                    </div>
+                                                    <div x-show="item.product?.code" class="text-secondary" style="font-size: .7rem;" x-text="item.product?.code"></div>
                                                 </td>
                                                 <td style="width: 120px;">
                                                     <div class="input-group" style="width:110px">
